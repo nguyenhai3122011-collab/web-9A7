@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Lớp 9A7</title>
+  <title>Trang Web Lớp Học</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -53,7 +53,6 @@
       background: #21262d;
       color: #58a6ff;
     }
-    /* Search bar kiểu Google */
     .search-container {
       position: relative;
       width: 400px;
@@ -65,7 +64,7 @@
       padding: 12px 20px;
       font-size: 1em;
       border: 1px solid #30363d;
-      border-radius: 999px; /* bo tròn như Google */
+      border-radius: 999px;
       background: #0d1117;
       color: #e6edf3;
       outline: none;
@@ -91,22 +90,16 @@
       display: none;
       z-index: 999;
     }
-    #search-dropdown.show {
-      display: block;
-    }
+    #search-dropdown.show { display: block; }
     #search-dropdown li {
       padding: 12px 20px;
       cursor: default;
       transition: background 0.15s;
     }
-    #search-dropdown li:hover {
-      background: #21262d;
-    }
-    #search-dropdown li.highlight {
-      background: #264d79;
-    }
+    #search-dropdown li:hover { background: #21262d; }
+
     main {
-      margin-top: 80px; /* Để tránh bị che bởi header fixed */
+      margin-top: 80px;
       flex: 1;
       padding: 24px;
       max-width: 1200px;
@@ -127,7 +120,41 @@
     }
     .error { color: #f85149; }
 
-    /* Các phần còn lại giữ nguyên */
+    /* Modal phóng to ảnh */
+    #image-modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.95);
+      overflow: auto;
+    }
+    #modal-content {
+      margin: auto;
+      display: block;
+      max-width: 95%;
+      max-height: 90vh;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    #modal-close {
+      position: absolute;
+      top: 20px;
+      right: 35px;
+      color: #fff;
+      font-size: 40px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    #modal-close:hover { color: #58a6ff; }
+
+    /* Trang chủ & Kỉ niệm */
     #home-list {
       display: flex;
       flex-direction: column;
@@ -147,11 +174,17 @@
       white-space: pre-wrap;
       color: #c9d1d9;
     }
-    .home-item img {
-      width: 200px;
+    .home-item img, .gallery-item img {
+      width: 100%;
+      max-width: 200px; /* giới hạn kích thước nhỏ ban đầu */
       height: auto;
       border-radius: 8px;
       object-fit: cover;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .home-item img:hover, .gallery-item img:hover {
+      transform: scale(1.03);
     }
     #stats { text-align: center; font-size: 1.1em; color: #8b949e; margin-bottom: 24px; }
     #stats strong { color: #58a6ff; }
@@ -168,7 +201,6 @@
       transition: transform 0.15s ease;
     }
     .gallery-item:hover { transform: translateY(-4px); }
-    .gallery-item img { width: 100%; height: auto; display: block; background: #0d1117; }
     .gallery-item .caption {
       padding: 10px 12px;
       font-size: 0.95em;
@@ -197,8 +229,6 @@
     <nav>
       <a href="#home" data-page="home" class="active">Trang Chủ</a>
       <a href="#memories" data-page="memories">Kỉ Niệm</a>
-      <!-- Xóa hoặc comment nếu không cần tab riêng -->
-      <!-- <a href="#search" data-page="search">Tìm Học Sinh</a> -->
       <a href="#info" data-page="info">Thông Tin</a>
     </nav>
     <div class="search-container">
@@ -231,8 +261,29 @@
     </section>
   </main>
 
+  <!-- Modal phóng to ảnh -->
+  <div id="image-modal">
+    <span id="modal-close">&times;</span>
+    <img id="modal-content" src="" alt="Ảnh phóng to">
+  </div>
+
   <script>
-    // Navigation
+    // Modal logic
+    const modal = document.getElementById('image-modal');
+    const modalImg = document.getElementById('modal-content');
+    const closeBtn = document.getElementById('modal-close');
+
+    function openModal(src) {
+      modalImg.src = src;
+      modal.style.display = 'block';
+    }
+
+    closeBtn.onclick = () => { modal.style.display = 'none'; };
+    modal.onclick = (e) => {
+      if (e.target === modal) modal.style.display = 'none';
+    };
+
+    // Navigation & load functions (giữ nguyên như trước)
     const sections = document.querySelectorAll('section');
     const navLinks = document.querySelectorAll('nav a');
 
@@ -249,7 +300,6 @@
       showPage(pageId);
     });
 
-    // Load logo
     async function loadLogo() {
       try {
         const res = await fetch('logo.txt');
@@ -269,7 +319,7 @@
       if (pageId === 'info') await loadInfo();
     }
 
-    // Load học sinh cho dropdown header
+    // Load học sinh cho search header (giữ nguyên)
     let allStudents = [];
     async function loadStudents() {
       try {
@@ -278,9 +328,7 @@
         const text = await res.text();
         allStudents = text.split('\n').map(s => s.trim()).filter(Boolean);
         renderDropdown(allStudents);
-      } catch (err) {
-        console.error('Lỗi load stu.txt:', err);
-      }
+      } catch {}
     }
 
     function renderDropdown(stus) {
@@ -297,7 +345,6 @@
       });
     }
 
-    // Xử lý search realtime
     const input = document.getElementById('search-input');
     const dropdown = document.getElementById('search-dropdown');
 
@@ -312,14 +359,13 @@
       dropdown.classList.add('show');
     });
 
-    // Ẩn dropdown khi click ra ngoài
     document.addEventListener('click', e => {
       if (!input.contains(e.target) && !dropdown.contains(e.target)) {
         dropdown.classList.remove('show');
       }
     });
 
-    // Các hàm loadHome, loadMemories, loadInfo giữ nguyên (copy từ trước)
+    // Trang chủ - thêm click phóng to
     async function loadHome() {
       const loading = document.getElementById('home-loading');
       const errorDiv = document.getElementById('home-error');
@@ -342,8 +388,12 @@
 
           const item = document.createElement('div');
           item.className = 'home-item';
-          item.innerHTML = `<div class="note">${note}</div><img src="${imgUrl}" alt="Ảnh">`;
+          item.innerHTML = `<div class="note">${note}</div><img src="${imgUrl}" alt="Ảnh bài viết">`;
           list.appendChild(item);
+
+          // Thêm event click phóng to cho ảnh vừa tạo
+          const img = item.querySelector('img');
+          img.onclick = () => openModal(img.src);
         }
 
         loading.style.display = 'none';
@@ -355,6 +405,7 @@
       }
     }
 
+    // Kỉ niệm - thêm click phóng to
     async function loadMemories() {
       const loading = document.getElementById('memories-loading');
       const errorDiv = document.getElementById('memories-error');
@@ -411,6 +462,9 @@
           item.appendChild(img);
           item.appendChild(cap);
           gallery.appendChild(item);
+
+          // Thêm event click phóng to
+          img.onclick = () => openModal(img.src);
         });
 
         stats.innerHTML = `Tổng số link: <strong>${urls.length}</strong> ảnh`;
@@ -446,7 +500,7 @@
 
     // Khởi động
     loadLogo();
-    loadStudents(); // Load danh sách học sinh cho search header
+    loadStudents();
     showPage(window.location.hash.slice(1) || 'home');
   </script>
 
