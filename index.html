@@ -15,6 +15,16 @@
     h1 {
       text-align: center;
       color: #58a6ff;
+      margin-bottom: 8px;
+    }
+    #stats {
+      text-align: center;
+      font-size: 1.1em;
+      color: #8b949e;
+      margin-bottom: 24px;
+    }
+    #stats strong {
+      color: #58a6ff;
     }
     .gallery {
       display: grid;
@@ -45,6 +55,7 @@
 <body>
 
   <h1>Ảnh từ pic.txt</h1>
+  <div id="stats">Đang đếm số ảnh...</div>
 
   <div id="loading" class="loading">Đang đọc danh sách ảnh...</div>
   <div id="error" class="error" style="display:none"></div>
@@ -56,18 +67,18 @@
       const loading = document.getElementById("loading");
       const errorDiv = document.getElementById("error");
       const gallery = document.getElementById("gallery");
+      const stats = document.getElementById("stats");
 
       try {
-        // Đọc file pic.txt (phải cùng thư mục với index.html trên GitHub Pages)
         const response = await fetch("pic.txt");
         if (!response.ok) {
           throw new Error("Không đọc được pic.txt (status: " + response.status + ")");
         }
 
         const text = await response.text();
-
-        // Loại bỏ khoảng trắng thừa và thử xử lý nếu có ```json
         let jsonStr = text.trim();
+
+        // Xử lý nếu có ```json hoặc chỉ là danh sách link
         if (jsonStr.startsWith("```")) {
           jsonStr = jsonStr.split("```")[1]?.trim() || jsonStr;
         }
@@ -76,10 +87,10 @@
         try {
           urls = JSON.parse(jsonStr);
         } catch (e) {
-          // Trường hợp người dùng chỉ paste link, thiếu ngoặc vuông
+          // Thử sửa nếu là danh sách link không có ngoặc []
           if (jsonStr.includes("https://") && !jsonStr.startsWith("[")) {
-            jsonStr = "[" + jsonStr + "]";
-            urls = JSON.parse(jsonStr);
+            const lines = jsonStr.split('\n').map(line => line.trim()).filter(Boolean);
+            urls = lines.map(line => line.replace(/,$/, '')); // loại dấu phẩy thừa nếu có
           } else {
             throw e;
           }
@@ -92,31 +103,59 @@
         loading.style.display = "none";
 
         if (urls.length === 0) {
-          gallery.innerHTML = "<p>Không có link ảnh nào trong pic.txt</p>";
+          stats.textContent = "Không có ảnh nào trong pic.txt";
+          gallery.innerHTML = "<p style='text-align:center'>File pic.txt rỗng hoặc không có link hợp lệ</p>";
           return;
         }
+
+        let loadedCount = 0;
+        let failedCount = 0;
 
         urls.forEach(url => {
           const img = document.createElement("img");
           img.src = url.trim();
           img.alt = "Ảnh từ pic.txt";
-          img.loading = "lazy";           // tải chậm để trang load nhanh hơn
-          img.onerror = () => {
-            img.src = "https://via.placeholder.com/300x200?text=Link+hỏng";
-            img.alt = "Không tải được: " + url;
+          img.loading = "lazy";
+
+          img.onload = () => {
+            loadedCount++;
+            updateStats();
           };
+
+          img.onerror = () => {
+            failedCount++;
+            img.src = "https://via.placeholder.com/300x200/161b22/8b949e?text=Link+hỏng";
+            img.alt = "Không tải được: " + url;
+            updateStats();
+          };
+
           gallery.appendChild(img);
         });
+
+        // Cập nhật số lượng ngay lập tức (tổng link)
+        stats.innerHTML = `Tổng số link: <strong>${urls.length}</strong> ảnh`;
+
+        function updateStats() {
+          const success = loadedCount;
+          const total = urls.length;
+          const failed = failedCount;
+
+          if (failed > 0) {
+            stats.innerHTML = `Đã tải: <strong>${success}/${total}</strong> ảnh (lỗi: ${failed})`;
+          } else {
+            stats.innerHTML = `Tổng số ảnh: <strong>${success}/${total}</strong>`;
+          }
+        }
 
       } catch (err) {
         loading.style.display = "none";
         errorDiv.style.display = "block";
         errorDiv.textContent = "Lỗi: " + err.message;
+        stats.textContent = "Không thể đếm số ảnh do lỗi đọc file";
         console.error(err);
       }
     }
 
-    // Chạy khi trang load xong
     window.addEventListener("load", loadImages);
   </script>
 
