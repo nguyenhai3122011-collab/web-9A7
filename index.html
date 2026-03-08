@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Trang Web Lớp Học</title>
+  <title>Lớp 9A7</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -17,47 +17,104 @@
     }
     header {
       background: #161b22;
-      padding: 12px 24px;
+      padding: 10px 24px;
       display: flex;
       align-items: center;
       border-bottom: 1px solid #30363d;
-      position: sticky;
+      position: fixed;
       top: 0;
-      z-index: 10;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
     }
     #logo {
-      width: 48px;
-      height: 48px;
+      width: 40px;
+      height: 40px;
       object-fit: contain;
-      margin-right: 16px;
-      border-radius: 4px;
+      margin-right: 20px;
+      border-radius: 6px;
       background: #21262d;
     }
     nav {
       flex: 1;
       display: flex;
-      gap: 24px;
+      gap: 20px;
     }
     nav a {
       color: #c9d1d9;
       text-decoration: none;
-      font-weight: bold;
+      font-weight: 600;
       padding: 8px 12px;
       border-radius: 6px;
-      transition: background 0.2s;
+      transition: all 0.2s;
     }
     nav a:hover, nav a.active {
       background: #21262d;
       color: #58a6ff;
     }
+    /* Search bar kiểu Google */
+    .search-container {
+      position: relative;
+      width: 400px;
+      max-width: 50%;
+      margin-left: auto;
+    }
+    #search-input {
+      width: 100%;
+      padding: 12px 20px;
+      font-size: 1em;
+      border: 1px solid #30363d;
+      border-radius: 999px; /* bo tròn như Google */
+      background: #0d1117;
+      color: #e6edf3;
+      outline: none;
+      box-shadow: 0 1px 6px rgba(32,33,36,.28);
+      transition: box-shadow 0.2s;
+    }
+    #search-input:focus {
+      box-shadow: 0 1px 10px rgba(88,166,255,0.4);
+      border-color: #58a6ff;
+    }
+    #search-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      margin-top: 8px;
+      max-height: 320px;
+      overflow-y: auto;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+      display: none;
+      z-index: 999;
+    }
+    #search-dropdown.show {
+      display: block;
+    }
+    #search-dropdown li {
+      padding: 12px 20px;
+      cursor: default;
+      transition: background 0.15s;
+    }
+    #search-dropdown li:hover {
+      background: #21262d;
+    }
+    #search-dropdown li.highlight {
+      background: #264d79;
+    }
     main {
+      margin-top: 80px; /* Để tránh bị che bởi header fixed */
       flex: 1;
       padding: 24px;
       max-width: 1200px;
-      margin: 0 auto;
+      margin-left: auto;
+      margin-right: auto;
       width: 100%;
     }
-    h1, h2 {
+    h1 {
       color: #58a6ff;
       text-align: center;
       margin-bottom: 24px;
@@ -70,50 +127,7 @@
     }
     .error { color: #f85149; }
 
-    /* Ô tìm kiếm luôn hiển thị trên trang chủ */
-    #quick-search {
-      background: #161b22;
-      padding: 16px;
-      border-radius: 8px;
-      margin-bottom: 32px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-    }
-    #quick-search h2 {
-      margin: 0 0 16px 0;
-      text-align: left;
-      font-size: 1.4em;
-    }
-    #search-input {
-      width: 100%;
-      padding: 12px;
-      font-size: 1em;
-      border: 1px solid #30363d;
-      border-radius: 6px;
-      background: #0d1117;
-      color: #e6edf3;
-      margin-bottom: 16px;
-    }
-    #student-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      max-height: 400px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    #student-list li {
-      background: #21262d;
-      padding: 10px 14px;
-      border-radius: 6px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-    }
-    #student-list li.highlight {
-      background: #264d79;
-    }
-
-    /* Trang chủ */
+    /* Các phần còn lại giữ nguyên */
     #home-list {
       display: flex;
       flex-direction: column;
@@ -139,14 +153,7 @@
       border-radius: 8px;
       object-fit: cover;
     }
-
-    /* Kỉ niệm */
-    #stats {
-      text-align: center;
-      font-size: 1.1em;
-      color: #8b949e;
-      margin-bottom: 24px;
-    }
+    #stats { text-align: center; font-size: 1.1em; color: #8b949e; margin-bottom: 24px; }
     #stats strong { color: #58a6ff; }
     .gallery {
       display: grid;
@@ -161,12 +168,7 @@
       transition: transform 0.15s ease;
     }
     .gallery-item:hover { transform: translateY(-4px); }
-    .gallery-item img {
-      width: 100%;
-      height: auto;
-      display: block;
-      background: #0d1117;
-    }
+    .gallery-item img { width: 100%; height: auto; display: block; background: #0d1117; }
     .gallery-item .caption {
       padding: 10px 12px;
       font-size: 0.95em;
@@ -177,8 +179,6 @@
       text-overflow: ellipsis;
       background: #21262d;
     }
-
-    /* Thông tin */
     #info-content {
       white-space: pre-wrap;
       background: #161b22;
@@ -186,7 +186,6 @@
       border-radius: 8px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.4);
     }
-
     section { display: none; }
     section.active { display: block; }
   </style>
@@ -194,27 +193,23 @@
 <body>
 
   <header>
-    <img id="logo" src="https://via.placeholder.com/48?text=Logo" alt="Logo lớp">
+    <img id="logo" src="https://via.placeholder.com/40?text=Logo" alt="Logo lớp">
     <nav>
       <a href="#home" data-page="home" class="active">Trang Chủ</a>
       <a href="#memories" data-page="memories">Kỉ Niệm</a>
-      <!-- Có thể comment hoặc xóa dòng dưới nếu không cần tab riêng nữa -->
-      <a href="#search" data-page="search">Tìm Học Sinh</a>
+      <!-- Xóa hoặc comment nếu không cần tab riêng -->
+      <!-- <a href="#search" data-page="search">Tìm Học Sinh</a> -->
       <a href="#info" data-page="info">Thông Tin</a>
     </nav>
+    <div class="search-container">
+      <input type="text" id="search-input" placeholder="Tìm học sinh lớp...">
+      <ul id="search-dropdown"></ul>
+    </div>
   </header>
 
   <main>
     <section id="home" class="active">
       <h1>Trang Chủ</h1>
-
-      <!-- Ô tìm kiếm luôn hiển thị -->
-      <div id="quick-search">
-        <h2>Tìm kiếm học sinh lớp</h2>
-        <input type="text" id="search-input" placeholder="Nhập tên học sinh để tìm...">
-        <ul id="student-list"></ul>
-      </div>
-
       <div id="home-loading" class="loading">Đang tải nội dung trang chủ...</div>
       <div id="home-error" class="error" style="display:none"></div>
       <div id="home-list"></div>
@@ -226,14 +221,6 @@
       <div id="memories-loading" class="loading">Đang đọc danh sách ảnh...</div>
       <div id="memories-error" class="error" style="display:none"></div>
       <div class="gallery" id="gallery"></div>
-    </section>
-
-    <section id="search">
-      <h1>Tìm Kiếm Học Sinh</h1>
-      <input type="text" id="search-input-alt" placeholder="Nhập tên học sinh để tìm...">
-      <div id="search-loading" class="loading">Đang tải danh sách học sinh...</div>
-      <div id="search-error" class="error" style="display:none"></div>
-      <ul id="student-list-alt"></ul>
     </section>
 
     <section id="info">
@@ -266,7 +253,7 @@
     async function loadLogo() {
       try {
         const res = await fetch('logo.txt');
-        if (!res.ok) throw new Error();
+        if (!res.ok) return;
         document.getElementById('logo').src = (await res.text()).trim();
       } catch {}
     }
@@ -279,60 +266,60 @@
 
       if (pageId === 'home') await loadHome();
       if (pageId === 'memories') await loadMemories();
-      if (pageId === 'search' || pageId === 'home') await loadStudents(); // load cho cả hai
       if (pageId === 'info') await loadInfo();
     }
 
-    // Load danh sách học sinh (dùng chung cho quick-search và tab search)
+    // Load học sinh cho dropdown header
     let allStudents = [];
     async function loadStudents() {
-      const lists = [document.getElementById('student-list'), document.getElementById('student-list-alt')];
-      const inputs = [document.getElementById('search-input'), document.getElementById('search-input-alt')];
-      const loadings = [document.getElementById('search-loading'), document.getElementById('search-loading')]; // giả sử chung
-      const errors = [document.getElementById('search-error'), document.getElementById('search-error')];
-
       try {
         const res = await fetch('stu.txt');
-        if (!res.ok) throw new Error('Không đọc được stu.txt');
+        if (!res.ok) return;
         const text = await res.text();
         allStudents = text.split('\n').map(s => s.trim()).filter(Boolean);
-
-        renderStudents(allStudents, lists);
-
-        inputs.forEach(input => {
-          if (input) {
-            input.addEventListener('input', () => {
-              const q = input.value.toLowerCase().trim();
-              const filtered = allStudents.filter(s => s.toLowerCase().includes(q));
-              renderStudents(filtered, lists);
-            });
-          }
-        });
-
-        loadings.forEach(l => { if (l) l.style.display = 'none'; });
+        renderDropdown(allStudents);
       } catch (err) {
-        loadings.forEach(l => { if (l) l.style.display = 'none'; });
-        errors.forEach(e => { if (e) { e.style.display = 'block'; e.textContent = 'Lỗi: ' + err.message; } });
+        console.error('Lỗi load stu.txt:', err);
       }
     }
 
-    function renderStudents(stus, listElements) {
-      listElements.forEach(list => {
-        if (!list) return;
-        list.innerHTML = '';
-        if (stus.length === 0) {
-          list.innerHTML = '<p style="text-align:center; color:#8b949e;">Không tìm thấy học sinh nào</p>';
-          return;
-        }
-        stus.forEach(s => {
-          const li = document.createElement('li');
-          li.textContent = s;
-          list.appendChild(li);
-        });
+    function renderDropdown(stus) {
+      const dropdown = document.getElementById('search-dropdown');
+      dropdown.innerHTML = '';
+      if (stus.length === 0) {
+        dropdown.innerHTML = '<li style="color:#8b949e; text-align:center;">Không tìm thấy</li>';
+        return;
+      }
+      stus.forEach(s => {
+        const li = document.createElement('li');
+        li.textContent = s;
+        dropdown.appendChild(li);
       });
     }
 
-    // Các hàm loadHome, loadMemories, loadInfo giữ nguyên như trước (copy từ code cũ)
+    // Xử lý search realtime
+    const input = document.getElementById('search-input');
+    const dropdown = document.getElementById('search-dropdown');
+
+    input.addEventListener('input', () => {
+      const q = input.value.toLowerCase().trim();
+      if (q === '') {
+        dropdown.classList.remove('show');
+        return;
+      }
+      const filtered = allStudents.filter(s => s.toLowerCase().includes(q));
+      renderDropdown(filtered);
+      dropdown.classList.add('show');
+    });
+
+    // Ẩn dropdown khi click ra ngoài
+    document.addEventListener('click', e => {
+      if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.classList.remove('show');
+      }
+    });
+
+    // Các hàm loadHome, loadMemories, loadInfo giữ nguyên (copy từ trước)
     async function loadHome() {
       const loading = document.getElementById('home-loading');
       const errorDiv = document.getElementById('home-error');
@@ -343,9 +330,7 @@
         if (!listRes.ok) throw new Error('Không đọc được home/list.txt');
         const fileNames = JSON.parse(await listRes.text());
 
-        if (!Array.isArray(fileNames) || fileNames.length === 0) {
-          throw new Error('Không có file nào trong home/list.txt');
-        }
+        if (!Array.isArray(fileNames) || fileNames.length === 0) throw new Error('Không có file');
 
         for (const fn of fileNames) {
           const res = await fetch(`home/${fn}`);
@@ -362,9 +347,7 @@
         }
 
         loading.style.display = 'none';
-        if (list.children.length === 0) {
-          list.innerHTML = '<p style="text-align:center">Không có nội dung nào trong thư mục home</p>';
-        }
+        if (list.children.length === 0) list.innerHTML = '<p style="text-align:center">Không có nội dung</p>';
       } catch (err) {
         loading.style.display = 'none';
         errorDiv.style.display = 'block';
@@ -373,7 +356,6 @@
     }
 
     async function loadMemories() {
-      // Giữ nguyên code loadMemories từ phiên bản trước (với caption tên ảnh)
       const loading = document.getElementById('memories-loading');
       const errorDiv = document.getElementById('memories-error');
       const gallery = document.getElementById('gallery');
@@ -396,7 +378,7 @@
 
         loading.style.display = "none";
         if (urls.length === 0) {
-          stats.textContent = "Không có ảnh nào";
+          stats.textContent = "Không có ảnh";
           gallery.innerHTML = "<p style='text-align:center'>pic.txt rỗng</p>";
           return;
         }
@@ -464,9 +446,8 @@
 
     // Khởi động
     loadLogo();
+    loadStudents(); // Load danh sách học sinh cho search header
     showPage(window.location.hash.slice(1) || 'home');
-    // Load học sinh ngay khi trang chủ load (vì quick-search nằm ở home)
-    loadStudents();
   </script>
 
 </body>
