@@ -1,3 +1,1 @@
-["https://github.com/nguyenhai3122011-collab/web-9A7/blob/main/%E1%BA%A3nh_chung/test2.jpg?raw=true",
-"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQb7uBHX_GGgbaE_Pn3T97fzeQJJEKUPlaSGw&s",
-"https://github.com/nguyenhai3122011-collab/web-9A7/blob/main/%E1%BA%A3nh_chung/test1.gif?raw=true"]
+["https://github.com/nguyenhai3122011-collab/web-9A7/blob/main/%E1%BA%A3nh_chung/%E1%BA%A2nh%20K%E1%BB%89%20Y%E1%BA%BFu.jpg?raw=true"]
