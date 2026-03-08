@@ -120,7 +120,7 @@
     }
     .error { color: #f85149; }
 
-    /* Modal phóng to */
+    /* Modal phóng to ảnh */
     #image-modal {
       display: none;
       position: fixed;
@@ -150,7 +150,7 @@
     }
     #modal-close:hover { color: #58a6ff; }
 
-    /* Ảnh Trang Chủ - giữ nguyên tỷ lệ, không crop */
+    /* Ảnh Trang Chủ */
     .home-item img {
       width: 100%;
       max-width: 300px;
@@ -309,7 +309,7 @@
       <a href="#info" data-page="info">Thông Tin</a>
     </nav>
     <div class="search-container">
-      <input type="text" id="search-input" placeholder="Tìm ID học sinh (1-44)...">
+      <input type="text" id="search-input" placeholder="Tìm tên học sinh...">
       <ul id="search-dropdown"></ul>
     </div>
   </header>
@@ -373,7 +373,7 @@
 
     // Modal thông tin học sinh
     const studentModal = document.getElementById('student-modal');
-    const studentName = document.getElementById('student-name');
+    const studentNameEl = document.getElementById('student-name');
     const studentAvatar = document.getElementById('student-avatar');
     const studentInfoText = document.getElementById('student-info-text');
     const studentGallery = document.getElementById('student-gallery');
@@ -385,7 +385,7 @@
     studentModal.onclick = (e) => { if (e.target === studentModal) studentModal.style.display = 'none'; };
 
     async function loadStudentInfo(id) {
-      studentName.textContent = `Học sinh ID: ${id}`;
+      studentNameEl.textContent = `Học sinh ID: ${id}`;
       studentAvatar.src = 'https://via.placeholder.com/120?text=Avatar';
       studentInfoText.innerHTML = '';
       studentGallery.innerHTML = '';
@@ -396,19 +396,17 @@
       const basePath = `stu/${id}/`;
 
       try {
-        // Fetch inf.txt
         const infRes = await fetch(basePath + 'inf.txt');
-        if (!infRes.ok) throw new Error('Không tìm thấy học sinh');
+        if (!infRes.ok) throw new Error('Không tìm thấy');
 
         const infText = await infRes.text();
         const lines = infText.split('\n').map(l => l.trim());
         const avatarUrl = lines[0] || 'https://via.placeholder.com/120?text=Avatar';
-        const info = lines.slice(1).join('<br>') || 'Không có thông tin';
+        const info = lines.slice(1).join('<br>') || 'Không có thông tin chi tiết';
 
         studentAvatar.src = avatarUrl;
         studentInfoText.innerHTML = info;
 
-        // Fetch pics.txt
         let pics = [];
         try {
           const picsRes = await fetch(basePath + 'pics.txt');
@@ -438,7 +436,7 @@
       }
     }
 
-    // Navigation
+    // Navigation & load pages (giữ nguyên)
     const sections = document.querySelectorAll('section');
     const navLinks = document.querySelectorAll('nav a');
 
@@ -473,37 +471,65 @@
       if (pageId === 'info') await loadInfo();
     }
 
-    // Search ID (1-44)
-    const allStudents = Array.from({ length: 44 }, (_, i) => (i + 1).toString());
+    // Tìm kiếm theo tên từ stu.txt (đọc động)
+    let studentList = [];
 
-    function renderDropdown(ids) {
+    async function loadStudentNames() {
+      try {
+        const res = await fetch('stu.txt');
+        if (!res.ok) throw new Error('Không đọc được stu.txt');
+        const text = await res.text();
+        const names = text.split('\n')
+          .map(line => line.trim())
+          .filter(line => line.length > 0);
+
+        studentList = names.map((name, index) => ({
+          id: (index + 1).toString(),
+          name: name
+        }));
+      } catch (err) {
+        console.error('Lỗi load stu.txt:', err);
+        studentList = [];
+      }
+    }
+
+    function renderDropdown(results) {
       const dd = document.getElementById('search-dropdown');
       dd.innerHTML = '';
-      if (ids.length === 0) {
+      if (results.length === 0) {
         dd.innerHTML = '<li style="color:#8b949e; text-align:center; cursor:default;">Không tìm thấy</li>';
         return;
       }
-      ids.forEach(id => {
+      results.forEach(s => {
         const li = document.createElement('li');
-        li.textContent = `ID: ${id}`;
-        li.onclick = () => loadStudentInfo(id);
+        li.textContent = `${s.id} - ${s.name}`;
+        li.onclick = () => loadStudentInfo(s.id);
         dd.appendChild(li);
       });
     }
 
-    const input = document.getElementById('search-input');
+    const searchInput = document.getElementById('search-input');
     const dropdown = document.getElementById('search-dropdown');
 
-    input.addEventListener('input', () => {
-      const q = input.value.trim();
-      if (q === '') return dropdown.classList.remove('show');
-      const filtered = allStudents.filter(id => id.includes(q));
+    searchInput.addEventListener('input', () => {
+      const q = searchInput.value.trim().toLowerCase();
+      if (q === '') {
+        dropdown.classList.remove('show');
+        return;
+      }
+
+      const filtered = studentList.filter(s =>
+        s.name.toLowerCase().includes(q)
+      );
+
       renderDropdown(filtered);
       dropdown.classList.add('show');
     });
 
     document.addEventListener('click', e => {
-      if (!input.contains(e.target) && !dropdown.contains(e.target)) dropdown.classList.remove('show');
+      if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.classList.remove('show');
+      }
     });
 
     // Load Home
@@ -545,7 +571,7 @@
       }
     }
 
-    // Load Memories
+    // Load Memories (giữ nguyên)
     async function loadMemories() {
       const loading = document.getElementById('memories-loading');
       const errorDiv = document.getElementById('memories-error');
@@ -639,6 +665,7 @@
 
     // Khởi động
     loadLogo();
+    await loadStudentNames(); // Load danh sách tên từ stu.txt
     showPage(window.location.hash.slice(1) || 'home');
   </script>
 
