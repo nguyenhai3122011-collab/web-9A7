@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Trang Web Lớp Học</title>
+  <title>Lớp 9A7 - k57</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -97,7 +97,7 @@
       border-radius: 8px;
       object-fit: cover;
     }
-    /* Kỉ niệm */
+    /* Kỉ niệm - Cập nhật */
     #stats {
       text-align: center;
       font-size: 1.1em;
@@ -110,18 +110,33 @@
     .gallery {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 16px;
+      gap: 20px;
     }
-    .gallery img {
-      width: 100%;
-      height: auto;
+    .gallery-item {
+      background: #161b22;
       border-radius: 8px;
+      overflow: hidden;
       box-shadow: 0 4px 12px rgba(0,0,0,0.4);
       transition: transform 0.15s ease;
-      background: #161b22;
     }
-    .gallery img:hover {
-      transform: scale(1.04);
+    .gallery-item:hover {
+      transform: translateY(-4px);
+    }
+    .gallery-item img {
+      width: 100%;
+      height: auto;
+      display: block;
+      background: #0d1117;
+    }
+    .gallery-item .caption {
+      padding: 10px 12px;
+      font-size: 0.95em;
+      color: #8b949e;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      background: #21262d;
     }
     /* Tìm kiếm học sinh */
     #search-input {
@@ -213,7 +228,7 @@
   </main>
 
   <script>
-    // Xử lý navigation
+    // Xử lý navigation (giữ nguyên)
     const sections = document.querySelectorAll('section');
     const navLinks = document.querySelectorAll('nav a');
 
@@ -230,7 +245,7 @@
       showPage(pageId);
     });
 
-    // Load logo
+    // Load logo (giữ nguyên)
     async function loadLogo() {
       try {
         const response = await fetch('logo.txt');
@@ -242,7 +257,6 @@
       }
     }
 
-    // Load nội dung từng page (chỉ load khi click)
     const loadedPages = new Set();
 
     async function loadPageContent(pageId) {
@@ -255,14 +269,13 @@
       if (pageId === 'info') await loadInfo();
     }
 
-    // Trang chủ
+    // Trang chủ (giữ nguyên)
     async function loadHome() {
       const loading = document.getElementById('home-loading');
       const errorDiv = document.getElementById('home-error');
       const list = document.getElementById('home-list');
 
       try {
-        // Giả sử có file home/list.txt chứa JSON array tên file, ví dụ: ["post1.txt", "post2.txt"]
         const listResponse = await fetch('home/list.txt');
         if (!listResponse.ok) throw new Error('Không đọc được home/list.txt');
         const fileNames = JSON.parse(await listResponse.text());
@@ -273,7 +286,7 @@
 
         for (const fileName of fileNames) {
           const response = await fetch(`home/${fileName}`);
-          if (!response.ok) continue; // Bỏ qua nếu lỗi
+          if (!response.ok) continue;
 
           const text = await response.text();
           const lines = text.split('\n').map(l => l.trim());
@@ -301,7 +314,7 @@
       }
     }
 
-    // Kỉ niệm (tương tự code trước)
+    // Kỉ niệm - Cập nhật hiển thị tên ảnh
     async function loadMemories() {
       const loading = document.getElementById('memories-loading');
       const errorDiv = document.getElementById('memories-error');
@@ -349,9 +362,27 @@
         let failedCount = 0;
 
         urls.forEach(url => {
+          const trimmedUrl = url.trim();
+          // Trích xuất tên file không đuôi
+          let fileName = "Ảnh không tên";
+          try {
+            const urlObj = new URL(trimmedUrl);
+            const pathParts = urlObj.pathname.split('/');
+            const lastPart = pathParts[pathParts.length - 1];
+            if (lastPart) {
+              fileName = lastPart.split('.')[0]; // loại bỏ đuôi .jpg, .png,...
+              fileName = decodeURIComponent(fileName); // giải mã %20 thành khoảng trắng nếu có
+            }
+          } catch (e) {
+            // Nếu URL không hợp lệ, giữ nguyên "Ảnh không tên"
+          }
+
+          const item = document.createElement("div");
+          item.className = "gallery-item";
+
           const img = document.createElement("img");
-          img.src = url.trim();
-          img.alt = "Ảnh kỉ niệm";
+          img.src = trimmedUrl;
+          img.alt = fileName;
           img.loading = "lazy";
 
           img.onload = () => {
@@ -362,11 +393,17 @@
           img.onerror = () => {
             failedCount++;
             img.src = "https://via.placeholder.com/300x200/161b22/8b949e?text=Link+hỏng";
-            img.alt = "Không tải được: " + url;
+            img.alt = "Không tải được";
             updateStats();
           };
 
-          gallery.appendChild(img);
+          const caption = document.createElement("div");
+          caption.className = "caption";
+          caption.textContent = fileName;
+
+          item.appendChild(img);
+          item.appendChild(caption);
+          gallery.appendChild(item);
         });
 
         stats.innerHTML = `Tổng số link: <strong>${urls.length}</strong> ảnh`;
@@ -392,7 +429,7 @@
       }
     }
 
-    // Tìm kiếm học sinh
+    // Tìm kiếm học sinh (giữ nguyên)
     async function loadSearch() {
       const loading = document.getElementById('search-loading');
       const errorDiv = document.getElementById('search-error');
@@ -438,7 +475,7 @@
       }
     }
 
-    // Thông tin
+    // Thông tin (giữ nguyên)
     async function loadInfo() {
       const loading = document.getElementById('info-loading');
       const errorDiv = document.getElementById('info-error');
