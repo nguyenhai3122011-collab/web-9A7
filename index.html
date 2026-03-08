@@ -309,7 +309,7 @@
       <a href="#info" data-page="info">Thông Tin</a>
     </nav>
     <div class="search-container">
-      <input type="text" id="search-input" placeholder="Tìm học sinh lớp...">
+      <input type="text" id="search-input" placeholder="Tìm ID học sinh (1-44)...">
       <ul id="search-dropdown"></ul>
     </div>
   </header>
@@ -384,8 +384,8 @@
     studentClose.onclick = () => studentModal.style.display = 'none';
     studentModal.onclick = (e) => { if (e.target === studentModal) studentModal.style.display = 'none'; };
 
-    async function loadStudentInfo(student) {
-      studentName.textContent = student;
+    async function loadStudentInfo(id) {
+      studentName.textContent = `Học sinh ID: ${id}`;
       studentAvatar.src = 'https://via.placeholder.com/120?text=Avatar';
       studentInfoText.innerHTML = '';
       studentGallery.innerHTML = '';
@@ -393,8 +393,7 @@
       studentLoading.style.display = 'block';
       studentModal.style.display = 'block';
 
-      const folder = encodeURIComponent(student).replace(/%20/g, '+'); // Encode tên cho URL
-      const basePath = `stu/${folder}/`;
+      const basePath = `stu/${id}/`;
 
       try {
         // Fetch inf.txt
@@ -409,7 +408,7 @@
         studentAvatar.src = avatarUrl;
         studentInfoText.innerHTML = info;
 
-        // Fetch pics.txt (giả định là JSON array link ảnh đi kèm)
+        // Fetch pics.txt
         let pics = [];
         try {
           const picsRes = await fetch(basePath + 'pics.txt');
@@ -436,11 +435,10 @@
         studentLoading.style.display = 'none';
         studentError.style.display = 'block';
         studentError.textContent = 'Không tìm thấy học sinh';
-        console.error(err);
       }
     }
 
-    // Navigation & load (giữ nguyên)
+    // Navigation
     const sections = document.querySelectorAll('section');
     const navLinks = document.querySelectorAll('nav a');
 
@@ -475,28 +473,20 @@
       if (pageId === 'info') await loadInfo();
     }
 
-    // Search header - thêm click để load info
-    let allStudents = [];
-    async function loadStudents() {
-      try {
-        const res = await fetch('stu.txt');
-        if (!res.ok) return;
-        const text = await res.text();
-        allStudents = text.split('\n').map(s => s.trim()).filter(Boolean);
-      } catch {}
-    }
+    // Search ID (1-44)
+    const allStudents = Array.from({ length: 44 }, (_, i) => (i + 1).toString());
 
-    function renderDropdown(stus) {
+    function renderDropdown(ids) {
       const dd = document.getElementById('search-dropdown');
       dd.innerHTML = '';
-      if (stus.length === 0) {
+      if (ids.length === 0) {
         dd.innerHTML = '<li style="color:#8b949e; text-align:center; cursor:default;">Không tìm thấy</li>';
         return;
       }
-      stus.forEach(s => {
+      ids.forEach(id => {
         const li = document.createElement('li');
-        li.textContent = s;
-        li.onclick = () => loadStudentInfo(s);
+        li.textContent = `ID: ${id}`;
+        li.onclick = () => loadStudentInfo(id);
         dd.appendChild(li);
       });
     }
@@ -505,9 +495,9 @@
     const dropdown = document.getElementById('search-dropdown');
 
     input.addEventListener('input', () => {
-      const q = input.value.toLowerCase().trim();
+      const q = input.value.trim();
       if (q === '') return dropdown.classList.remove('show');
-      const filtered = allStudents.filter(s => s.toLowerCase().includes(q));
+      const filtered = allStudents.filter(id => id.includes(q));
       renderDropdown(filtered);
       dropdown.classList.add('show');
     });
@@ -649,7 +639,6 @@
 
     // Khởi động
     loadLogo();
-    loadStudents();
     showPage(window.location.hash.slice(1) || 'home');
   </script>
 
