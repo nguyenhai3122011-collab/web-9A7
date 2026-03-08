@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>LỚP 9A7 :D</title>
+  <title>Trang Web Lớp Học</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -93,7 +93,7 @@
     #search-dropdown.show { display: block; }
     #search-dropdown li {
       padding: 12px 20px;
-      cursor: default;
+      cursor: pointer;
       transition: background 0.15s;
     }
     #search-dropdown li:hover { background: #21262d; }
@@ -153,11 +153,11 @@
     /* Ảnh Trang Chủ - giữ nguyên tỷ lệ, không crop */
     .home-item img {
       width: 100%;
-      max-width: 300px;       /* giới hạn chiều rộng tối đa để không quá to */
-      height: auto;           /* tự động điều chỉnh chiều cao */
+      max-width: 300px;
+      height: auto;
       border-radius: 8px;
-      object-fit: contain;    /* giữ nguyên tỷ lệ gốc, không crop */
-      background: #161b22;    /* nền nếu ảnh có khoảng trống */
+      object-fit: contain;
+      background: #161b22;
       cursor: pointer;
       transition: transform 0.2s;
       display: block;
@@ -173,16 +173,16 @@
       border-radius: 8px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.4);
       gap: 16px;
-      flex-wrap: wrap;        /* nếu ảnh cao quá thì xuống dòng */
+      flex-wrap: wrap;
     }
     .home-item .note {
       flex: 1;
       white-space: pre-wrap;
       color: #c9d1d9;
-      min-width: 200px;       /* tránh note bị ép quá nhỏ */
+      min-width: 200px;
     }
 
-    /* Ảnh Kỉ Niệm - giữ nguyên như cũ */
+    /* Ảnh Kỉ Niệm */
     .gallery-item img {
       width: 100%;
       height: auto;
@@ -232,6 +232,71 @@
     }
     section { display: none; }
     section.active { display: block; }
+
+    /* Modal thông tin học sinh */
+    #student-modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.9);
+      overflow: auto;
+    }
+    #student-modal-content {
+      background: #161b22;
+      margin: 5% auto;
+      padding: 24px;
+      border-radius: 12px;
+      max-width: 800px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+    }
+    #student-close {
+      position: absolute;
+      top: 20px; right: 35px;
+      color: #fff;
+      font-size: 40px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    #student-close:hover { color: #58a6ff; }
+    #student-avatar {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin: 0 auto 16px;
+      display: block;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    }
+    #student-info-text {
+      white-space: pre-wrap;
+      margin-bottom: 24px;
+    }
+    #student-gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+    }
+    #student-gallery img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      object-fit: contain;
+      background: #21262d;
+      cursor: pointer;
+    }
+    #student-gallery img:hover {
+      transform: scale(1.03);
+    }
+    #student-loading {
+      text-align: center;
+      padding: 20px;
+    }
+    #student-error {
+      color: #f85149;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -278,21 +343,104 @@
     <img id="modal-content" src="" alt="Ảnh phóng to">
   </div>
 
-  <script>
-    // Modal
-    const modal = document.getElementById('image-modal');
-    const modalImg = document.getElementById('modal-content');
-    const closeBtn = document.getElementById('modal-close');
+  <!-- Modal thông tin học sinh -->
+  <div id="student-modal">
+    <span id="student-close">×</span>
+    <div id="student-modal-content">
+      <h2 id="student-name" style="text-align:center; color:#58a6ff;"></h2>
+      <img id="student-avatar" src="https://via.placeholder.com/120?text=Avatar" alt="Avatar">
+      <div id="student-loading" class="loading">Đang tải thông tin...</div>
+      <div id="student-error" class="error" style="display:none"></div>
+      <div id="student-info-text"></div>
+      <h3 style="color:#58a6ff; margin-top:32px;">Ảnh đi kèm</h3>
+      <div id="student-gallery"></div>
+    </div>
+  </div>
 
-    function openModal(src) {
+  <script>
+    // Modal ảnh
+    const imageModal = document.getElementById('image-modal');
+    const modalImg = document.getElementById('modal-content');
+    const imageClose = document.getElementById('modal-close');
+
+    function openImageModal(src) {
       modalImg.src = src;
-      modal.style.display = 'block';
+      imageModal.style.display = 'block';
     }
 
-    closeBtn.onclick = () => modal.style.display = 'none';
-    modal.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
+    imageClose.onclick = () => imageModal.style.display = 'none';
+    imageModal.onclick = (e) => { if (e.target === imageModal) imageModal.style.display = 'none'; };
 
-    // Navigation & load functions (giữ nguyên)
+    // Modal thông tin học sinh
+    const studentModal = document.getElementById('student-modal');
+    const studentName = document.getElementById('student-name');
+    const studentAvatar = document.getElementById('student-avatar');
+    const studentInfoText = document.getElementById('student-info-text');
+    const studentGallery = document.getElementById('student-gallery');
+    const studentLoading = document.getElementById('student-loading');
+    const studentError = document.getElementById('student-error');
+    const studentClose = document.getElementById('student-close');
+
+    studentClose.onclick = () => studentModal.style.display = 'none';
+    studentModal.onclick = (e) => { if (e.target === studentModal) studentModal.style.display = 'none'; };
+
+    async function loadStudentInfo(student) {
+      studentName.textContent = student;
+      studentAvatar.src = 'https://via.placeholder.com/120?text=Avatar';
+      studentInfoText.innerHTML = '';
+      studentGallery.innerHTML = '';
+      studentError.style.display = 'none';
+      studentLoading.style.display = 'block';
+      studentModal.style.display = 'block';
+
+      const folder = encodeURIComponent(student).replace(/%20/g, '+'); // Encode tên cho URL
+      const basePath = `stu/${folder}/`;
+
+      try {
+        // Fetch inf.txt
+        const infRes = await fetch(basePath + 'inf.txt');
+        if (!infRes.ok) throw new Error('Không tìm thấy học sinh');
+
+        const infText = await infRes.text();
+        const lines = infText.split('\n').map(l => l.trim());
+        const avatarUrl = lines[0] || 'https://via.placeholder.com/120?text=Avatar';
+        const info = lines.slice(1).join('<br>') || 'Không có thông tin';
+
+        studentAvatar.src = avatarUrl;
+        studentInfoText.innerHTML = info;
+
+        // Fetch pics.txt (giả định là JSON array link ảnh đi kèm)
+        let pics = [];
+        try {
+          const picsRes = await fetch(basePath + 'pics.txt');
+          if (picsRes.ok) {
+            const picsText = await picsRes.text();
+            pics = JSON.parse(picsText.trim());
+          }
+        } catch {}
+
+        if (Array.isArray(pics) && pics.length > 0) {
+          pics.forEach(url => {
+            const img = document.createElement('img');
+            img.src = url.trim();
+            img.alt = 'Ảnh đi kèm';
+            img.onclick = () => openImageModal(img.src);
+            studentGallery.appendChild(img);
+          });
+        } else {
+          studentGallery.innerHTML = '<p style="text-align:center; color:#8b949e;">Không có ảnh đi kèm</p>';
+        }
+
+        studentLoading.style.display = 'none';
+      } catch (err) {
+        studentLoading.style.display = 'none';
+        studentError.style.display = 'block';
+        studentError.textContent = 'Không tìm thấy học sinh';
+        console.error(err);
+      }
+    }
+
+    // Navigation & load (giữ nguyên)
     const sections = document.querySelectorAll('section');
     const navLinks = document.querySelectorAll('nav a');
 
@@ -327,7 +475,7 @@
       if (pageId === 'info') await loadInfo();
     }
 
-    // Search header (giữ nguyên)
+    // Search header - thêm click để load info
     let allStudents = [];
     async function loadStudents() {
       try {
@@ -335,7 +483,6 @@
         if (!res.ok) return;
         const text = await res.text();
         allStudents = text.split('\n').map(s => s.trim()).filter(Boolean);
-        renderDropdown(allStudents);
       } catch {}
     }
 
@@ -343,12 +490,13 @@
       const dd = document.getElementById('search-dropdown');
       dd.innerHTML = '';
       if (stus.length === 0) {
-        dd.innerHTML = '<li style="color:#8b949e; text-align:center;">Không tìm thấy</li>';
+        dd.innerHTML = '<li style="color:#8b949e; text-align:center; cursor:default;">Không tìm thấy</li>';
         return;
       }
       stus.forEach(s => {
         const li = document.createElement('li');
         li.textContent = s;
+        li.onclick = () => loadStudentInfo(s);
         dd.appendChild(li);
       });
     }
@@ -368,7 +516,7 @@
       if (!input.contains(e.target) && !dropdown.contains(e.target)) dropdown.classList.remove('show');
     });
 
-    // Load Home - ảnh giữ nguyên tỷ lệ, không crop
+    // Load Home
     async function loadHome() {
       const loading = document.getElementById('home-loading');
       const errorDiv = document.getElementById('home-error');
@@ -395,7 +543,7 @@
           list.appendChild(item);
 
           const img = item.querySelector('img');
-          img.onclick = () => openModal(img.src);
+          img.onclick = () => openImageModal(img.src);
         }
 
         loading.style.display = 'none';
@@ -407,7 +555,7 @@
       }
     }
 
-    // Load Memories (giữ nguyên)
+    // Load Memories
     async function loadMemories() {
       const loading = document.getElementById('memories-loading');
       const errorDiv = document.getElementById('memories-error');
@@ -465,7 +613,7 @@
           item.appendChild(cap);
           gallery.appendChild(item);
 
-          img.onclick = () => openModal(img.src);
+          img.onclick = () => openImageModal(img.src);
         });
 
         stats.innerHTML = `Tổng số link: <strong>${urls.length}</strong> ảnh`;
