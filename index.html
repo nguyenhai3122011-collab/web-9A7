@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ảnh từ pic.txt</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0d1117;
+      color: #e6edf3;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #58a6ff;
+    }
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .gallery img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      transition: transform 0.15s ease;
+      background: #161b22;
+    }
+    .gallery img:hover {
+      transform: scale(1.04);
+    }
+    .loading, .error {
+      text-align: center;
+      padding: 40px;
+      font-size: 1.2em;
+    }
+    .error { color: #f85149; }
+  </style>
+</head>
+<body>
+
+  <h1>Ảnh từ pic.txt</h1>
+
+  <div id="loading" class="loading">Đang đọc danh sách ảnh...</div>
+  <div id="error" class="error" style="display:none"></div>
+
+  <div class="gallery" id="gallery"></div>
+
+  <script>
+    async function loadImages() {
+      const loading = document.getElementById("loading");
+      const errorDiv = document.getElementById("error");
+      const gallery = document.getElementById("gallery");
+
+      try {
+        // Đọc file pic.txt (phải cùng thư mục với index.html trên GitHub Pages)
+        const response = await fetch("pic.txt");
+        if (!response.ok) {
+          throw new Error("Không đọc được pic.txt (status: " + response.status + ")");
+        }
+
+        const text = await response.text();
+
+        // Loại bỏ khoảng trắng thừa và thử xử lý nếu có ```json
+        let jsonStr = text.trim();
+        if (jsonStr.startsWith("```")) {
+          jsonStr = jsonStr.split("```")[1]?.trim() || jsonStr;
+        }
+
+        let urls;
+        try {
+          urls = JSON.parse(jsonStr);
+        } catch (e) {
+          // Trường hợp người dùng chỉ paste link, thiếu ngoặc vuông
+          if (jsonStr.includes("https://") && !jsonStr.startsWith("[")) {
+            jsonStr = "[" + jsonStr + "]";
+            urls = JSON.parse(jsonStr);
+          } else {
+            throw e;
+          }
+        }
+
+        if (!Array.isArray(urls)) {
+          throw new Error("Dữ liệu trong pic.txt không phải là mảng");
+        }
+
+        loading.style.display = "none";
+
+        if (urls.length === 0) {
+          gallery.innerHTML = "<p>Không có link ảnh nào trong pic.txt</p>";
+          return;
+        }
+
+        urls.forEach(url => {
+          const img = document.createElement("img");
+          img.src = url.trim();
+          img.alt = "Ảnh từ pic.txt";
+          img.loading = "lazy";           // tải chậm để trang load nhanh hơn
+          img.onerror = () => {
+            img.src = "https://via.placeholder.com/300x200?text=Link+hỏng";
+            img.alt = "Không tải được: " + url;
+          };
+          gallery.appendChild(img);
+        });
+
+      } catch (err) {
+        loading.style.display = "none";
+        errorDiv.style.display = "block";
+        errorDiv.textContent = "Lỗi: " + err.message;
+        console.error(err);
+      }
+    }
+
+    // Chạy khi trang load xong
+    window.addEventListener("load", loadImages);
+  </script>
+
+</body>
+</html>
