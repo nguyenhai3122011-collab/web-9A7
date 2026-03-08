@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Lớp 9A7 - k57</title>
+  <title>Trang Web Lớp Học</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -69,13 +69,55 @@
       color: #8b949e;
     }
     .error { color: #f85149; }
+
+    /* Ô tìm kiếm luôn hiển thị trên trang chủ */
+    #quick-search {
+      background: #161b22;
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 32px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    }
+    #quick-search h2 {
+      margin: 0 0 16px 0;
+      text-align: left;
+      font-size: 1.4em;
+    }
+    #search-input {
+      width: 100%;
+      padding: 12px;
+      font-size: 1em;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      background: #0d1117;
+      color: #e6edf3;
+      margin-bottom: 16px;
+    }
+    #student-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      max-height: 400px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    #student-list li {
+      background: #21262d;
+      padding: 10px 14px;
+      border-radius: 6px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+    #student-list li.highlight {
+      background: #264d79;
+    }
+
     /* Trang chủ */
     #home-list {
       display: flex;
       flex-direction: column;
       gap: 24px;
-      overflow-y: auto;
-      max-height: 80vh;
     }
     .home-item {
       display: flex;
@@ -97,16 +139,15 @@
       border-radius: 8px;
       object-fit: cover;
     }
-    /* Kỉ niệm - Cập nhật */
+
+    /* Kỉ niệm */
     #stats {
       text-align: center;
       font-size: 1.1em;
       color: #8b949e;
       margin-bottom: 24px;
     }
-    #stats strong {
-      color: #58a6ff;
-    }
+    #stats strong { color: #58a6ff; }
     .gallery {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -119,9 +160,7 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.4);
       transition: transform 0.15s ease;
     }
-    .gallery-item:hover {
-      transform: translateY(-4px);
-    }
+    .gallery-item:hover { transform: translateY(-4px); }
     .gallery-item img {
       width: 100%;
       height: auto;
@@ -138,34 +177,7 @@
       text-overflow: ellipsis;
       background: #21262d;
     }
-    /* Tìm kiếm học sinh */
-    #search-input {
-      width: 100%;
-      max-width: 600px;
-      margin: 0 auto 24px;
-      display: block;
-      padding: 12px;
-      font-size: 1em;
-      border: 1px solid #30363d;
-      border-radius: 6px;
-      background: #0d1117;
-      color: #e6edf3;
-    }
-    #student-list {
-      list-style: none;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      max-width: 600px;
-      margin: 0 auto;
-    }
-    #student-list li {
-      background: #161b22;
-      padding: 12px;
-      border-radius: 6px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-    }
+
     /* Thông tin */
     #info-content {
       white-space: pre-wrap;
@@ -174,13 +186,9 @@
       border-radius: 8px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.4);
     }
-    /* Ẩn sections */
-    section {
-      display: none;
-    }
-    section.active {
-      display: block;
-    }
+
+    section { display: none; }
+    section.active { display: block; }
   </style>
 </head>
 <body>
@@ -188,8 +196,9 @@
   <header>
     <img id="logo" src="https://via.placeholder.com/48?text=Logo" alt="Logo lớp">
     <nav>
-      <a href="#home" data-page="home">Trang Chủ</a>
+      <a href="#home" data-page="home" class="active">Trang Chủ</a>
       <a href="#memories" data-page="memories">Kỉ Niệm</a>
+      <!-- Có thể comment hoặc xóa dòng dưới nếu không cần tab riêng nữa -->
       <a href="#search" data-page="search">Tìm Học Sinh</a>
       <a href="#info" data-page="info">Thông Tin</a>
     </nav>
@@ -198,6 +207,14 @@
   <main>
     <section id="home" class="active">
       <h1>Trang Chủ</h1>
+
+      <!-- Ô tìm kiếm luôn hiển thị -->
+      <div id="quick-search">
+        <h2>Tìm kiếm học sinh lớp</h2>
+        <input type="text" id="search-input" placeholder="Nhập tên học sinh để tìm...">
+        <ul id="student-list"></ul>
+      </div>
+
       <div id="home-loading" class="loading">Đang tải nội dung trang chủ...</div>
       <div id="home-error" class="error" style="display:none"></div>
       <div id="home-list"></div>
@@ -213,10 +230,10 @@
 
     <section id="search">
       <h1>Tìm Kiếm Học Sinh</h1>
-      <input type="text" id="search-input" placeholder="Nhập tên học sinh để tìm...">
+      <input type="text" id="search-input-alt" placeholder="Nhập tên học sinh để tìm...">
       <div id="search-loading" class="loading">Đang tải danh sách học sinh...</div>
       <div id="search-error" class="error" style="display:none"></div>
-      <ul id="student-list"></ul>
+      <ul id="student-list-alt"></ul>
     </section>
 
     <section id="info">
@@ -228,15 +245,15 @@
   </main>
 
   <script>
-    // Xử lý navigation (giữ nguyên)
+    // Navigation
     const sections = document.querySelectorAll('section');
     const navLinks = document.querySelectorAll('nav a');
 
     function showPage(pageId) {
-      sections.forEach(section => section.classList.remove('active'));
+      sections.forEach(s => s.classList.remove('active'));
       document.getElementById(pageId).classList.add('active');
-      navLinks.forEach(link => link.classList.remove('active'));
-      document.querySelector(`[data-page="${pageId}"]`).classList.add('active');
+      navLinks.forEach(l => l.classList.remove('active'));
+      document.querySelector(`[data-page="${pageId}"]`)?.classList.add('active');
       loadPageContent(pageId);
     }
 
@@ -245,16 +262,13 @@
       showPage(pageId);
     });
 
-    // Load logo (giữ nguyên)
+    // Load logo
     async function loadLogo() {
       try {
-        const response = await fetch('logo.txt');
-        if (!response.ok) throw new Error('Không đọc được logo.txt');
-        const url = (await response.text()).trim();
-        document.getElementById('logo').src = url;
-      } catch (err) {
-        console.error('Lỗi load logo:', err);
-      }
+        const res = await fetch('logo.txt');
+        if (!res.ok) throw new Error();
+        document.getElementById('logo').src = (await res.text()).trim();
+      } catch {}
     }
 
     const loadedPages = new Set();
@@ -265,40 +279,85 @@
 
       if (pageId === 'home') await loadHome();
       if (pageId === 'memories') await loadMemories();
-      if (pageId === 'search') await loadSearch();
+      if (pageId === 'search' || pageId === 'home') await loadStudents(); // load cho cả hai
       if (pageId === 'info') await loadInfo();
     }
 
-    // Trang chủ (giữ nguyên)
+    // Load danh sách học sinh (dùng chung cho quick-search và tab search)
+    let allStudents = [];
+    async function loadStudents() {
+      const lists = [document.getElementById('student-list'), document.getElementById('student-list-alt')];
+      const inputs = [document.getElementById('search-input'), document.getElementById('search-input-alt')];
+      const loadings = [document.getElementById('search-loading'), document.getElementById('search-loading')]; // giả sử chung
+      const errors = [document.getElementById('search-error'), document.getElementById('search-error')];
+
+      try {
+        const res = await fetch('stu.txt');
+        if (!res.ok) throw new Error('Không đọc được stu.txt');
+        const text = await res.text();
+        allStudents = text.split('\n').map(s => s.trim()).filter(Boolean);
+
+        renderStudents(allStudents, lists);
+
+        inputs.forEach(input => {
+          if (input) {
+            input.addEventListener('input', () => {
+              const q = input.value.toLowerCase().trim();
+              const filtered = allStudents.filter(s => s.toLowerCase().includes(q));
+              renderStudents(filtered, lists);
+            });
+          }
+        });
+
+        loadings.forEach(l => { if (l) l.style.display = 'none'; });
+      } catch (err) {
+        loadings.forEach(l => { if (l) l.style.display = 'none'; });
+        errors.forEach(e => { if (e) { e.style.display = 'block'; e.textContent = 'Lỗi: ' + err.message; } });
+      }
+    }
+
+    function renderStudents(stus, listElements) {
+      listElements.forEach(list => {
+        if (!list) return;
+        list.innerHTML = '';
+        if (stus.length === 0) {
+          list.innerHTML = '<p style="text-align:center; color:#8b949e;">Không tìm thấy học sinh nào</p>';
+          return;
+        }
+        stus.forEach(s => {
+          const li = document.createElement('li');
+          li.textContent = s;
+          list.appendChild(li);
+        });
+      });
+    }
+
+    // Các hàm loadHome, loadMemories, loadInfo giữ nguyên như trước (copy từ code cũ)
     async function loadHome() {
       const loading = document.getElementById('home-loading');
       const errorDiv = document.getElementById('home-error');
       const list = document.getElementById('home-list');
 
       try {
-        const listResponse = await fetch('home/list.txt');
-        if (!listResponse.ok) throw new Error('Không đọc được home/list.txt');
-        const fileNames = JSON.parse(await listResponse.text());
+        const listRes = await fetch('home/list.txt');
+        if (!listRes.ok) throw new Error('Không đọc được home/list.txt');
+        const fileNames = JSON.parse(await listRes.text());
 
         if (!Array.isArray(fileNames) || fileNames.length === 0) {
           throw new Error('Không có file nào trong home/list.txt');
         }
 
-        for (const fileName of fileNames) {
-          const response = await fetch(`home/${fileName}`);
-          if (!response.ok) continue;
-
-          const text = await response.text();
+        for (const fn of fileNames) {
+          const res = await fetch(`home/${fn}`);
+          if (!res.ok) continue;
+          const text = await res.text();
           const lines = text.split('\n').map(l => l.trim());
           const imgUrl = lines[0];
           const note = lines.slice(1).join('<br>');
 
           const item = document.createElement('div');
           item.className = 'home-item';
-          item.innerHTML = `
-            <div class="note">${note}</div>
-            <img src="${imgUrl}" alt="Ảnh bài viết">
-          `;
+          item.innerHTML = `<div class="note">${note}</div><img src="${imgUrl}" alt="Ảnh">`;
           list.appendChild(item);
         }
 
@@ -310,194 +369,104 @@
         loading.style.display = 'none';
         errorDiv.style.display = 'block';
         errorDiv.textContent = 'Lỗi: ' + err.message;
-        console.error(err);
       }
     }
 
-    // Kỉ niệm - Cập nhật hiển thị tên ảnh
     async function loadMemories() {
+      // Giữ nguyên code loadMemories từ phiên bản trước (với caption tên ảnh)
       const loading = document.getElementById('memories-loading');
       const errorDiv = document.getElementById('memories-error');
       const gallery = document.getElementById('gallery');
       const stats = document.getElementById('stats');
 
       try {
-        const response = await fetch("pic.txt");
-        if (!response.ok) {
-          throw new Error("Không đọc được pic.txt (status: " + response.status + ")");
-        }
-
-        const text = await response.text();
-        let jsonStr = text.trim();
-
-        if (jsonStr.startsWith("```")) {
-          jsonStr = jsonStr.split("```")[1]?.trim() || jsonStr;
-        }
+        const res = await fetch("pic.txt");
+        if (!res.ok) throw new Error("Không đọc được pic.txt");
+        let text = (await res.text()).trim();
+        if (text.startsWith("```")) text = text.split("```")[1]?.trim() || text;
 
         let urls;
-        try {
-          urls = JSON.parse(jsonStr);
-        } catch (e) {
-          if (jsonStr.includes("https://") && !jsonStr.startsWith("[")) {
-            const lines = jsonStr.split('\n').map(line => line.trim()).filter(Boolean);
-            urls = lines.map(line => line.replace(/,$/, ''));
-          } else {
-            throw e;
-          }
+        try { urls = JSON.parse(text); } catch {
+          if (text.includes("https://") && !text.startsWith("[")) {
+            urls = text.split('\n').map(l => l.trim().replace(/,$/, '')).filter(Boolean);
+          } else throw new Error("Dữ liệu pic.txt không hợp lệ");
         }
 
-        if (!Array.isArray(urls)) {
-          throw new Error("Dữ liệu trong pic.txt không phải là mảng");
-        }
+        if (!Array.isArray(urls)) throw new Error("Không phải mảng");
 
         loading.style.display = "none";
-
         if (urls.length === 0) {
-          stats.textContent = "Không có ảnh nào trong pic.txt";
-          gallery.innerHTML = "<p style='text-align:center'>File pic.txt rỗng hoặc không có link hợp lệ</p>";
+          stats.textContent = "Không có ảnh nào";
+          gallery.innerHTML = "<p style='text-align:center'>pic.txt rỗng</p>";
           return;
         }
 
-        let loadedCount = 0;
-        let failedCount = 0;
+        let loaded = 0, failed = 0;
 
         urls.forEach(url => {
-          const trimmedUrl = url.trim();
-          // Trích xuất tên file không đuôi
-          let fileName = "Ảnh không tên";
+          const trimmed = url.trim();
+          let name = "Ảnh không tên";
           try {
-            const urlObj = new URL(trimmedUrl);
-            const pathParts = urlObj.pathname.split('/');
-            const lastPart = pathParts[pathParts.length - 1];
-            if (lastPart) {
-              fileName = lastPart.split('.')[0]; // loại bỏ đuôi .jpg, .png,...
-              fileName = decodeURIComponent(fileName); // giải mã %20 thành khoảng trắng nếu có
-            }
-          } catch (e) {
-            // Nếu URL không hợp lệ, giữ nguyên "Ảnh không tên"
-          }
+            const u = new URL(trimmed);
+            const fn = u.pathname.split('/').pop();
+            if (fn) name = decodeURIComponent(fn.split('.')[0]);
+          } catch {}
 
           const item = document.createElement("div");
           item.className = "gallery-item";
-
           const img = document.createElement("img");
-          img.src = trimmedUrl;
-          img.alt = fileName;
+          img.src = trimmed;
+          img.alt = name;
           img.loading = "lazy";
 
-          img.onload = () => {
-            loadedCount++;
-            updateStats();
-          };
+          img.onload = () => { loaded++; updateStats(); };
+          img.onerror = () => { failed++; img.src = "https://via.placeholder.com/300x200/161b22/8b949e?text=Link+hỏng"; updateStats(); };
 
-          img.onerror = () => {
-            failedCount++;
-            img.src = "https://via.placeholder.com/300x200/161b22/8b949e?text=Link+hỏng";
-            img.alt = "Không tải được";
-            updateStats();
-          };
-
-          const caption = document.createElement("div");
-          caption.className = "caption";
-          caption.textContent = fileName;
+          const cap = document.createElement("div");
+          cap.className = "caption";
+          cap.textContent = name;
 
           item.appendChild(img);
-          item.appendChild(caption);
+          item.appendChild(cap);
           gallery.appendChild(item);
         });
 
         stats.innerHTML = `Tổng số link: <strong>${urls.length}</strong> ảnh`;
 
         function updateStats() {
-          const success = loadedCount;
-          const total = urls.length;
-          const failed = failedCount;
-
-          if (failed > 0) {
-            stats.innerHTML = `Đã tải: <strong>${success}/${total}</strong> ảnh (lỗi: ${failed})`;
-          } else {
-            stats.innerHTML = `Tổng số ảnh: <strong>${success}/${total}</strong>`;
-          }
+          stats.innerHTML = failed > 0 
+            ? `Đã tải: <strong>${loaded}/${urls.length}</strong> (lỗi: ${failed})`
+            : `Tổng số ảnh: <strong>${loaded}/${urls.length}</strong>`;
         }
-
       } catch (err) {
         loading.style.display = "none";
         errorDiv.style.display = "block";
         errorDiv.textContent = "Lỗi: " + err.message;
-        stats.textContent = "Không thể đếm số ảnh do lỗi đọc file";
-        console.error(err);
       }
     }
 
-    // Tìm kiếm học sinh (giữ nguyên)
-    async function loadSearch() {
-      const loading = document.getElementById('search-loading');
-      const errorDiv = document.getElementById('search-error');
-      const list = document.getElementById('student-list');
-      const input = document.getElementById('search-input');
-
-      try {
-        const response = await fetch('stu.txt');
-        if (!response.ok) throw new Error('Không đọc được stu.txt');
-        const text = await response.text();
-        let students = text.split('\n').map(s => s.trim()).filter(Boolean);
-
-        if (students.length === 0) {
-          list.innerHTML = '<p style="text-align:center">Không có học sinh nào trong stu.txt</p>';
-        } else {
-          renderStudents(students);
-        }
-
-        input.addEventListener('input', () => {
-          const query = input.value.toLowerCase();
-          const filtered = students.filter(s => s.toLowerCase().includes(query));
-          renderStudents(filtered);
-        });
-
-        loading.style.display = 'none';
-      } catch (err) {
-        loading.style.display = 'none';
-        errorDiv.style.display = 'block';
-        errorDiv.textContent = 'Lỗi: ' + err.message;
-        console.error(err);
-      }
-
-      function renderStudents(stus) {
-        list.innerHTML = '';
-        stus.forEach(s => {
-          const li = document.createElement('li');
-          li.textContent = s;
-          list.appendChild(li);
-        });
-        if (stus.length === 0) {
-          list.innerHTML = '<p style="text-align:center">Không tìm thấy học sinh nào</p>';
-        }
-      }
-    }
-
-    // Thông tin (giữ nguyên)
     async function loadInfo() {
       const loading = document.getElementById('info-loading');
       const errorDiv = document.getElementById('info-error');
       const content = document.getElementById('info-content');
 
       try {
-        const response = await fetch('info.txt');
-        if (!response.ok) throw new Error('Không đọc được info.txt');
-        const text = await response.text();
-        content.innerHTML = text.replace(/\n/g, '<br>');
+        const res = await fetch('info.txt');
+        if (!res.ok) throw new Error();
+        content.innerHTML = (await res.text()).replace(/\n/g, '<br>');
         loading.style.display = 'none';
       } catch (err) {
         loading.style.display = 'none';
         errorDiv.style.display = 'block';
         errorDiv.textContent = 'Lỗi: ' + err.message;
-        console.error(err);
       }
     }
 
     // Khởi động
     loadLogo();
     showPage(window.location.hash.slice(1) || 'home');
+    // Load học sinh ngay khi trang chủ load (vì quick-search nằm ở home)
+    loadStudents();
   </script>
 
 </body>
