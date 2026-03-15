@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Trang Web Lớp 9A7 - THCS Đông La</title>
+  <title>Lớp 9A7 - THCS Đông La</title>
   <style>
     :root {
       --bg-color: #0d1117;
@@ -18,14 +18,11 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
       background: var(--bg-color);
       color: var(--text-color);
-      margin: 0;
-      padding: 0;
+      margin: 0; padding: 0;
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
     }
 
-    /* Header & Navigation */
+    /* Header & Nav */
     header {
       background: var(--card-bg);
       padding: 10px 20px;
@@ -35,143 +32,58 @@
       position: fixed;
       top: 0; left: 0; right: 0;
       z-index: 1000;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
     }
-
-    #logo {
-      width: 42px; height: 42px;
-      object-fit: cover;
-      margin-right: 15px;
-      border-radius: 8px;
-      background: var(--hover-bg);
-    }
-
+    #logo { width: 42px; height: 42px; object-fit: cover; border-radius: 8px; margin-right: 15px; }
     nav { display: flex; gap: 10px; }
-    nav a {
-      color: #c9d1d9;
-      text-decoration: none;
-      font-weight: 600;
-      padding: 8px 12px;
-      border-radius: 6px;
-      transition: 0.2;
-    }
-    nav a:hover, nav a.active {
-      background: var(--hover-bg);
-      color: var(--accent-color);
-    }
+    nav a { color: #c9d1d9; text-decoration: none; font-weight: 600; padding: 8px 12px; border-radius: 6px; }
+    nav a.active { background: var(--hover-bg); color: var(--accent-color); }
 
-    .search-container {
-      position: relative;
-      flex: 1;
-      max-width: 350px;
-      margin-left: auto;
-    }
-    #search-input {
-      width: 100%;
-      padding: 10px 18px;
-      border-radius: 20px;
-      border: 1px solid var(--border-color);
-      background: var(--bg-color);
-      color: white;
-      outline: none;
-    }
-
+    /* Search */
+    .search-container { position: relative; flex: 1; max-width: 300px; margin-left: auto; }
+    #search-input { width: 100%; padding: 8px 15px; border-radius: 20px; border: 1px solid var(--border-color); background: var(--bg-color); color: white; outline: none; }
     #search-dropdown {
-      position: absolute;
-      top: 100%; left: 0; right: 0;
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      margin-top: 8px;
-      max-height: 300px;
-      overflow-y: auto;
-      display: none;
-      list-style: none;
-      padding: 5px 0;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-      z-index: 1001;
+      position: absolute; top: 110%; left: 0; right: 0;
+      background: var(--card-bg); border: 1px solid var(--border-color);
+      border-radius: 8px; display: none; list-style: none; padding: 5px 0;
+      max-height: 250px; overflow-y: auto; z-index: 1001;
     }
     #search-dropdown.show { display: block; }
-    #search-dropdown li {
-      padding: 12px 20px;
-      cursor: pointer;
-    }
+    #search-dropdown li { padding: 10px 15px; cursor: pointer; border-bottom: 1px solid var(--border-color); }
     #search-dropdown li:hover { background: var(--hover-bg); color: var(--accent-color); }
 
-    /* Main Content */
-    main {
-      margin-top: 80px;
-      padding: 20px;
-      max-width: 1100px;
-      margin-left: auto;
-      margin-right: auto;
-      width: 100%;
-      box-sizing: border-box;
-    }
-
+    /* Layout chính */
+    main { margin-top: 80px; padding: 20px; max-width: 1000px; margin-left: auto; margin-right: auto; }
     section { display: none; }
     section.active { display: block; }
-    h1 { color: var(--accent-color); text-align: center; margin-bottom: 30px; }
+    h1 { color: var(--accent-color); text-align: center; }
 
     /* Home & Gallery Items */
-    .home-item {
-      display: flex;
-      background: var(--card-bg);
-      padding: 20px;
-      border-radius: 12px;
-      margin-bottom: 20px;
-      gap: 20px;
-      border: 1px solid var(--border-color);
-    }
-    .home-item img { width: 250px; max-width: 40%; border-radius: 8px; cursor: pointer; }
-    .home-item .note { flex: 1; line-height: 1.7; white-space: pre-wrap; }
+    .home-item { display: flex; background: var(--card-bg); padding: 20px; border-radius: 12px; margin-bottom: 20px; gap: 20px; border: 1px solid var(--border-color); }
+    .home-item img { width: 200px; border-radius: 8px; cursor: pointer; object-fit: cover; }
+    .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
+    .gallery-item { background: var(--card-bg); border-radius: 8px; overflow: hidden; border: 1px solid var(--border-color); }
+    .gallery-item img { width: 100%; height: 180px; object-fit: cover; cursor: pointer; }
+    .caption { padding: 8px; font-size: 0.85em; text-align: center; color: #8b949e; }
 
-    .gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 20px;
+    /* Modal Styles */
+    .modal { display: none; position: fixed; z-index: 2000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); overflow-y: auto; }
+    .close { position: absolute; top: 15px; right: 25px; color: white; font-size: 35px; cursor: pointer; z-index: 2001; }
+    
+    /* Chi tiết học sinh trong Modal */
+    #student-content {
+      background: var(--card-bg); width: 90%; max-width: 650px;
+      margin: 50px auto; padding: 25px; border-radius: 15px;
+      border: 1px solid var(--border-color); position: relative;
     }
-    .gallery-item {
-      background: var(--card-bg);
-      border-radius: 10px;
-      overflow: hidden;
-      border: 1px solid var(--border-color);
-    }
-    .gallery-item img { width: 100%; height: 220px; object-fit: cover; cursor: pointer; }
-    .gallery-item .caption { padding: 12px; text-align: center; color: #8b949e; background: #1c2128; font-size: 0.9em; }
+    #st-avt { width: 120px; height: 120px; border-radius: 50%; display: block; margin: 0 auto 15px; object-fit: cover; border: 3px solid var(--accent-color); background: #30363d; }
+    #st-info { line-height: 1.8; white-space: pre-wrap; background: #0d1117; padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 20px; }
+    #st-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
+    #st-gallery img { width: 100%; height: 100px; object-fit: cover; border-radius: 5px; cursor: pointer; }
 
-    /* Modals */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 3000;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.92);
-    }
-    .modal-content { margin: auto; display: block; max-width: 90%; max-height: 85%; position: relative; top: 50%; transform: translateY(-50%); }
-    .close { position: absolute; top: 20px; right: 30px; color: white; font-size: 40px; cursor: pointer; z-index: 3001; }
+    .loading { text-align: center; color: #8b949e; padding: 20px; }
+    .error-msg { color: #f85149; text-align: center; padding: 10px; font-size: 0.9em; background: rgba(248,81,73,0.1); border-radius: 5px; }
 
-    #student-modal-body {
-      background: var(--card-bg);
-      width: 95%;
-      max-width: 700px;
-      margin: 40px auto;
-      padding: 30px;
-      border-radius: 15px;
-      max-height: 85vh;
-      overflow-y: auto;
-      border: 1px solid var(--border-color);
-    }
-    #student-avatar { width: 130px; height: 130px; border-radius: 50%; display: block; margin: 0 auto 20px; object-fit: cover; border: 4px solid var(--accent-color); background: var(--hover-bg); }
-    #student-info-text { line-height: 1.8; margin-bottom: 25px; white-space: pre-wrap; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; }
-
-    .loading { text-align: center; color: #8b949e; padding: 40px; }
-    .error-text { color: #f85149; text-align: center; font-style: italic; }
-
-    @media (max-width: 768px) {
-      .home-item { flex-direction: column-reverse; }
-      .home-item img { width: 100%; max-width: 100%; }
-    }
+    @media (max-width: 600px) { .home-item { flex-direction: column; } .home-item img { width: 100%; } }
   </style>
 </head>
 <body>
@@ -179,9 +91,9 @@
   <header>
     <img id="logo" src="https://via.placeholder.com/42" alt="Logo">
     <nav>
-      <a href="#home" id="nav-home" class="active">Trang Chủ</a>
-      <a href="#memories" id="nav-memories">Kỉ Niệm</a>
-      <a href="#info" id="nav-info">Thông Tin</a>
+      <a href="#home" class="active">Trang Chủ</a>
+      <a href="#memories">Kỉ Niệm</a>
+      <a href="#info">Thông Tin</a>
     </nav>
     <div class="search-container">
       <input type="text" id="search-input" placeholder="Tìm tên học sinh...">
@@ -190,214 +102,162 @@
   </header>
 
   <main>
-    <section id="home" class="active">
-      <h1>Bản Tin Lớp 9A7</h1>
-      <div id="home-list"></div>
-    </section>
-
-    <section id="memories">
-      <h1>Kho Ảnh Kỉ Niệm</h1>
-      <p id="stats" style="text-align:center; margin-bottom:20px;"></p>
-      <div class="gallery" id="gallery"></div>
-    </section>
-
-    <section id="info">
-      <h1>Thông Tin Chung</h1>
-      <div id="info-content" style="background:var(--card-bg); padding:30px; border-radius:12px; border:1px solid var(--border-color);"></div>
-    </section>
+    <section id="home" class="active"><h1>Bản Tin 9A7</h1><div id="home-list"></div></section>
+    <section id="memories"><h1>Kho Ảnh Kỉ Niệm</h1><div class="gallery" id="main-gallery"></div></section>
+    <section id="info"><h1>Thông Tin Lớp</h1><div id="info-content" style="background:var(--card-bg); padding:20px; border-radius:10px;"></div></section>
   </main>
 
-  <div id="image-modal" class="modal">
-    <span class="close" onclick="closeAllModals()">&times;</span>
-    <img class="modal-content" id="modal-img">
-  </div>
-
-  <div id="student-modal" class="modal">
-    <span class="close" onclick="closeAllModals()">&times;</span>
-    <div id="student-modal-body">
-      <img id="student-avatar" src="https://via.placeholder.com/130?text=Avatar">
-      <h2 id="student-name" style="text-align:center; color:var(--accent-color); margin-top:0;"></h2>
-      <div id="student-info-text"></div>
-      <h3 style="color:var(--accent-color);">Ảnh Kỉ Niệm</h3>
-      <div id="student-gallery" class="gallery" style="grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));"></div>
+  <div id="st-modal" class="modal">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <div id="student-content">
+      <img id="st-avt" src="">
+      <h2 id="st-name" style="text-align:center; color:var(--accent-color); margin-bottom:15px;"></h2>
+      <div id="st-info"></div>
+      <h4 style="border-bottom: 1px solid var(--border-color); padding-bottom:5px;">Ảnh kỉ niệm cá nhân</h4>
+      <div id="st-gallery"></div>
     </div>
   </div>
 
+  <div id="img-modal" class="modal" style="display:none; align-items:center; justify-content:center;">
+    <span class="close" onclick="this.parentElement.style.display='none'">&times;</span>
+    <img id="img-full" style="max-width:90%; max-height:90%; border-radius:5px;">
+  </div>
+
   <script>
-    let allStudents = [];
-    const loadedPages = new Set();
+    let students = [];
 
-    function openImage(src) {
-      document.getElementById('modal-img').src = src;
-      document.getElementById('image-modal').style.display = 'block';
+    function viewImg(src) {
+      const m = document.getElementById('img-modal');
+      document.getElementById('img-full').src = src;
+      m.style.display = 'flex';
     }
 
-    function closeAllModals() {
-      document.getElementById('image-modal').style.display = 'none';
-      document.getElementById('student-modal').style.display = 'none';
-    }
+    function closeModal() { document.getElementById('st-modal').style.display = 'none'; }
 
-    window.onclick = (e) => { if (e.target.className === 'modal') closeAllModals(); };
-
-    function showPage(pageId) {
-      const validPages = ['home', 'memories', 'info'];
-      if (!validPages.includes(pageId)) pageId = 'home';
+    function showPage(id) {
       document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
-      document.getElementById(pageId).classList.add('active');
+      const target = document.getElementById(id) || document.getElementById('home');
+      target.classList.add('active');
       document.querySelectorAll('nav a').forEach(a => {
         a.classList.remove('active');
-        if (a.getAttribute('href') === '#' + pageId) a.classList.add('active');
+        if(a.getAttribute('href') === '#'+id) a.classList.add('active');
       });
-      if (!loadedPages.has(pageId)) {
-        if (pageId === 'home') loadHome();
-        if (pageId === 'memories') loadMemories();
-        if (pageId === 'info') loadInfo();
-        loadedPages.add(pageId);
-      }
+      if(id === 'home') loadHome();
+      if(id === 'memories') loadMemories();
+      if(id === 'info') loadInfo();
     }
 
-    window.addEventListener('hashchange', () => showPage(location.hash.replace('#', '')));
+    window.onhashchange = () => showPage(location.hash.slice(1));
 
-    async function loadLogo() {
-      try {
-        const r = await fetch('logo.txt');
-        if (r.ok) document.getElementById('logo').src = (await r.text()).trim();
-      } catch(e){}
-    }
+    // --- XỬ LÝ CHÍNH: THÔNG TIN HỌC SINH ---
+    async function openStudent(name) {
+      const modal = document.getElementById('st-modal');
+      const avt = document.getElementById('st-avt');
+      const info = document.getElementById('st-info');
+      const gal = document.getElementById('st-gallery');
+      const folder = encodeURIComponent(name).replace(/%20/g, '+');
+      const path = `stu/${folder}/`;
 
-    async function loadHome() {
-      const container = document.getElementById('home-list');
-      container.innerHTML = '<div class="loading">Đang tải bản tin...</div>';
+      document.getElementById('st-name').innerText = name;
+      info.innerHTML = '<div class="loading">Đang tải dữ liệu...</div>';
+      gal.innerHTML = '';
+      avt.src = "https://via.placeholder.com/120?text=No+Avt";
+      modal.style.display = 'block';
+
+      // 1. Tải inf.txt
       try {
-        const res = await fetch('home/list.txt');
-        const files = await res.json();
-        container.innerHTML = '';
-        for (const f of files) {
-          const fRes = await fetch(`home/${f}`);
-          const text = await fRes.text();
-          const lines = text.split('\n');
-          const div = document.createElement('div');
-          div.className = 'home-item';
-          div.innerHTML = `<div class="note">${lines.slice(1).join('<br>')}</div><img src="${lines[0].trim()}" onclick="openImage(this.src)" onerror="this.src='https://via.placeholder.com/300x200?text=Loi+Anh'">`;
-          container.appendChild(div);
+        const r = await fetch(path + 'inf.txt');
+        if(r.ok) info.innerText = await r.text();
+        else info.innerHTML = '<div class="error-msg">⚠️ Không tìm thấy file inf.txt</div>';
+      } catch(e) { info.innerHTML = '<div class="error-msg">❌ Lỗi kết nối inf.txt</div>'; }
+
+      // 2. Tải pics.txt
+      try {
+        const r = await fetch(path + 'pics.txt');
+        if(r.ok) {
+          const lines = (await r.text()).split('\n').map(l => l.trim()).filter(l => l !== "");
+          if(lines.length > 0) {
+            avt.src = lines[0]; // Dòng 1 là Avatar
+            lines.slice(1).forEach(link => { // Các dòng còn lại là ảnh
+              const img = document.createElement('img');
+              img.src = link;
+              img.onclick = () => viewImg(link);
+              gal.appendChild(img);
+            });
+          } else {
+            gal.innerHTML = '<p style="font-size:0.8em; color:#8b949e;">(Không có ảnh kỉ niệm nào khác)</p>';
+          }
+        } else {
+          gal.innerHTML = '<div class="error-msg">⚠️ Không tìm thấy file pics.txt</div>';
         }
-      } catch(e) { container.innerHTML = '<p style="text-align:center">Chưa có bài viết.</p>'; }
+      } catch(e) { gal.innerHTML = '<div class="error-msg">❌ Lỗi kết nối pics.txt</div>'; }
+    }
+
+    // --- CÁC HÀM TẢI DỮ LIỆU KHÁC ---
+    async function loadHome() {
+      const box = document.getElementById('home-list');
+      box.innerHTML = '<div class="loading">...</div>';
+      try {
+        const r = await fetch('home/list.txt');
+        const files = await r.json();
+        box.innerHTML = '';
+        for(let f of files) {
+          const fr = await fetch(`home/${f}`);
+          const txt = await fr.text();
+          const lines = txt.split('\n');
+          const d = document.createElement('div');
+          d.className = 'home-item';
+          d.innerHTML = `<div class="note">${lines.slice(1).join('<br>')}</div><img src="${lines[0]}" onclick="viewImg(this.src)">`;
+          box.appendChild(d);
+        }
+      } catch(e) { box.innerHTML = 'Chưa có bản tin.'; }
     }
 
     async function loadMemories() {
-      const gallery = document.getElementById('gallery');
-      const stats = document.getElementById('stats');
-      gallery.innerHTML = '<div class="loading">Đang tải kho ảnh...</div>';
+      const g = document.getElementById('main-gallery');
+      g.innerHTML = '<div class="loading">...</div>';
       try {
-        const res = await fetch('pic.txt');
-        let text = (await res.text()).trim();
-        if (text.startsWith('```')) text = text.replace(/```json|```/g, '').trim();
-        let urls = [];
-        try { urls = JSON.parse(text); } catch(e) { urls = text.split('\n').filter(l => l.includes('http')); }
-        gallery.innerHTML = '';
-        let count = 0;
-        urls.forEach((url, index) => {
-          const imgUrl = url.trim();
-          if(!imgUrl) return;
-          let fileName = "Kỉ niệm " + (index + 1);
-          try {
-            let part = imgUrl.split('/').pop().split('?')[0];
-            let decoded = decodeURIComponent(part);
-            if (decoded.length < 25 && decoded.includes('.')) fileName = decoded.split('.')[0];
-          } catch(e){}
+        const r = await fetch('pic.txt');
+        let urls = JSON.parse((await r.text()).replace(/```json|```/g, '').trim());
+        g.innerHTML = '';
+        urls.forEach((u, i) => {
           const item = document.createElement('div');
           item.className = 'gallery-item';
-          item.innerHTML = `<img src="${imgUrl}" loading="lazy" onclick="openImage(this.src)" onerror="this.parentElement.style.display='none'"><div class="caption">${fileName}</div>`;
-          gallery.appendChild(item);
-          count++;
+          item.innerHTML = `<img src="${u}" onclick="viewImg(this.src)"><div class="caption">Ảnh ${i+1}</div>`;
+          g.appendChild(item);
         });
-        stats.innerHTML = `Đã tìm thấy <strong>${count}</strong> ảnh`;
-      } catch(e) { gallery.innerHTML = 'Lỗi pic.txt'; }
+      } catch(e) { g.innerHTML = 'Lỗi tải ảnh.'; }
     }
 
     async function loadInfo() {
       try {
-        const res = await fetch('info.txt');
-        document.getElementById('info-content').innerHTML = (await res.text()).replace(/\n/g, '<br>');
+        const r = await fetch('info.txt');
+        document.getElementById('info-content').innerHTML = (await r.text()).replace(/\n/g, '<br>');
       } catch(e){}
     }
 
-    async function initSearch() {
-      try {
-        const res = await fetch('stu.txt');
-        allStudents = (await res.text()).split('\n').map(s => s.trim()).filter(s => s !== "");
-      } catch(e){}
-    }
-
-    const sInput = document.getElementById('search-input');
-    const sDrop = document.getElementById('search-dropdown');
-    sInput.oninput = () => {
-      const val = sInput.value.toLowerCase().trim();
-      if (!val) { sDrop.classList.remove('show'); return; }
-      const match = allStudents.filter(s => s.toLowerCase().includes(val));
-      sDrop.innerHTML = match.map(s => `<li>${s}</li>`).join('');
-      sDrop.classList.toggle('show', match.length > 0);
-      sDrop.querySelectorAll('li').forEach(li => {
-        li.onclick = () => { showStudent(li.innerText); sDrop.classList.remove('show'); sInput.value = ''; };
-      });
+    // --- SEARCH ---
+    const si = document.getElementById('search-input');
+    const sd = document.getElementById('search-dropdown');
+    si.oninput = () => {
+      const v = si.value.toLowerCase().trim();
+      if(!v) { sd.classList.remove('show'); return; }
+      const m = students.filter(s => s.toLowerCase().includes(v));
+      sd.innerHTML = m.map(s => `<li>${s}</li>`).join('');
+      sd.classList.toggle('show', m.length > 0);
+      sd.querySelectorAll('li').forEach(li => li.onclick = () => { openStudent(li.innerText); sd.classList.remove('show'); si.value=''; });
     };
 
-    // --- CẬP NHẬT: HÀM TẢI THÔNG TIN HỌC SINH MỚI ---
-    async function showStudent(name) {
-      const modal = document.getElementById('student-modal');
-      const folder = encodeURIComponent(name).replace(/%20/g, '+');
-      const path = `stu/${folder}/`;
-      
-      document.getElementById('student-name').innerText = name;
-      const infoBox = document.getElementById('student-info-text');
-      const galleryBox = document.getElementById('student-gallery');
-      const avatarImg = document.getElementById('student-avatar');
-      
-      infoBox.innerHTML = '<div class="loading">Đang tải thông tin...</div>';
-      galleryBox.innerHTML = '';
-      avatarImg.src = "[https://via.placeholder.com/130?text=Avatar](https://via.placeholder.com/130?text=Avatar)";
-      modal.style.display = 'block';
-
-      // 1. Tải inf.txt (toàn bộ nội dung văn bản)
+    // INIT
+    (async () => {
       try {
-        const resInf = await fetch(path + 'inf.txt');
-        if (resInf.ok) {
-          infoBox.innerText = await resInf.text();
-        } else {
-          infoBox.innerHTML = '<p class="error-text">Chưa có thông tin giới thiệu cho học sinh này.</p>';
-        }
-      } catch(e) { infoBox.innerHTML = '<p class="error-text">Lỗi tải file inf.txt</p>'; }
-
-      // 2. Tải pics.txt (Dòng 1: Avt, Còn lại: Gallery)
-      try {
-        const resPics = await fetch(path + 'pics.txt');
-        if (resPics.ok) {
-          const lines = (await resPics.text()).split('\n').map(l => l.trim()).filter(l => l !== "");
-          if (lines.length > 0) {
-            avatarImg.src = lines[0]; // Dòng 1 là Avatar
-            
-            // Từ dòng 2 trở đi là Gallery
-            const otherPics = lines.slice(1);
-            if (otherPics.length > 0) {
-              otherPics.forEach(url => {
-                const img = document.createElement('img');
-                img.src = url;
-                img.onclick = () => openImage(url);
-                galleryBox.appendChild(img);
-              });
-            } else {
-              galleryBox.innerHTML = '<p style="text-align:center; color:#8b949e; grid-column: 1/-1;">Chưa có ảnh kỉ niệm riêng.</p>';
-            }
-          }
-        } else {
-          galleryBox.innerHTML = '<p class="error-text">Chưa có ảnh trong pics.txt</p>';
-        }
-      } catch(e) { galleryBox.innerHTML = '<p class="error-text">Lỗi tải file pics.txt</p>'; }
-    }
-
-    loadLogo();
-    initSearch();
-    showPage(location.hash.replace('#', '') || 'home');
+        const r = await fetch('stu.txt');
+        students = (await r.text()).split('\n').map(s => s.trim()).filter(s => s);
+      } catch(e){}
+      const logoR = await fetch('logo.txt');
+      if(logoR.ok) document.getElementById('logo').src = (await logoR.text()).trim();
+      showPage(location.hash.slice(1) || 'home');
+    })();
   </script>
 </body>
 </html>
