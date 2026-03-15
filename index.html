@@ -3,35 +3,207 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Trang Web Lớp 9A7</title>
+  <title>Trang Web Lớp 9A7 - THCS Đông La</title>
   <style>
-    /* ... (Giữ nguyên phần CSS của bạn) ... */
-    body { font-family: Arial, sans-serif; background: #0d1117; color: #e6edf3; margin: 0; padding: 0; min-height: 100vh; display: flex; flex-direction: column; }
-    header { background: #161b22; padding: 10px 24px; display: flex; align-items: center; border-bottom: 1px solid #30363d; position: fixed; top: 0; left: 0; right: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.5); }
-    #logo { width: 40px; height: 40px; object-fit: contain; margin-right: 20px; border-radius: 6px; background: #21262d; }
-    nav { flex: 1; display: flex; gap: 20px; }
-    nav a { color: #c9d1d9; text-decoration: none; font-weight: 600; padding: 8px 12px; border-radius: 6px; transition: all 0.2s; }
-    nav a:hover, nav a.active { background: #21262d; color: #58a6ff; }
-    .search-container { position: relative; width: 400px; max-width: 50%; margin-left: auto; }
-    #search-input { width: 100%; padding: 12px 20px; font-size: 1em; border: 1px solid #30363d; border-radius: 999px; background: #0d1117; color: #e6edf3; outline: none; }
-    #search-dropdown { position: absolute; top: 100%; left: 0; right: 0; background: #161b22; border: 1px solid #30363d; border-radius: 12px; margin-top: 8px; max-height: 320px; overflow-y: auto; display: none; z-index: 999; }
-    #search-dropdown.show { display: block; }
-    #search-dropdown li { padding: 12px 20px; cursor: pointer; border-bottom: 1px solid #30363d; }
+    :root {
+      --bg-color: #0d1117;
+      --card-bg: #161b22;
+      --text-color: #e6edf3;
+      --accent-color: #58a6ff;
+      --border-color: #30363d;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header & Nav */
+    header {
+      background: var(--card-bg);
+      padding: 10px 24px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    }
+
+    #logo {
+      width: 40px; height: 40px;
+      object-fit: cover;
+      margin-right: 15px;
+      border-radius: 6px;
+      background: #21262d;
+    }
+
+    nav { display: flex; gap: 10px; }
+    nav a {
+      color: #c9d1d9;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 8px 12px;
+      border-radius: 6px;
+      transition: 0.2s;
+    }
+    nav a:hover, nav a.active {
+      background: #21262d;
+      color: var(--accent-color);
+    }
+
+    /* Search */
+    .search-container {
+      position: relative;
+      flex: 1;
+      max-width: 300px;
+      margin-left: auto;
+    }
+    #search-input {
+      width: 100%;
+      padding: 8px 15px;
+      border-radius: 20px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-color);
+      color: white;
+      outline: none;
+    }
+    #search-dropdown {
+      position: absolute;
+      top: 100%; left: 0; right: 0;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      margin-top: 5px;
+      max-height: 250px;
+      overflow-y: auto;
+      display: none;
+      list-style: none;
+      padding: 0;
+    }
+    #search-dropdown li {
+      padding: 10px 15px;
+      cursor: pointer;
+      border-bottom: 1px solid var(--border-color);
+    }
     #search-dropdown li:hover { background: #21262d; }
-    main { margin-top: 80px; flex: 1; padding: 24px; max-width: 1200px; margin-left: auto; margin-right: auto; width: 100%; }
-    h1 { color: #58a6ff; text-align: center; }
-    .loading { text-align: center; padding: 20px; color: #8b949e; }
-    .error { color: #f85149; text-align: center; padding: 20px; }
-    .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-    .gallery-item { background: #161b22; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
-    .gallery-item img { width: 100%; height: 200px; object-fit: cover; cursor: pointer; transition: 0.3s; }
-    .gallery-item img:hover { opacity: 0.8; }
-    .caption { padding: 10px; text-align: center; font-size: 0.9em; }
-    #image-modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); }
-    #modal-content { margin: auto; display: block; max-width: 90%; max-height: 90%; position: relative; top: 50%; transform: translateY(-50%); }
-    #modal-close { position: absolute; top: 20px; right: 35px; color: #fff; font-size: 40px; cursor: pointer; }
-    .home-item { display: flex; gap: 20px; background: #161b22; padding: 15px; border-radius: 8px; margin-bottom: 20px; align-items: center; }
-    .home-item img { width: 150px; border-radius: 5px; cursor: pointer; }
+
+    /* Main Content */
+    main {
+      margin-top: 80px;
+      padding: 20px;
+      max-width: 1100px;
+      margin-left: auto;
+      margin-right: auto;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    section { display: none; }
+    section.active { display: block; }
+    h1 { color: var(--accent-color); text-align: center; }
+
+    /* Home Layout */
+    .home-item {
+      display: flex;
+      background: var(--card-bg);
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      gap: 20px;
+      align-items: center;
+      border: 1px solid var(--border-color);
+    }
+    .home-item img {
+      width: 200px;
+      max-width: 40%;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .home-item .note { flex: 1; line-height: 1.6; }
+
+    /* Gallery Layout */
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 15px;
+    }
+    .gallery-item {
+      background: var(--card-bg);
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+    }
+    .gallery-item img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      display: block;
+      cursor: pointer;
+    }
+    .gallery-item .caption {
+      padding: 10px;
+      font-size: 0.85em;
+      text-align: center;
+      color: #8b949e;
+    }
+
+    /* Modals */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.9);
+    }
+    .modal-content {
+      margin: auto;
+      display: block;
+      max-width: 90%;
+      max-height: 85%;
+      position: relative;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    .close {
+      position: absolute;
+      top: 20px; right: 30px;
+      color: white; font-size: 40px; cursor: pointer;
+    }
+
+    /* Student Info Modal */
+    #student-modal-body {
+      background: var(--card-bg);
+      width: 90%;
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 25px;
+      border-radius: 15px;
+      position: relative;
+    }
+    #student-avatar {
+      width: 100px; height: 100px;
+      border-radius: 50%;
+      display: block; margin: 0 auto 15px;
+      object-fit: cover;
+      border: 3px solid var(--accent-color);
+    }
+
+    .loading { text-align: center; color: #8b949e; padding: 20px; }
+
+    @media (max-width: 600px) {
+      .home-item { flex-direction: column-reverse; }
+      .home-item img { width: 100%; max-width: 100%; }
+      header { padding: 10px; }
+      nav a { padding: 5px; font-size: 0.9em; }
+    }
   </style>
 </head>
 <body>
@@ -39,150 +211,218 @@
   <header>
     <img id="logo" src="https://via.placeholder.com/40" alt="Logo">
     <nav>
-      <a href="#home" data-page="home" class="active">Trang Chủ</a>
-      <a href="#memories" data-page="memories">Kỉ Niệm</a>
-      <a href="#info" data-page="info">Thông Tin</a>
+      <a href="#home" class="active" onclick="showPage('home')">Trang Chủ</a>
+      <a href="#memories" onclick="showPage('memories')">Kỉ Niệm</a>
+      <a href="#info" onclick="showPage('info')">Thông Tin</a>
     </nav>
     <div class="search-container">
-      <input type="text" id="search-input" placeholder="Tìm học sinh...">
+      <input type="text" id="search-input" placeholder="Tìm tên học sinh...">
       <ul id="search-dropdown"></ul>
     </div>
   </header>
 
   <main>
     <section id="home" class="active">
-      <h1>Tin tức lớp 9A7</h1>
-      <div id="home-loading" class="loading">Đang tải...</div>
+      <h1>Bảng Tin Lớp 9A7</h1>
       <div id="home-list"></div>
     </section>
 
     <section id="memories">
       <h1>Kho Ảnh Kỉ Niệm</h1>
-      <div id="stats" style="text-align: center; margin-bottom: 10px;"></div>
-      <div id="memories-loading" class="loading">Đang tải ảnh...</div>
+      <p id="stats" style="text-align:center"></p>
       <div class="gallery" id="gallery"></div>
     </section>
 
     <section id="info">
-      <h1>Thông Tin Lớp</h1>
-      <div id="info-content"></div>
+      <h1>Thông Tin Chung</h1>
+      <div id="info-content" style="background:var(--card-bg); padding:20px; border-radius:10px;"></div>
     </section>
   </main>
 
-  <div id="image-modal">
-    <span id="modal-close">&times;</span>
-    <img id="modal-content" src="">
+  <div id="image-modal" class="modal">
+    <span class="close" onclick="closeModal('image-modal')">&times;</span>
+    <img class="modal-content" id="modal-img">
+  </div>
+
+  <div id="student-modal" class="modal">
+    <span class="close" onclick="closeModal('student-modal')">&times;</span>
+    <div id="student-modal-body">
+      <img id="student-avatar" src="">
+      <h2 id="student-name" style="text-align:center; margin-top:0;"></h2>
+      <div id="student-desc" style="line-height:1.6; margin-bottom:15px;"></div>
+      <div id="student-pics" class="gallery" style="grid-template-columns: repeat(2, 1fr);"></div>
+    </div>
   </div>
 
   <script>
-    // --- TIỆN ÍCH CHUNG ---
-    const openImageModal = (src) => {
-      const modal = document.getElementById('image-modal');
-      const modalImg = document.getElementById('modal-content');
-      modalImg.src = src;
-      modal.style.display = 'block';
+    // --- CẤU HÌNH & TRẠNG THÁI ---
+    let allStudents = [];
+    const pagesLoaded = { home: false, memories: false, info: false };
+
+    // --- TIỆN ÍCH ---
+    function openImage(src) {
+      document.getElementById('modal-img').src = src;
+      document.getElementById('image-modal').style.display = 'block';
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).style.display = 'none';
+    }
+
+    window.onclick = (e) => {
+      if (e.target.className === 'modal') e.target.style.display = 'none';
     };
-
-    document.getElementById('modal-close').onclick = () => document.getElementById('image-modal').style.display = 'none';
-
-    // --- TẢI LOGO ---
-    async function loadLogo() {
-      try {
-        const res = await fetch('logo.txt');
-        if (res.ok) document.getElementById('logo').src = (await res.text()).trim();
-      } catch (e) { console.error("Không load được logo"); }
-    }
-
-    // --- TRANG CHỦ ---
-    async function loadHome() {
-      const listDiv = document.getElementById('home-list');
-      try {
-        const res = await fetch('home/list.txt');
-        if (!res.ok) return;
-        const files = JSON.parse(await res.text());
-        document.getElementById('home-loading').style.display = 'none';
-        
-        for (const file of files) {
-          const fRes = await fetch(`home/${file}`);
-          if (!fRes.ok) continue;
-          const content = await fRes.text();
-          const lines = content.split('\n');
-          const imgUrl = lines[0].trim();
-          const desc = lines.slice(1).join('<br>');
-          
-          const item = document.createElement('div');
-          item.className = 'home-item';
-          item.innerHTML = `<img src="${imgUrl}" onclick="openImageModal('${imgUrl}')"><div>${desc}</div>`;
-          listDiv.appendChild(item);
-        }
-      } catch (e) { console.error("Lỗi load Home"); }
-    }
-
-    // --- KỈ NIỆM (Phần quan trọng nhất) ---
-    async function loadMemories() {
-      const gallery = document.getElementById('gallery');
-      const stats = document.getElementById('stats');
-      try {
-        const res = await fetch('pic.txt');
-        if (!res.ok) throw new Error();
-        let text = (await res.text()).trim();
-        
-        // Làm sạch dữ liệu nếu dính markdown
-        if (text.startsWith("```")) text = text.replace(/```json|```/g, "").trim();
-        
-        let urls = [];
-        try {
-          urls = JSON.parse(text);
-        } catch (e) {
-          // Nếu không phải JSON, thử parse theo từng dòng
-          urls = text.split('\n').map(l => l.trim()).filter(l => l.length > 5);
-        }
-
-        document.getElementById('memories-loading').style.display = 'none';
-        stats.innerHTML = `Tìm thấy <b>${urls.length}</b> ảnh`;
-
-        urls.forEach(url => {
-          const item = document.createElement('div');
-          item.className = 'gallery-item';
-          
-          const img = new Image();
-          img.src = url;
-          img.loading = "lazy"; // Tiết kiệm băng thông
-          img.alt = "Ảnh kỉ niệm";
-          
-          img.onclick = () => openImageModal(url);
-          img.onerror = () => item.style.display = 'none'; // Ẩn nếu link hỏng
-
-          const cap = document.createElement('div');
-          cap.className = 'caption';
-          cap.innerText = url.split('/').pop().split('?')[0] || "Kỉ niệm";
-
-          item.appendChild(img);
-          item.appendChild(cap);
-          gallery.appendChild(item);
-        });
-      } catch (e) {
-        document.getElementById('memories-loading').innerHTML = "Lỗi tải file pic.txt";
-      }
-    }
 
     // --- ĐIỀU HƯỚNG ---
     function showPage(pageId) {
-      document.querySelectorAll('section').forEach(s => s.style.display = 'none');
-      document.getElementById(pageId).style.display = 'block';
-      document.querySelectorAll('nav a').forEach(a => {
-        a.classList.toggle('active', a.getAttribute('href') === `#${pageId}`);
-      });
+      document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+      document.getElementById(pageId).classList.add('active');
       
-      if (pageId === 'home') loadHome();
-      if (pageId === 'memories') loadMemories();
+      document.querySelectorAll('nav a').forEach(a => {
+        a.classList.toggle('active', a.getAttribute('href') === '#' + pageId);
+      });
+
+      if (!pagesLoaded[pageId]) {
+        if (pageId === 'home') loadHome();
+        if (pageId === 'memories') loadMemories();
+        if (pageId === 'info') loadInfo();
+        pagesLoaded[pageId] = true;
+      }
     }
 
-    window.addEventListener('hashchange', () => showPage(location.hash.slice(1) || 'home'));
+    // --- TẢI DỮ LIỆU ---
+    async function loadLogo() {
+      try {
+        const r = await fetch('logo.txt');
+        if (r.ok) document.getElementById('logo').src = (await r.text()).trim();
+      } catch(e){}
+    }
 
-    // Khởi tạo
+    async function loadHome() {
+      const container = document.getElementById('home-list');
+      container.innerHTML = '<div class="loading">Đang tải bản tin...</div>';
+      try {
+        const res = await fetch('home/list.txt');
+        const files = await res.json();
+        container.innerHTML = '';
+        for (const f of files) {
+          const fRes = await fetch(`home/${f}`);
+          const text = await fRes.text();
+          const lines = text.split('\n');
+          const item = document.createElement('div');
+          item.className = 'home-item';
+          item.innerHTML = `
+            <div class="note">${lines.slice(1).join('<br>')}</div>
+            <img src="${lines[0].trim()}" onclick="openImage(this.src)" onerror="this.src='https://via.placeholder.com/200?text=Loi+Anh'">
+          `;
+          container.appendChild(item);
+        }
+      } catch(e) { container.innerHTML = 'Không tải được bản tin.'; }
+    }
+
+    async function loadMemories() {
+      const gallery = document.getElementById('gallery');
+      gallery.innerHTML = '<div class="loading">Đang mở kho ảnh...</div>';
+      try {
+        const res = await fetch('pic.txt');
+        let text = (await res.text()).trim();
+        // Xử lý nếu pic.txt bị bọc bởi code block markdown
+        if (text.startsWith('```')) text = text.replace(/```json|```/g, '').trim();
+        
+        let urls = [];
+        try { urls = JSON.parse(text); } 
+        catch(e) { urls = text.split('\n').filter(l => l.includes('http')); }
+
+        gallery.innerHTML = '';
+        document.getElementById('stats').innerText = `Tổng cộng: ${urls.length} ảnh`;
+
+        urls.forEach(url => {
+          const div = document.createElement('div');
+          div.className = 'gallery-item';
+          const imgUrl = url.trim();
+          div.innerHTML = `
+            <img src="${imgUrl}" loading="lazy" onclick="openImage(this.src)" onerror="this.parentElement.style.display='none'">
+            <div class="caption">${imgUrl.split('/').pop().split('?')[0]}</div>
+          `;
+          gallery.appendChild(div);
+        });
+      } catch(e) { gallery.innerHTML = 'Lỗi tải pic.txt'; }
+    }
+
+    async function loadInfo() {
+      try {
+        const res = await fetch('info.txt');
+        document.getElementById('info-content').innerHTML = (await res.text()).replace(/\n/g, '<br>');
+      } catch(e){}
+    }
+
+    // --- TÌM KIẾM HỌC SINH ---
+    async function initSearch() {
+      try {
+        const res = await fetch('stu.txt');
+        allStudents = (await res.text()).split('\n').map(s => s.trim()).filter(s => s !== "");
+      } catch(e){}
+    }
+
+    const sInput = document.getElementById('search-input');
+    const sDrop = document.getElementById('search-dropdown');
+
+    sInput.oninput = () => {
+      const val = sInput.value.toLowerCase().trim();
+      if (!val) { sDrop.style.display = 'none'; return; }
+      const match = allStudents.filter(s => s.toLowerCase().includes(val));
+      sDrop.innerHTML = match.map(s => `<li>${s}</li>`).join('');
+      sDrop.style.display = match.length ? 'block' : 'none';
+      
+      sDrop.querySelectorAll('li').forEach(li => {
+        li.onclick = () => {
+          showStudent(li.innerText);
+          sDrop.style.display = 'none';
+          sInput.value = '';
+        };
+      });
+    };
+
+    async function showStudent(name) {
+      const modal = document.getElementById('student-modal');
+      const folder = encodeURIComponent(name).replace(/%20/g, '+');
+      const path = `stu/${folder}/`;
+      
+      document.getElementById('student-name').innerText = name;
+      document.getElementById('student-desc').innerHTML = 'Đang tải thông tin...';
+      document.getElementById('student-pics').innerHTML = '';
+      modal.style.display = 'block';
+
+      try {
+        const res = await fetch(path + 'inf.txt');
+        const text = await res.text();
+        const lines = text.split('\n');
+        document.getElementById('student-avatar').src = lines[0].trim();
+        document.getElementById('student-desc').innerHTML = lines.slice(1).join('<br>');
+        
+        // Tải ảnh kèm theo nếu có pics.txt
+        const pRes = await fetch(path + 'pics.txt');
+        if (pRes.ok) {
+          const pUrls = JSON.parse(await pRes.text());
+          pUrls.forEach(u => {
+            const img = document.createElement('img');
+            img.src = u;
+            img.style.width = '100%';
+            img.onclick = () => openImage(u);
+            document.getElementById('student-pics').appendChild(img);
+          });
+        }
+      } catch(e) {
+        document.getElementById('student-desc').innerText = 'Không tìm thấy file thông tin chi tiết.';
+      }
+    }
+
+    // --- KHỞI CHẠY ---
     loadLogo();
-    showPage(location.hash.slice(1) || 'home');
+    initSearch();
+    // Tự động load trang dựa trên Hash URL (ví dụ: #memories)
+    const startPage = location.hash.replace('#', '') || 'home';
+    showPage(startPage);
   </script>
 </body>
 </html>
