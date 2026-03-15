@@ -11,6 +11,7 @@
       --text-color: #e6edf3;
       --accent-color: #58a6ff;
       --border-color: #30363d;
+      --hover-bg: #21262d;
     }
 
     body {
@@ -24,10 +25,10 @@
       flex-direction: column;
     }
 
-    /* Header & Nav */
+    /* Header & Navigation */
     header {
       background: var(--card-bg);
-      padding: 10px 24px;
+      padding: 10px 20px;
       display: flex;
       align-items: center;
       border-bottom: 1px solid var(--border-color);
@@ -38,11 +39,11 @@
     }
 
     #logo {
-      width: 40px; height: 40px;
+      width: 42px; height: 42px;
       object-fit: cover;
       margin-right: 15px;
-      border-radius: 6px;
-      background: #21262d;
+      border-radius: 8px;
+      background: var(--hover-bg);
     }
 
     nav { display: flex; gap: 10px; }
@@ -55,47 +56,53 @@
       transition: 0.2s;
     }
     nav a:hover, nav a.active {
-      background: #21262d;
+      background: var(--hover-bg);
       color: var(--accent-color);
     }
 
-    /* Search */
+    /* Search Bar */
     .search-container {
       position: relative;
       flex: 1;
-      max-width: 300px;
+      max-width: 350px;
       margin-left: auto;
     }
     #search-input {
       width: 100%;
-      padding: 8px 15px;
+      padding: 10px 18px;
       border-radius: 20px;
       border: 1px solid var(--border-color);
       background: var(--bg-color);
       color: white;
       outline: none;
+      transition: 0.3s;
     }
+    #search-input:focus { border-color: var(--accent-color); box-shadow: 0 0 0 3px rgba(88,166,255,0.2); }
+
     #search-dropdown {
       position: absolute;
       top: 100%; left: 0; right: 0;
       background: var(--card-bg);
       border: 1px solid var(--border-color);
-      border-radius: 8px;
-      margin-top: 5px;
-      max-height: 250px;
+      border-radius: 12px;
+      margin-top: 8px;
+      max-height: 300px;
       overflow-y: auto;
       display: none;
       list-style: none;
-      padding: 0;
+      padding: 5px 0;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
     }
+    #search-dropdown.show { display: block; }
     #search-dropdown li {
-      padding: 10px 15px;
+      padding: 12px 20px;
       cursor: pointer;
       border-bottom: 1px solid var(--border-color);
     }
-    #search-dropdown li:hover { background: #21262d; }
+    #search-dropdown li:last-child { border: none; }
+    #search-dropdown li:hover { background: var(--hover-bg); color: var(--accent-color); }
 
-    /* Main Content */
+    /* Main Layout */
     main {
       margin-top: 80px;
       padding: 20px;
@@ -108,9 +115,9 @@
 
     section { display: none; }
     section.active { display: block; }
-    h1 { color: var(--accent-color); text-align: center; }
+    h1 { color: var(--accent-color); text-align: center; margin-bottom: 30px; }
 
-    /* Home Layout */
+    /* Home Styles */
     .home-item {
       display: flex;
       background: var(--card-bg);
@@ -120,48 +127,54 @@
       gap: 20px;
       align-items: center;
       border: 1px solid var(--border-color);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
     .home-item img {
-      width: 200px;
+      width: 250px;
       max-width: 40%;
       border-radius: 8px;
       cursor: pointer;
+      transition: 0.3s;
     }
-    .home-item .note { flex: 1; line-height: 1.6; }
+    .home-item img:hover { transform: scale(1.02); }
+    .home-item .note { flex: 1; line-height: 1.7; color: #c9d1d9; }
 
-    /* Gallery Layout */
+    /* Gallery Styles */
     .gallery {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 15px;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
     }
     .gallery-item {
       background: var(--card-bg);
-      border-radius: 8px;
+      border-radius: 10px;
       overflow: hidden;
       border: 1px solid var(--border-color);
+      transition: 0.3s;
     }
+    .gallery-item:hover { transform: translateY(-5px); }
     .gallery-item img {
       width: 100%;
-      height: 200px;
+      height: 220px;
       object-fit: cover;
       display: block;
       cursor: pointer;
     }
     .gallery-item .caption {
-      padding: 10px;
-      font-size: 0.85em;
+      padding: 12px;
+      font-size: 0.9em;
       text-align: center;
       color: #8b949e;
+      background: #1c2128;
     }
 
     /* Modals */
     .modal {
       display: none;
       position: fixed;
-      z-index: 2000;
+      z-index: 3000;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.9);
+      background: rgba(0,0,0,0.92);
     }
     .modal-content {
       margin: auto;
@@ -171,49 +184,55 @@
       position: relative;
       top: 50%;
       transform: translateY(-50%);
+      border-radius: 4px;
     }
     .close {
       position: absolute;
       top: 20px; right: 30px;
       color: white; font-size: 40px; cursor: pointer;
+      z-index: 3001;
     }
 
     /* Student Info Modal */
     #student-modal-body {
       background: var(--card-bg);
-      width: 90%;
-      max-width: 600px;
-      margin: 50px auto;
-      padding: 25px;
+      width: 95%;
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 30px;
       border-radius: 15px;
       position: relative;
+      max-height: 85vh;
+      overflow-y: auto;
+      border: 1px solid var(--border-color);
     }
     #student-avatar {
-      width: 100px; height: 100px;
+      width: 120px; height: 120px;
       border-radius: 50%;
-      display: block; margin: 0 auto 15px;
+      display: block; margin: 0 auto 20px;
       object-fit: cover;
-      border: 3px solid var(--accent-color);
+      border: 4px solid var(--accent-color);
     }
+    #student-info-text { line-height: 1.8; margin-bottom: 25px; font-size: 1.05em; }
 
-    .loading { text-align: center; color: #8b949e; padding: 20px; }
+    .loading { text-align: center; color: #8b949e; padding: 40px; }
 
-    @media (max-width: 600px) {
+    @media (max-width: 768px) {
       .home-item { flex-direction: column-reverse; }
       .home-item img { width: 100%; max-width: 100%; }
-      header { padding: 10px; }
-      nav a { padding: 5px; font-size: 0.9em; }
+      .search-container { max-width: 150px; }
+      nav a { padding: 8px 6px; font-size: 0.85em; }
     }
   </style>
 </head>
 <body>
 
   <header>
-    <img id="logo" src="https://via.placeholder.com/40" alt="Logo">
+    <img id="logo" src="https://via.placeholder.com/42" alt="Logo">
     <nav>
-      <a href="#home" class="active" onclick="showPage('home')">Trang Chủ</a>
-      <a href="#memories" onclick="showPage('memories')">Kỉ Niệm</a>
-      <a href="#info" onclick="showPage('info')">Thông Tin</a>
+      <a href="#home" id="nav-home" class="active">Trang Chủ</a>
+      <a href="#memories" id="nav-memories">Kỉ Niệm</a>
+      <a href="#info" id="nav-info">Thông Tin</a>
     </nav>
     <div class="search-container">
       <input type="text" id="search-input" placeholder="Tìm tên học sinh...">
@@ -223,72 +242,90 @@
 
   <main>
     <section id="home" class="active">
-      <h1>Bảng Tin Lớp 9A7</h1>
+      <h1>Bản Tin Lớp 9A7</h1>
       <div id="home-list"></div>
     </section>
 
     <section id="memories">
       <h1>Kho Ảnh Kỉ Niệm</h1>
-      <p id="stats" style="text-align:center"></p>
+      <p id="stats" style="text-align:center; margin-bottom:20px;"></p>
       <div class="gallery" id="gallery"></div>
     </section>
 
     <section id="info">
       <h1>Thông Tin Chung</h1>
-      <div id="info-content" style="background:var(--card-bg); padding:20px; border-radius:10px;"></div>
+      <div id="info-content" style="background:var(--card-bg); padding:30px; border-radius:12px; border:1px solid var(--border-color);"></div>
     </section>
   </main>
 
   <div id="image-modal" class="modal">
-    <span class="close" onclick="closeModal('image-modal')">&times;</span>
+    <span class="close">&times;</span>
     <img class="modal-content" id="modal-img">
   </div>
 
   <div id="student-modal" class="modal">
-    <span class="close" onclick="closeModal('student-modal')">&times;</span>
+    <span class="close">&times;</span>
     <div id="student-modal-body">
       <img id="student-avatar" src="">
-      <h2 id="student-name" style="text-align:center; margin-top:0;"></h2>
-      <div id="student-desc" style="line-height:1.6; margin-bottom:15px;"></div>
-      <div id="student-pics" class="gallery" style="grid-template-columns: repeat(2, 1fr);"></div>
+      <h2 id="student-name" style="text-align:center; color:var(--accent-color); margin-bottom:20px;"></h2>
+      <div id="student-info-text"></div>
+      <h3 style="border-top:1px solid var(--border-color); padding-top:20px; color:var(--accent-color);">Ảnh Kỉ Niệm</h3>
+      <div id="student-gallery" class="gallery" style="grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));"></div>
     </div>
   </div>
 
   <script>
-    // --- CẤU HÌNH & TRẠNG THÁI ---
+    // --- KHAI BÁO BIẾN ---
+    const pages = ['home', 'memories', 'info'];
     let allStudents = [];
-    const pagesLoaded = { home: false, memories: false, info: false };
+    const loadedPages = new Set();
 
-    // --- TIỆN ÍCH ---
+    // --- TIỆN ÍCH MODAL ---
     function openImage(src) {
       document.getElementById('modal-img').src = src;
       document.getElementById('image-modal').style.display = 'block';
     }
 
-    function closeModal(id) {
-      document.getElementById(id).style.display = 'none';
-    }
+    document.querySelectorAll('.close').forEach(btn => {
+      btn.onclick = () => {
+        document.getElementById('image-modal').style.display = 'none';
+        document.getElementById('student-modal').style.display = 'none';
+      }
+    });
 
     window.onclick = (e) => {
-      if (e.target.className === 'modal') e.target.style.display = 'none';
+      if (e.target.className === 'modal') {
+        e.target.style.display = 'none';
+      }
     };
 
     // --- ĐIỀU HƯỚNG ---
     function showPage(pageId) {
+      if (!pages.includes(pageId)) pageId = 'home';
+      
       document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
       document.getElementById(pageId).classList.add('active');
       
       document.querySelectorAll('nav a').forEach(a => {
-        a.classList.toggle('active', a.getAttribute('href') === '#' + pageId);
+        a.classList.remove('active');
+        if (a.id === `nav-${pageId}`) a.classList.add('active');
       });
 
-      if (!pagesLoaded[pageId]) {
+      if (!loadedPages.has(pageId)) {
         if (pageId === 'home') loadHome();
         if (pageId === 'memories') loadMemories();
         if (pageId === 'info') loadInfo();
-        pagesLoaded[pageId] = true;
+        loadedPages.add(pageId);
       }
     }
+
+    window.addEventListener('hashchange', () => showPage(location.hash.replace('#', '')));
+    document.querySelectorAll('nav a').forEach(link => {
+        link.onclick = (e) => {
+            const pageId = link.getAttribute('href').replace('#', '');
+            showPage(pageId);
+        }
+    });
 
     // --- TẢI DỮ LIỆU ---
     async function loadLogo() {
@@ -309,24 +346,24 @@
           const fRes = await fetch(`home/${f}`);
           const text = await fRes.text();
           const lines = text.split('\n');
-          const item = document.createElement('div');
-          item.className = 'home-item';
-          item.innerHTML = `
+          const div = document.createElement('div');
+          div.className = 'home-item';
+          div.innerHTML = `
             <div class="note">${lines.slice(1).join('<br>')}</div>
-            <img src="${lines[0].trim()}" onclick="openImage(this.src)" onerror="this.src='https://via.placeholder.com/200?text=Loi+Anh'">
+            <img src="${lines[0].trim()}" onclick="openImage(this.src)" onerror="this.src='https://via.placeholder.com/300x200?text=Loi+Anh'">
           `;
-          container.appendChild(item);
+          container.appendChild(div);
         }
-      } catch(e) { container.innerHTML = 'Không tải được bản tin.'; }
+      } catch(e) { container.innerHTML = '<p style="text-align:center">Chưa có bài viết nào.</p>'; }
     }
 
     async function loadMemories() {
       const gallery = document.getElementById('gallery');
-      gallery.innerHTML = '<div class="loading">Đang mở kho ảnh...</div>';
+      const stats = document.getElementById('stats');
+      gallery.innerHTML = '<div class="loading">Đang tải kho ảnh...</div>';
       try {
         const res = await fetch('pic.txt');
         let text = (await res.text()).trim();
-        // Xử lý nếu pic.txt bị bọc bởi code block markdown
         if (text.startsWith('```')) text = text.replace(/```json|```/g, '').trim();
         
         let urls = [];
@@ -334,18 +371,21 @@
         catch(e) { urls = text.split('\n').filter(l => l.includes('http')); }
 
         gallery.innerHTML = '';
-        document.getElementById('stats').innerText = `Tổng cộng: ${urls.length} ảnh`;
-
+        let loaded = 0;
+        
         urls.forEach(url => {
-          const div = document.createElement('div');
-          div.className = 'gallery-item';
+          const item = document.createElement('div');
+          item.className = 'gallery-item';
           const imgUrl = url.trim();
-          div.innerHTML = `
+          const fileName = imgUrl.split('/').pop().split('?')[0];
+          item.innerHTML = `
             <img src="${imgUrl}" loading="lazy" onclick="openImage(this.src)" onerror="this.parentElement.style.display='none'">
-            <div class="caption">${imgUrl.split('/').pop().split('?')[0]}</div>
+            <div class="caption">${decodeURIComponent(fileName)}</div>
           `;
-          gallery.appendChild(div);
+          gallery.appendChild(item);
+          loaded++;
         });
+        stats.innerHTML = `Đã tìm thấy <strong>${loaded}</strong> hình ảnh kỉ niệm`;
       } catch(e) { gallery.innerHTML = 'Lỗi tải pic.txt'; }
     }
 
@@ -356,7 +396,7 @@
       } catch(e){}
     }
 
-    // --- TÌM KIẾM HỌC SINH ---
+    // --- TÌM KIẾM & THÔNG TIN HỌC SINH ---
     async function initSearch() {
       try {
         const res = await fetch('stu.txt');
@@ -369,15 +409,15 @@
 
     sInput.oninput = () => {
       const val = sInput.value.toLowerCase().trim();
-      if (!val) { sDrop.style.display = 'none'; return; }
+      if (!val) { sDrop.classList.remove('show'); return; }
       const match = allStudents.filter(s => s.toLowerCase().includes(val));
       sDrop.innerHTML = match.map(s => `<li>${s}</li>`).join('');
-      sDrop.style.display = match.length ? 'block' : 'none';
+      sDrop.classList.toggle('show', match.length > 0);
       
       sDrop.querySelectorAll('li').forEach(li => {
         li.onclick = () => {
           showStudent(li.innerText);
-          sDrop.style.display = 'none';
+          sDrop.classList.remove('show');
           sInput.value = '';
         };
       });
@@ -389,8 +429,8 @@
       const path = `stu/${folder}/`;
       
       document.getElementById('student-name').innerText = name;
-      document.getElementById('student-desc').innerHTML = 'Đang tải thông tin...';
-      document.getElementById('student-pics').innerHTML = '';
+      document.getElementById('student-info-text').innerHTML = 'Đang tải thông tin...';
+      document.getElementById('student-gallery').innerHTML = '';
       modal.style.display = 'block';
 
       try {
@@ -398,31 +438,27 @@
         const text = await res.text();
         const lines = text.split('\n');
         document.getElementById('student-avatar').src = lines[0].trim();
-        document.getElementById('student-desc').innerHTML = lines.slice(1).join('<br>');
+        document.getElementById('student-info-text').innerHTML = lines.slice(1).join('<br>');
         
-        // Tải ảnh kèm theo nếu có pics.txt
         const pRes = await fetch(path + 'pics.txt');
         if (pRes.ok) {
           const pUrls = JSON.parse(await pRes.text());
           pUrls.forEach(u => {
             const img = document.createElement('img');
             img.src = u;
-            img.style.width = '100%';
             img.onclick = () => openImage(u);
-            document.getElementById('student-pics').appendChild(img);
+            document.getElementById('student-gallery').appendChild(img);
           });
         }
       } catch(e) {
-        document.getElementById('student-desc').innerText = 'Không tìm thấy file thông tin chi tiết.';
+        document.getElementById('student-info-text').innerText = 'Thông tin chi tiết đang được cập nhật.';
       }
     }
 
     // --- KHỞI CHẠY ---
     loadLogo();
     initSearch();
-    // Tự động load trang dựa trên Hash URL (ví dụ: #memories)
-    const startPage = location.hash.replace('#', '') || 'home';
-    showPage(startPage);
+    showPage(location.hash.replace('#', '') || 'home');
   </script>
 </body>
 </html>
