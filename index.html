@@ -99,10 +99,9 @@
       cursor: pointer;
       border-bottom: 1px solid var(--border-color);
     }
-    #search-dropdown li:last-child { border: none; }
     #search-dropdown li:hover { background: var(--hover-bg); color: var(--accent-color); }
 
-    /* Main Layout */
+    /* Main Content */
     main {
       margin-top: 80px;
       padding: 20px;
@@ -117,7 +116,7 @@
     section.active { display: block; }
     h1 { color: var(--accent-color); text-align: center; margin-bottom: 30px; }
 
-    /* Home Styles */
+    /* Home Layout */
     .home-item {
       display: flex;
       background: var(--card-bg);
@@ -127,7 +126,6 @@
       gap: 20px;
       align-items: center;
       border: 1px solid var(--border-color);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
     .home-item img {
       width: 250px;
@@ -136,10 +134,9 @@
       cursor: pointer;
       transition: 0.3s;
     }
-    .home-item img:hover { transform: scale(1.02); }
-    .home-item .note { flex: 1; line-height: 1.7; color: #c9d1d9; }
+    .home-item .note { flex: 1; line-height: 1.7; color: #c9d1d9; white-space: pre-wrap; }
 
-    /* Gallery Styles */
+    /* Gallery Layout */
     .gallery {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -152,7 +149,6 @@
       border: 1px solid var(--border-color);
       transition: 0.3s;
     }
-    .gallery-item:hover { transform: translateY(-5px); }
     .gallery-item img {
       width: 100%;
       height: 220px;
@@ -166,6 +162,9 @@
       text-align: center;
       color: #8b949e;
       background: #1c2128;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     /* Modals */
@@ -184,7 +183,6 @@
       position: relative;
       top: 50%;
       transform: translateY(-50%);
-      border-radius: 4px;
     }
     .close {
       position: absolute;
@@ -204,7 +202,6 @@
       position: relative;
       max-height: 85vh;
       overflow-y: auto;
-      border: 1px solid var(--border-color);
     }
     #student-avatar {
       width: 120px; height: 120px;
@@ -213,15 +210,12 @@
       object-fit: cover;
       border: 4px solid var(--accent-color);
     }
-    #student-info-text { line-height: 1.8; margin-bottom: 25px; font-size: 1.05em; }
 
     .loading { text-align: center; color: #8b949e; padding: 40px; }
 
     @media (max-width: 768px) {
       .home-item { flex-direction: column-reverse; }
       .home-item img { width: 100%; max-width: 100%; }
-      .search-container { max-width: 150px; }
-      nav a { padding: 8px 6px; font-size: 0.85em; }
     }
   </style>
 </head>
@@ -254,29 +248,28 @@
 
     <section id="info">
       <h1>Thông Tin Chung</h1>
-      <div id="info-content" style="background:var(--card-bg); padding:30px; border-radius:12px; border:1px solid var(--border-color);"></div>
+      <div id="info-content" style="background:var(--card-bg); padding:30px; border-radius:12px;"></div>
     </section>
   </main>
 
   <div id="image-modal" class="modal">
-    <span class="close">&times;</span>
+    <span class="close" onclick="closeAllModals()">&times;</span>
     <img class="modal-content" id="modal-img">
   </div>
 
   <div id="student-modal" class="modal">
-    <span class="close">&times;</span>
+    <span class="close" onclick="closeAllModals()">&times;</span>
     <div id="student-modal-body">
       <img id="student-avatar" src="">
-      <h2 id="student-name" style="text-align:center; color:var(--accent-color); margin-bottom:20px;"></h2>
+      <h2 id="student-name" style="text-align:center; color:var(--accent-color);"></h2>
       <div id="student-info-text"></div>
-      <h3 style="border-top:1px solid var(--border-color); padding-top:20px; color:var(--accent-color);">Ảnh Kỉ Niệm</h3>
-      <div id="student-gallery" class="gallery" style="grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));"></div>
+      <h3 style="margin-top:20px; color:var(--accent-color); border-top:1px solid var(--border-color); padding-top:10px;">Ảnh liên quan</h3>
+      <div id="student-gallery" class="gallery" style="grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));"></div>
     </div>
   </div>
 
   <script>
-    // --- KHAI BÁO BIẾN ---
-    const pages = ['home', 'memories', 'info'];
+    // --- QUẢN LÝ TRẠNG THÁI ---
     let allStudents = [];
     const loadedPages = new Set();
 
@@ -286,29 +279,26 @@
       document.getElementById('image-modal').style.display = 'block';
     }
 
-    document.querySelectorAll('.close').forEach(btn => {
-      btn.onclick = () => {
-        document.getElementById('image-modal').style.display = 'none';
-        document.getElementById('student-modal').style.display = 'none';
-      }
-    });
+    function closeAllModals() {
+      document.getElementById('image-modal').style.display = 'none';
+      document.getElementById('student-modal').style.display = 'none';
+    }
 
     window.onclick = (e) => {
-      if (e.target.className === 'modal') {
-        e.target.style.display = 'none';
-      }
+      if (e.target.className === 'modal') closeAllModals();
     };
 
     // --- ĐIỀU HƯỚNG ---
     function showPage(pageId) {
-      if (!pages.includes(pageId)) pageId = 'home';
-      
+      const validPages = ['home', 'memories', 'info'];
+      if (!validPages.includes(pageId)) pageId = 'home';
+
       document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
       document.getElementById(pageId).classList.add('active');
-      
+
       document.querySelectorAll('nav a').forEach(a => {
         a.classList.remove('active');
-        if (a.id === `nav-${pageId}`) a.classList.add('active');
+        if (a.getAttribute('href') === '#' + pageId) a.classList.add('active');
       });
 
       if (!loadedPages.has(pageId)) {
@@ -320,12 +310,6 @@
     }
 
     window.addEventListener('hashchange', () => showPage(location.hash.replace('#', '')));
-    document.querySelectorAll('nav a').forEach(link => {
-        link.onclick = (e) => {
-            const pageId = link.getAttribute('href').replace('#', '');
-            showPage(pageId);
-        }
-    });
 
     // --- TẢI DỮ LIỆU ---
     async function loadLogo() {
@@ -354,7 +338,7 @@
           `;
           container.appendChild(div);
         }
-      } catch(e) { container.innerHTML = '<p style="text-align:center">Chưa có bài viết nào.</p>'; }
+      } catch(e) { container.innerHTML = '<p style="text-align:center">Chưa có bài viết.</p>'; }
     }
 
     async function loadMemories() {
@@ -371,22 +355,35 @@
         catch(e) { urls = text.split('\n').filter(l => l.includes('http')); }
 
         gallery.innerHTML = '';
-        let loaded = 0;
+        let count = 0;
         
-        urls.forEach(url => {
+        urls.forEach((url, index) => {
+          const imgUrl = url.trim();
+          if(!imgUrl) return;
+
+          // Xử lý lấy tên ảnh đẹp
+          let fileName = "";
+          try {
+            let part = imgUrl.split('/').pop().split('?')[0];
+            fileName = decodeURIComponent(part);
+            if (fileName.length > 25 || !fileName.includes('.')) {
+                fileName = "Kỉ niệm " + (index + 1);
+            } else {
+                fileName = fileName.split('.')[0];
+            }
+          } catch(e) { fileName = "Ảnh kỉ niệm " + (index + 1); }
+
           const item = document.createElement('div');
           item.className = 'gallery-item';
-          const imgUrl = url.trim();
-          const fileName = imgUrl.split('/').pop().split('?')[0];
           item.innerHTML = `
             <img src="${imgUrl}" loading="lazy" onclick="openImage(this.src)" onerror="this.parentElement.style.display='none'">
-            <div class="caption">${decodeURIComponent(fileName)}</div>
+            <div class="caption">${fileName}</div>
           `;
           gallery.appendChild(item);
-          loaded++;
+          count++;
         });
-        stats.innerHTML = `Đã tìm thấy <strong>${loaded}</strong> hình ảnh kỉ niệm`;
-      } catch(e) { gallery.innerHTML = 'Lỗi tải pic.txt'; }
+        stats.innerHTML = `Đã tải <strong>${count}</strong> hình ảnh`;
+      } catch(e) { gallery.innerHTML = 'Lỗi pic.txt'; }
     }
 
     async function loadInfo() {
@@ -396,7 +393,7 @@
       } catch(e){}
     }
 
-    // --- TÌM KIẾM & THÔNG TIN HỌC SINH ---
+    // --- TÌM KIẾM ---
     async function initSearch() {
       try {
         const res = await fetch('stu.txt');
@@ -427,9 +424,8 @@
       const modal = document.getElementById('student-modal');
       const folder = encodeURIComponent(name).replace(/%20/g, '+');
       const path = `stu/${folder}/`;
-      
       document.getElementById('student-name').innerText = name;
-      document.getElementById('student-info-text').innerHTML = 'Đang tải thông tin...';
+      document.getElementById('student-info-text').innerHTML = 'Đang tải...';
       document.getElementById('student-gallery').innerHTML = '';
       modal.style.display = 'block';
 
@@ -446,16 +442,15 @@
           pUrls.forEach(u => {
             const img = document.createElement('img');
             img.src = u;
+            img.style.width = '100%';
             img.onclick = () => openImage(u);
             document.getElementById('student-gallery').appendChild(img);
           });
         }
-      } catch(e) {
-        document.getElementById('student-info-text').innerText = 'Thông tin chi tiết đang được cập nhật.';
-      }
+      } catch(e) { document.getElementById('student-info-text').innerText = 'Dữ liệu đang cập nhật.'; }
     }
 
-    // --- KHỞI CHẠY ---
+    // KHỞI CHẠY
     loadLogo();
     initSearch();
     showPage(location.hash.replace('#', '') || 'home');
