@@ -8,17 +8,18 @@
     /* HỆ THỐNG BIẾN MÀU */
     :root {
       --bg-color: #ffffff;
-      --card-bg: #f6f8fa;
+      --card-bg: rgba(246, 248, 250, 0.85); /* Thêm độ trong suốt cho Light Mode */
       --text-color: #1f2328;
       --accent-color: #0969da;
       --border-color: #d0d7de;
       --hover-bg: #eaeef2;
       --modal-overlay: rgba(0,0,0,0.7);
+      --header-shadow: 0 0 transparent;
     }
 
     body.dark-mode {
       --bg-color: #0d1117;
-      --card-bg: #161b22;
+      --card-bg: rgba(22, 27, 34, 0.85); /* Thêm độ trong suốt cho Dark Mode */
       --text-color: #c9d1d9;
       --accent-color: #58a6ff;
       --border-color: #30363d;
@@ -26,9 +27,9 @@
       --modal-overlay: rgba(0,0,0,0.9);
     }
 
-    /* HIỆU ỨNG CHUYỂN MÀU MƯỢT MÀ CHO TOÀN BỘ WEB */
+    /* HIỆU ỨNG CHUYỂN MÀU MƯỢT MÀ */
     * {
-      transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+      transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease, transform 0.3s ease;
     }
 
     body {
@@ -36,12 +37,14 @@
       background-color: var(--bg-color);
       color: var(--text-color);
       margin: 0; padding: 0;
-      min-height: 100vh;
+      min-height: 200vh; /* Tăng chiều cao để thử hiệu ứng cuộn */
     }
 
-    /* HEADER */
+    /* HEADER - THÊM HIỆU ỨNG GLASSMORPHISM */
     header {
       background-color: var(--card-bg);
+      backdrop-filter: blur(12px); /* Làm mờ nội dung phía sau thanh task */
+      -webkit-backdrop-filter: blur(12px);
       padding: 10px 20px;
       display: flex;
       align-items: center;
@@ -50,6 +53,16 @@
       top: 0; left: 0; right: 0;
       z-index: 1000;
       gap: 20px;
+      box-shadow: var(--header-shadow); /* Hiệu ứng đổ bóng khi cuộn */
+    }
+
+    /* Class này sẽ được thêm bằng JS khi cuộn chuột */
+    header.scrolled {
+      --header-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      padding: 8px 20px; /* Thu nhỏ thanh task một chút khi cuộn */
+    }
+    body.dark-mode header.scrolled {
+      --header-shadow: 0 4px 25px rgba(0, 0, 0, 0.4);
     }
 
     .header-main-nav {
@@ -74,49 +87,34 @@
     }
     nav a:hover, nav a.active { background-color: var(--hover-bg); color: var(--accent-color); opacity: 1; }
 
-    /* THANH TÌM KIẾM CẠNH MỤC THÔNG TIN */
-    .search-container { 
-      position: relative; 
-      max-width: 250px; 
-      width: 100%;
-      margin-left: 15px;
-    }
+    /* SEARCH CONTAINER */
+    .search-container { position: relative; max-width: 250px; width: 100%; margin-left: 15px; }
     #search-input { 
-      width: 100%; 
-      padding: 7px 15px; 
-      border-radius: 20px; 
-      border: 1px solid var(--border-color); 
-      background-color: var(--bg-color); 
-      color: var(--text-color); 
-      outline: none;
-      font-size: 14px;
+      width: 100%; padding: 7px 15px; border-radius: 20px; 
+      border: 1px solid var(--border-color); background-color: var(--bg-color); 
+      color: var(--text-color); outline: none; font-size: 14px;
     }
 
     .theme-switch {
-      background-color: var(--bg-color);
-      border: 1px solid var(--border-color);
-      border-radius: 50%;
-      width: 36px; height: 36px;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-      font-size: 18px;
+      background-color: var(--bg-color); border: 1px solid var(--border-color);
+      border-radius: 50%; width: 36px; height: 36px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 18px;
     }
-    .theme-switch:hover { transform: rotate(15deg); }
+    .theme-switch:hover { transform: scale(1.1); }
 
     #search-dropdown {
-      position: absolute; top: 110%; left: 0; right: 0;
-      background-color: var(--card-bg); border: 1px solid var(--border-color);
+      position: absolute; top: 115%; left: 0; right: 0;
+      background-color: var(--bg-color); border: 1px solid var(--border-color);
       border-radius: 8px; display: none; list-style: none; padding: 5px 0;
       max-height: 250px; overflow-y: auto; z-index: 1001;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
     }
     #search-dropdown.show { display: block; }
     #search-dropdown li { padding: 10px 15px; cursor: pointer; border-bottom: 1px solid var(--border-color); }
     #search-dropdown li:hover { background-color: var(--hover-bg); color: var(--accent-color); }
 
-    /* LAYOUT CHÍNH */
-    main { margin-top: 80px; padding: 20px; max-width: 1000px; margin-left: auto; margin-right: auto; }
+    /* MAIN CONTENT */
+    main { margin-top: 100px; padding: 20px; max-width: 1000px; margin-left: auto; margin-right: auto; }
     section { display: none; }
     section.active { display: block; }
     h1 { color: var(--accent-color); text-align: center; margin-bottom: 30px; }
@@ -133,7 +131,7 @@
     /* MODAL */
     .modal { display: none; position: fixed; z-index: 2000; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--modal-overlay); align-items: center; justify-content: center; }
     .close { position: absolute; top: 15px; right: 25px; color: white; font-size: 35px; cursor: pointer; }
-    #student-content { background-color: var(--card-bg); width: 90%; max-width: 600px; padding: 25px; border-radius: 15px; border: 1px solid var(--border-color); }
+    #student-content { background-color: var(--card-bg); width: 90%; max-width: 600px; padding: 25px; border-radius: 15px; border: 1px solid var(--border-color); backdrop-filter: blur(20px); }
     #st-avt { width: 110px; height: 110px; border-radius: 50%; display: block; margin: 0 auto 15px; border: 3px solid var(--accent-color); background-color: var(--bg-color); object-fit: cover; }
     #st-info { background-color: var(--bg-color); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 20px; }
     #st-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
@@ -148,7 +146,7 @@
 </head>
 <body>
 
-  <header>
+  <header id="main-header">
     <div class="header-main-nav">
       <img id="logo" src="https://via.placeholder.com/42" alt="Logo">
       <nav>
@@ -189,7 +187,17 @@
   <script>
     let students = [];
     const themeBtn = document.getElementById('theme-btn');
+    const header = document.getElementById('main-header');
     const body = document.body;
+
+    // --- HIỆU ỨNG CUỘN TRANG (SCROLL EFFECT) ---
+    window.onscroll = () => {
+      if (window.scrollY > 20) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    };
 
     // --- DARK MODE ---
     if (localStorage.getItem('theme') === 'dark') { body.classList.add('dark-mode'); themeBtn.innerText = '☀️'; }
@@ -222,7 +230,7 @@
     }
     function closeModal() { document.getElementById('st-modal').style.display = 'none'; }
 
-    // --- LOAD DATA ---
+    // --- DỮ LIỆU ---
     async function openStudent(name) {
       const modal = document.getElementById('st-modal');
       const avt = document.getElementById('st-avt');
@@ -234,7 +242,7 @@
       modal.style.display = 'flex';
       try {
         const r = await fetch(`stu/${folder}/inf.txt`);
-        info.innerText = r.ok ? await r.text() : 'Chưa có giới thiệu.';
+        info.innerText = r.ok ? await r.text() : 'Chưa có thông tin.';
         const pr = await fetch(`stu/${folder}/pics.txt`);
         if(pr.ok) {
           const lines = (await pr.text()).split('\n').map(l => l.trim()).filter(l => l);
