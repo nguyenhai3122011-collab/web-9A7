@@ -5,15 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Lớp 9A7 - THCS Đông La</title>
   <style>
-    /* HỆ THỐNG BIẾN MÀU */
+    /* BIẾN MÀU */
     :root {
       --bg-color: #ffffff;
-      --card-bg: rgba(246, 248, 250, 0.85); /* Glassmorphism nhẹ */
+      --card-bg: rgba(246, 248, 250, 0.85);
       --text-color: #1f2328;
       --accent-color: #0969da;
       --border-color: #d0d7de;
       --hover-bg: #eaeef2;
-      --modal-overlay: rgba(0,0,0,0.7);
+      --indicator-bg: rgba(9, 105, 218, 0.1); /* Màu nền thanh trượt */
     }
 
     body.dark-mode {
@@ -23,28 +23,23 @@
       --accent-color: #58a6ff;
       --border-color: #30363d;
       --hover-bg: #21262d;
-      --modal-overlay: rgba(0,0,0,0.9);
+      --indicator-bg: rgba(88, 166, 255, 0.15);
     }
 
-    /* HIỆU ỨNG CHUYỂN MÀU TOÀN WEB */
-    * {
-      transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
-    }
+    * { transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease; }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
       background-color: var(--bg-color);
       color: var(--text-color);
       margin: 0; padding: 0;
-      min-height: 100vh;
-      overflow-x: hidden;
     }
 
-    /* HEADER */
+    /* HEADER & NAV */
     header {
       background-color: var(--card-bg);
-      backdrop-filter: blur(10px); /* Hiệu ứng kính mờ cho thanh taskbar */
-      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       padding: 10px 20px;
       display: flex;
       align-items: center;
@@ -53,101 +48,86 @@
       top: 0; left: 0; right: 0;
       z-index: 1000;
       gap: 20px;
-      transition: all 0.3s ease;
-    }
-    
-    /* Hiệu ứng khi cuộn chuột */
-    header.scrolled {
-      padding: 8px 20px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
 
-    .header-main-nav {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      flex: 1;
+    .header-main-nav { display: flex; align-items: center; gap: 15px; flex: 1; }
+    
+    /* NAV VỚI HIỆU ỨNG TRƯỢT */
+    nav { 
+      display: flex; 
+      gap: 5px; 
+      align-items: center; 
+      position: relative; /* Quan trọng để định vị indicator */
     }
 
-    #logo { width: 42px; height: 42px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-color); flex-shrink: 0; }
-    
-    nav { display: flex; gap: 5px; align-items: center; }
     nav a { 
       color: var(--text-color); 
       text-decoration: none; 
       font-weight: 600; 
-      padding: 8px 12px; 
+      padding: 8px 16px; 
       border-radius: 6px; 
-      opacity: 0.7;
       font-size: 14px;
-      white-space: nowrap;
-      transition: all 0.2s ease;
+      position: relative;
+      z-index: 2; /* Nằm trên indicator */
+      transition: color 0.3s ease;
     }
-    nav a:hover, nav a.active { background-color: var(--hover-bg); color: var(--accent-color); opacity: 1; }
 
-    /* TÌM KIẾM */
-    .search-container { position: relative; max-width: 250px; width: 100%; margin-left: 15px; }
+    nav a.active { color: var(--accent-color); }
+
+    /* THANH TRƯỢT (INDICATOR) */
+    .nav-indicator {
+      position: absolute;
+      background-color: var(--indicator-bg);
+      border-radius: 6px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Hiệu ứng trượt đàn hồi */
+      z-index: 1;
+      pointer-events: none; /* Không cản trở việc click */
+      height: 34px; /* Khớp với chiều cao padding của thẻ a */
+    }
+
+    /* SEARCH & THEME */
+    .search-container { position: relative; max-width: 200px; width: 100%; }
     #search-input { 
-      width: 100%; padding: 7px 15px; border-radius: 20px; 
-      border: 1px solid var(--border-color); background-color: var(--bg-color); 
-      color: var(--text-color); outline: none; font-size: 14px;
+      width: 100%; padding: 6px 15px; border-radius: 20px; border: 1px solid var(--border-color);
+      background: var(--bg-color); color: var(--text-color); outline: none;
     }
 
     .theme-switch {
-      background-color: var(--bg-color); border: 1px solid var(--border-color);
-      border-radius: 50%; width: 36px; height: 36px; cursor: pointer;
-      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      background: var(--bg-color); border: 1px solid var(--border-color);
+      border-radius: 50%; width: 36px; height: 36px; cursor: pointer; display: flex; align-items: center; justify-content: center;
     }
 
-    /* --- HIỆU ỨNG CHUYỂN MỤC (FADE IN & SLIDE UP) --- */
+    /* HIỆU ỨNG CHUYỂN TRANG MƯỢT */
     section { 
-      display: none; /* Ban đầu ẩn */
+      display: none; 
       opacity: 0; 
-      transform: translateY(20px); 
-      transition: opacity 0.5s ease, transform 0.5s ease;
+      transform: translateY(15px); 
+      transition: all 0.5s ease;
+      margin-top: 100px;
+      padding: 20px;
+      max-width: 1000px;
+      margin-left: auto;
+      margin-right: auto;
     }
-    section.active { 
-      display: block; /* Hiện khối */
-    }
-    section.show {
-      opacity: 1; /* Hiện màu */
-      transform: translateY(0); /* Trượt lên vị trí gốc */
-    }
+    section.show { display: block; opacity: 1; transform: translateY(0); }
 
-    /* LAYOUT CHÍNH */
-    main { margin-top: 100px; padding: 20px; max-width: 1000px; margin-left: auto; margin-right: auto; }
-    h1 { color: var(--accent-color); text-align: center; margin-bottom: 30px; }
-
-    .home-item { display: flex; background-color: var(--card-bg); padding: 25px; border-radius: 12px; margin-bottom: 25px; gap: 30px; border: 1px solid var(--border-color); }
-    .home-item img { width: 350px; max-width: 45%; border-radius: 10px; cursor: pointer; object-fit: cover; }
-
-    .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
-    .gallery-item { background-color: var(--card-bg); border-radius: 10px; overflow: hidden; border: 1px solid var(--border-color); }
-    .gallery-item img { width: 100%; height: 200px; object-fit: cover; cursor: pointer; }
-
-    /* MODAL */
-    .modal { display: none; position: fixed; z-index: 2000; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--modal-overlay); align-items: center; justify-content: center; }
-    #student-content { background-color: var(--card-bg); width: 90%; max-width: 600px; padding: 25px; border-radius: 15px; border: 1px solid var(--border-color); backdrop-filter: blur(10px); }
-
-    @media (max-width: 850px) {
-      header { flex-wrap: wrap; gap: 10px; }
-      .header-main-nav { flex-basis: 100%; }
-      .search-container { max-width: 100%; margin: 5px 0; }
-    }
+    h1 { color: var(--accent-color); text-align: center; }
   </style>
 </head>
 <body>
 
   <header id="main-header">
     <div class="header-main-nav">
-      <img id="logo" src="https://via.placeholder.com/42" alt="Logo">
-      <nav>
-        <a href="#home" class="active">Trang Chủ</a>
+      <img id="logo" src="https://via.placeholder.com/42" alt="Logo" style="width:42px; height:42px; border-radius:8px;">
+      <nav id="nav-menu">
+        <div class="nav-indicator" id="nav-indicator"></div>
+        
+        <a href="#home">Trang Chủ</a>
         <a href="#memories">Kỉ Niệm</a>
         <a href="#info">Thông Tin</a>
+
         <div class="search-container">
           <input type="text" id="search-input" placeholder="Tìm tên...">
-          <ul id="search-dropdown" style="position: absolute; width: 100%; background: var(--card-bg); border-radius: 8px; list-style: none; padding: 0; display: none; z-index: 10;"></ul>
         </div>
       </nav>
     </div>
@@ -156,113 +136,74 @@
 
   <main>
     <section id="home"><h1>Bản Tin 9A7</h1><div id="home-list"></div></section>
-    <section id="memories"><h1>Kho Ảnh Kỉ Niệm</h1><div class="gallery" id="main-gallery"></div></section>
-    <section id="info"><h1>Thông Tin Lớp</h1><div id="info-content" style="background-color:var(--card-bg); padding:20px; border-radius:10px; border: 1px solid var(--border-color);"></div></section>
+    <section id="memories"><h1>Kho Ảnh Kỉ Niệm</h1><div id="main-gallery"></div></section>
+    <section id="info"><h1>Thông Tin Lớp</h1><div id="info-content"></div></section>
   </main>
 
   <script>
-    let students = [];
-    const themeBtn = document.getElementById('theme-btn');
-    const header = document.getElementById('main-header');
-    const body = document.body;
+    const navMenu = document.getElementById('nav-menu');
+    const indicator = document.getElementById('nav-indicator');
+    const navLinks = document.querySelectorAll('nav a');
 
-    // --- HIỆU ỨNG CUỘN TASKBAR ---
-    window.onscroll = () => {
-      if (window.scrollY > 20) header.classList.add('scrolled');
-      else header.classList.remove('scrolled');
-    };
+    // --- HÀM DI CHUYỂN THANH TRƯỢT ---
+    function moveIndicator(element) {
+      if (!element) return;
+      indicator.style.width = `${element.offsetWidth}px`;
+      indicator.style.left = `${element.offsetLeft}px`;
+      indicator.style.top = `${element.offsetTop}px`;
+    }
 
-    // --- DARK MODE ---
-    if (localStorage.getItem('theme') === 'dark') { body.classList.add('dark-mode'); themeBtn.innerText = '☀️'; }
-    themeBtn.onclick = () => {
-        body.classList.toggle('dark-mode');
-        const isDark = body.classList.contains('dark-mode');
-        themeBtn.innerText = isDark ? '☀️' : '🌙';
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    };
+    // Hiệu ứng khi di chuột qua (Hover)
+    navLinks.forEach(link => {
+      link.addEventListener('mouseenter', (e) => moveIndicator(e.target));
+    });
 
-    // --- HÀM CHUYỂN TRANG MƯỢT MÀ ---
+    // Khi di chuột ra ngoài: Quay về mục đang Active
+    navMenu.addEventListener('mouseleave', () => {
+      const activeLink = document.querySelector('nav a.active');
+      moveIndicator(activeLink);
+    });
+
+    // --- CHUYỂN TRANG ---
     function showPage(id) {
-      const sections = document.querySelectorAll('section');
-      const navLinks = document.querySelectorAll('nav a');
       const targetId = id || 'home';
-      const target = document.getElementById(targetId);
-
-      // 1. Gỡ bỏ trạng thái cũ
-      sections.forEach(s => {
-        s.classList.remove('active', 'show');
-        s.style.display = 'none';
-      });
-
-      // 2. Kích hoạt section mới
-      target.style.display = 'block';
+      const sections = document.querySelectorAll('section');
       
-      // Dùng setTimeout cực ngắn để trình duyệt nhận diện display:block rồi mới chạy animation
-      setTimeout(() => {
-        target.classList.add('active', 'show');
-      }, 50);
+      sections.forEach(s => s.classList.remove('show'));
+      
+      const target = document.getElementById(targetId);
+      target.classList.add('show');
 
-      // 3. Cập nhật trạng thái nút điều hướng
       navLinks.forEach(a => {
         a.classList.remove('active');
-        if(a.getAttribute('href') === '#' + targetId) a.classList.add('active');
+        if(a.getAttribute('href') === '#' + targetId) {
+          a.classList.add('active');
+          moveIndicator(a); // Di chuyển thanh trượt tới mục vừa chọn
+        }
       });
-
-      // 4. Load dữ liệu
-      if(targetId === 'home') loadHome();
-      if(targetId === 'memories') loadMemories();
-      if(targetId === 'info') loadInfo();
     }
 
     window.onhashchange = () => showPage(location.hash.slice(1));
 
-    // --- PHẦN LOAD DỮ LIỆU GIỮ NGUYÊN ---
-    async function loadHome() {
-      const box = document.getElementById('home-list'); box.innerHTML = 'Đang tải...';
-      try {
-        const r = await fetch('home/list.txt');
-        const files = await r.json(); box.innerHTML = '';
-        for(let f of files) {
-          const fr = await fetch(`home/${f}`);
-          const txt = await fr.text(); const lines = txt.split('\n');
-          const d = document.createElement('div'); d.className = 'home-item';
-          d.innerHTML = `<div class="note" style="flex:1;">${lines.slice(1).join('<br>')}</div><img src="${lines[0]}" style="width:350px; border-radius:10px;">`;
-          box.appendChild(d);
-        }
-      } catch(e) { box.innerHTML = 'Chưa có bản tin.'; }
-    }
+    // --- DARK MODE ---
+    const themeBtn = document.getElementById('theme-btn');
+    themeBtn.onclick = () => {
+      document.body.classList.toggle('dark-mode');
+      const isDark = document.body.classList.contains('dark-mode');
+      themeBtn.innerText = isDark ? '☀️' : '🌙';
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      // Cập nhật lại vị trí indicator sau khi đổi theme vì kích thước font có thể thay đổi nhẹ
+      setTimeout(() => moveIndicator(document.querySelector('nav a.active')), 100);
+    };
 
-    async function loadMemories() {
-      const g = document.getElementById('main-gallery'); g.innerHTML = 'Đang tải...';
-      try {
-        const r = await fetch('pic.txt');
-        let urls = JSON.parse((await r.text()).replace(/```json|```/g, '').trim());
-        g.innerHTML = '';
-        urls.forEach((u, i) => {
-          const item = document.createElement('div'); item.className = 'gallery-item';
-          item.innerHTML = `<img src="${u}" style="width:100%; height:200px; object-fit:cover;"><div style="padding:10px; text-align:center;">Kỉ niệm ${i+1}</div>`;
-          g.appendChild(item);
-        });
-      } catch(e) { g.innerHTML = 'Lỗi album.'; }
-    }
-
-    async function loadInfo() {
-      try {
-        const r = await fetch('info.txt');
-        if(r.ok) document.getElementById('info-content').innerHTML = (await r.text()).replace(/\n/g, '<br>');
-      } catch(e){}
-    }
-
-    // Khởi tạo
-    (async () => {
-      try {
-        const r = await fetch('stu.txt');
-        students = (await r.text()).split('\n').map(s => s.trim()).filter(s => s);
-        const logoR = await fetch('logo.txt');
-        if(logoR.ok) document.getElementById('logo').src = (await logoR.text()).trim();
-      } catch(e){}
+    // Khởi tạo ban đầu
+    window.onload = () => {
+      if (localStorage.getItem('theme') === 'dark') {
+        document.body.classList.add('dark-mode');
+        themeBtn.innerText = '☀️';
+      }
       showPage(location.hash.slice(1));
-    })();
+    };
   </script>
 </body>
 </html>
