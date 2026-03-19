@@ -3,655 +3,304 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Trang Web Lớp Học</title>
+  <title>Lớp 9A7 - THCS Đông La</title>
   <style>
+    :root {
+      --bg-color: #ffffff;      /* Nền trắng tinh khiết */
+      --card-bg: #f6f8fa;      /* Màu xám rất nhạt cho các thẻ/khối (giống nền GitHub Light) */
+      --text-color: #1f2328;    /* Đen đậm (nhưng dịu hơn đen tuyệt đối #000) */
+      --accent-color: #0969da;  /* Xanh dương đậm hơn để nổi bật trên nền trắng */
+      --border-color: #d0d7de;  /* Xám nhạt cho đường viền, thanh thoát hơn */
+      --hover-bg: #eaeef2;      /* Màu xám nhẹ khi di chuột qua */
+  }
+
     body {
-      font-family: Arial, sans-serif;
-      background: #0d1117;
-      color: #e6edf3;
-      margin: 0;
-      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      margin: 0; padding: 0;
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
     }
+
+    /* Header & Nav */
     header {
-      background: #161b22;
-      padding: 10px 24px;
+      background: var(--card-bg);
+      padding: 10px 20px;
       display: flex;
       align-items: center;
-      border-bottom: 1px solid #30363d;
+      border-bottom: 1px solid var(--border-color);
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
+      top: 0; left: 0; right: 0;
       z-index: 1000;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
     }
-    #logo {
-      width: 40px;
-      height: 40px;
-      object-fit: contain;
-      margin-right: 20px;
-      border-radius: 6px;
-      background: #21262d;
-    }
-    nav {
-      flex: 1;
-      display: flex;
-      gap: 20px;
-    }
-    nav a {
-      color: #c9d1d9;
-      text-decoration: none;
-      font-weight: 600;
-      padding: 8px 12px;
-      border-radius: 6px;
-      transition: all 0.2s;
-    }
-    nav a:hover, nav a.active {
-      background: #21262d;
-      color: #58a6ff;
-    }
-    .search-container {
-      position: relative;
-      width: 400px;
-      max-width: 50%;
-      margin-left: auto;
-    }
-    #search-input {
-      width: 100%;
-      padding: 12px 20px;
-      font-size: 1em;
-      border: 1px solid #30363d;
-      border-radius: 999px;
-      background: #0d1117;
-      color: #e6edf3;
-      outline: none;
-      box-shadow: 0 1px 6px rgba(32,33,36,.28);
-      transition: box-shadow 0.2s;
-    }
-    #search-input:focus {
-      box-shadow: 0 1px 10px rgba(88,166,255,0.4);
-      border-color: #58a6ff;
-    }
+    #logo { width: 42px; height: 42px; object-fit: cover; border-radius: 8px; margin-right: 15px; }
+    nav { display: flex; gap: 10px; }
+    nav a { color: #c9d1d9; text-decoration: none; font-weight: 600; padding: 8px 12px; border-radius: 6px; }
+    nav a.active { background: var(--hover-bg); color: var(--accent-color); }
+
+    /* Search */
+    .search-container { position: relative; flex: 1; max-width: 300px; margin-left: auto; }
+    #search-input { width: 100%; padding: 8px 15px; border-radius: 20px; border: 1px solid var(--border-color); background: var(--bg-color); color: white; outline: none; }
     #search-dropdown {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
-      background: #161b22;
-      border: 1px solid #30363d;
-      border-radius: 12px;
-      margin-top: 8px;
-      max-height: 320px;
-      overflow-y: auto;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.6);
-      display: none;
-      z-index: 999;
+      position: absolute; top: 110%; left: 0; right: 0;
+      background: var(--card-bg); border: 1px solid var(--border-color);
+      border-radius: 8px; display: none; list-style: none; padding: 5px 0;
+      max-height: 250px; overflow-y: auto; z-index: 1001;
     }
     #search-dropdown.show { display: block; }
-    #search-dropdown li {
-      padding: 12px 20px;
-      cursor: pointer;
-      transition: background 0.15s;
-    }
-    #search-dropdown li:hover { background: #21262d; }
+    #search-dropdown li { padding: 10px 15px; cursor: pointer; border-bottom: 1px solid var(--border-color); }
+    #search-dropdown li:hover { background: var(--hover-bg); color: var(--accent-color); }
 
-    main {
-      margin-top: 80px;
-      flex: 1;
-      padding: 24px;
-      max-width: 1200px;
-      margin-left: auto;
-      margin-right: auto;
-      width: 100%;
-    }
-    h1 {
-      color: #58a6ff;
-      text-align: center;
-      margin-bottom: 24px;
-    }
-    .loading, .error {
-      text-align: center;
-      padding: 40px;
-      font-size: 1.2em;
-      color: #8b949e;
-    }
-    .error { color: #f85149; }
-
-    /* Modal phóng to */
-    #image-modal {
-      display: none;
-      position: fixed;
-      z-index: 2000;
-      left: 0; top: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.95);
-      overflow: auto;
-    }
-    #modal-content {
-      margin: auto;
-      display: block;
-      max-width: 95vw;
-      max-height: 95vh;
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      object-fit: contain;
-    }
-    #modal-close {
-      position: absolute;
-      top: 20px; right: 35px;
-      color: #fff;
-      font-size: 40px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    #modal-close:hover { color: #58a6ff; }
-
-    /* Ảnh Trang Chủ - giữ nguyên tỷ lệ, không crop */
-    .home-item img {
-      width: 100%;
-      max-width: 300px;
-      height: auto;
-      border-radius: 8px;
-      object-fit: contain;
-      background: #161b22;
-      cursor: pointer;
-      transition: transform 0.2s;
-      display: block;
-    }
-    .home-item img:hover {
-      transform: scale(1.03);
-    }
-    .home-item {
-      display: flex;
-      align-items: flex-start;
-      background: #161b22;
-      padding: 16px;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-    .home-item .note {
-      flex: 1;
-      white-space: pre-wrap;
-      color: #c9d1d9;
-      min-width: 200px;
-    }
-
-    /* Ảnh Kỉ Niệm */
-    .gallery-item img {
-      width: 100%;
-      height: auto;
-      max-height: 300px;
-      border-radius: 8px;
-      object-fit: contain;
-      background: #161b22;
-      cursor: pointer;
-      transition: transform 0.2s;
-      display: block;
-    }
-    .gallery-item img:hover {
-      transform: scale(1.03);
-    }
-
-    #stats { text-align: center; font-size: 1.1em; color: #8b949e; margin-bottom: 24px; }
-    #stats strong { color: #58a6ff; }
-    .gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 20px;
-    }
-    .gallery-item {
-      background: #161b22;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-      transition: transform 0.15s ease;
-    }
-    .gallery-item:hover { transform: translateY(-4px); }
-    .gallery-item .caption {
-      padding: 10px 12px;
-      font-size: 0.95em;
-      color: #8b949e;
-      text-align: center;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      background: #21262d;
-    }
-    #info-content {
-      white-space: pre-wrap;
-      background: #161b22;
-      padding: 24px;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-    }
+    /* Layout chính */
+    main { margin-top: 80px; padding: 20px; max-width: 1000px; margin-left: auto; margin-right: auto; }
     section { display: none; }
     section.active { display: block; }
+    h1 { color: var(--accent-color); text-align: center; margin-bottom: 30px; }
 
-    /* Modal thông tin học sinh */
-    #student-modal {
-      display: none;
-      position: fixed;
-      z-index: 2000;
-      left: 0; top: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.9);
-      overflow: auto;
+    /* --- SỬA TRANG CHỦ: CHỮ TRÁI - ẢNH PHẢI --- */
+    .home-item { 
+      display: flex; 
+      background: var(--card-bg); 
+      padding: 25px; 
+      border-radius: 12px; 
+      margin-bottom: 25px; 
+      gap: 30px; 
+      border: 1px solid var(--border-color);
+      align-items: flex-start; /* Để chữ bắt đầu từ trên cùng */
     }
-    #student-modal-content {
-      background: #161b22;
-      margin: 5% auto;
-      padding: 24px;
-      border-radius: 12px;
-      max-width: 800px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.6);
-    }
-    #student-close {
-      position: absolute;
-      top: 20px; right: 35px;
-      color: #fff;
-      font-size: 40px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    #student-close:hover { color: #58a6ff; }
-    #student-avatar {
-      width: 120px;
-      height: 120px;
-      object-fit: cover;
-      border-radius: 50%;
-      margin: 0 auto 16px;
-      display: block;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-    }
-    #student-info-text {
+    .home-item .note { 
+      flex: 1; 
+      line-height: 1.8; 
       white-space: pre-wrap;
-      margin-bottom: 24px;
+      font-size: 1.05em;
     }
-    #student-gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 16px;
+    .home-item img { 
+      width: 350px; 
+      max-width: 45%; 
+      border-radius: 10px; 
+      cursor: pointer; 
+      object-fit: cover;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     }
-    #student-gallery img {
-      width: 100%;
-      height: auto;
-      border-radius: 8px;
-      object-fit: contain;
-      background: #21262d;
-      cursor: pointer;
+
+    /* --- SỬA PHẦN KỈ NIỆM: HIỆN TÊN ẢNH --- */
+    .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
+    .gallery-item { background: var(--card-bg); border-radius: 10px; overflow: hidden; border: 1px solid var(--border-color); }
+    .gallery-item img { width: 100%; height: 200px; object-fit: cover; cursor: pointer; display: block; }
+    .gallery-item .caption { 
+        padding: 12px; 
+        font-size: 0.9em; 
+        text-align: center; 
+        color: #c9d1d9; 
+        background: #1c2128; 
+        border-top: 1px solid var(--border-color);
+        font-weight: 500;
     }
-    #student-gallery img:hover {
-      transform: scale(1.03);
+
+    /* Modal Styles */
+    .modal { display: none; position: fixed; z-index: 2000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); overflow-y: auto; }
+    .close { position: absolute; top: 15px; right: 25px; color: white; font-size: 35px; cursor: pointer; z-index: 2001; }
+    
+    #student-content {
+      background: var(--card-bg); width: 90%; max-width: 650px;
+      margin: 50px auto; padding: 25px; border-radius: 15px;
+      border: 1px solid var(--border-color); position: relative;
     }
-    #student-loading {
-      text-align: center;
-      padding: 20px;
-    }
-    #student-error {
-      color: #f85149;
-      text-align: center;
+    #st-avt { width: 120px; height: 120px; border-radius: 50%; display: block; margin: 0 auto 15px; object-fit: cover; border: 3px solid var(--accent-color); background: #30363d; }
+    #st-info { line-height: 1.8; white-space: pre-wrap; background: #0d1117; padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 20px; }
+    #st-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
+    #st-gallery img { width: 100%; height: 100px; object-fit: cover; border-radius: 5px; cursor: pointer; }
+
+    .loading { text-align: center; color: #8b949e; padding: 20px; }
+    .error-msg { color: #f85149; text-align: center; padding: 10px; font-size: 0.9em; }
+
+    @media (max-width: 768px) { 
+        .home-item { flex-direction: column; } 
+        .home-item img { width: 100%; max-width: 100%; } 
     }
   </style>
 </head>
 <body>
 
   <header>
-    <img id="logo" src="https://via.placeholder.com/40?text=Logo" alt="Logo lớp">
+    <img id="logo" src="https://via.placeholder.com/42" alt="Logo">
     <nav>
-      <a href="#home" data-page="home" class="active">Trang Chủ</a>
-      <a href="#memories" data-page="memories">Kỉ Niệm</a>
-      <a href="#info" data-page="info">Thông Tin</a>
+      <a href="#home" class="active">Trang Chủ</a>
+      <a href="#memories">Kỉ Niệm</a>
+      <a href="#info">Thông Tin</a>
     </nav>
     <div class="search-container">
-      <input type="text" id="search-input" placeholder="Tìm học sinh lớp...">
+      <input type="text" id="search-input" placeholder="Tìm tên học sinh...">
       <ul id="search-dropdown"></ul>
     </div>
   </header>
 
   <main>
-    <section id="home" class="active">
-      <h1>Trang Chủ</h1>
-      <div id="home-loading" class="loading">Đang tải nội dung trang chủ...</div>
-      <div id="home-error" class="error" style="display:none"></div>
-      <div id="home-list"></div>
-    </section>
-
-    <section id="memories">
-      <h1>Kỉ Niệm</h1>
-      <div id="stats">Đang đếm số ảnh...</div>
-      <div id="memories-loading" class="loading">Đang đọc danh sách ảnh...</div>
-      <div id="memories-error" class="error" style="display:none"></div>
-      <div class="gallery" id="gallery"></div>
-    </section>
-
-    <section id="info">
-      <h1>Thông Tin</h1>
-      <div id="info-loading" class="loading">Đang tải thông tin...</div>
-      <div id="info-error" class="error" style="display:none"></div>
-      <div id="info-content"></div>
-    </section>
+    <section id="home" class="active"><h1>Bản Tin 9A7</h1><div id="home-list"></div></section>
+    <section id="memories"><h1>Kho Ảnh Kỉ Niệm</h1><div class="gallery" id="main-gallery"></div></section>
+    <section id="info"><h1>Thông Tin Lớp</h1><div id="info-content" style="background:var(--card-bg); padding:20px; border-radius:10px;"></div></section>
   </main>
 
-  <div id="image-modal">
-    <span id="modal-close">×</span>
-    <img id="modal-content" src="" alt="Ảnh phóng to">
-  </div>
-
-  <!-- Modal thông tin học sinh -->
-  <div id="student-modal">
-    <span id="student-close">×</span>
-    <div id="student-modal-content">
-      <h2 id="student-name" style="text-align:center; color:#58a6ff;"></h2>
-      <img id="student-avatar" src="https://via.placeholder.com/120?text=Avatar" alt="Avatar">
-      <div id="student-loading" class="loading">Đang tải thông tin...</div>
-      <div id="student-error" class="error" style="display:none"></div>
-      <div id="student-info-text"></div>
-      <h3 style="color:#58a6ff; margin-top:32px;">Ảnh đi kèm</h3>
-      <div id="student-gallery"></div>
+  <div id="st-modal" class="modal">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <div id="student-content">
+      <img id="st-avt" src="">
+      <h2 id="st-name" style="text-align:center; color:var(--accent-color); margin-bottom:15px;"></h2>
+      <div id="st-info"></div>
+      <h4 style="border-bottom: 1px solid var(--border-color); padding-bottom:5px;">Ảnh kỉ niệm cá nhân</h4>
+      <div id="st-gallery"></div>
     </div>
   </div>
 
+  <div id="img-modal" class="modal" style="display:none; align-items:center; justify-content:center;">
+    <span class="close" onclick="this.parentElement.style.display='none'">&times;</span>
+    <img id="img-full" style="max-width:90%; max-height:90%; border-radius:5px;">
+  </div>
+
   <script>
-    // Modal ảnh
-    const imageModal = document.getElementById('image-modal');
-    const modalImg = document.getElementById('modal-content');
-    const imageClose = document.getElementById('modal-close');
+    let students = [];
 
-    function openImageModal(src) {
-      modalImg.src = src;
-      imageModal.style.display = 'block';
+    function viewImg(src) {
+      const m = document.getElementById('img-modal');
+      document.getElementById('img-full').src = src;
+      m.style.display = 'flex';
     }
 
-    imageClose.onclick = () => imageModal.style.display = 'none';
-    imageModal.onclick = (e) => { if (e.target === imageModal) imageModal.style.display = 'none'; };
+    function closeModal() { document.getElementById('st-modal').style.display = 'none'; }
 
-    // Modal thông tin học sinh
-    const studentModal = document.getElementById('student-modal');
-    const studentName = document.getElementById('student-name');
-    const studentAvatar = document.getElementById('student-avatar');
-    const studentInfoText = document.getElementById('student-info-text');
-    const studentGallery = document.getElementById('student-gallery');
-    const studentLoading = document.getElementById('student-loading');
-    const studentError = document.getElementById('student-error');
-    const studentClose = document.getElementById('student-close');
-
-    studentClose.onclick = () => studentModal.style.display = 'none';
-    studentModal.onclick = (e) => { if (e.target === studentModal) studentModal.style.display = 'none'; };
-
-    async function loadStudentInfo(student) {
-      studentName.textContent = student;
-      studentAvatar.src = 'https://via.placeholder.com/120?text=Avatar';
-      studentInfoText.innerHTML = '';
-      studentGallery.innerHTML = '';
-      studentError.style.display = 'none';
-      studentLoading.style.display = 'block';
-      studentModal.style.display = 'block';
-
-      const folder = encodeURIComponent(student).replace(/%20/g, '+'); // Encode tên cho URL
-      const basePath = `stu/${folder}/`;
-
-      try {
-        // Fetch inf.txt
-        const infRes = await fetch(basePath + 'inf.txt');
-        if (!infRes.ok) throw new Error('Không tìm thấy học sinh');
-
-        const infText = await infRes.text();
-        const lines = infText.split('\n').map(l => l.trim());
-        const avatarUrl = lines[0] || 'https://via.placeholder.com/120?text=Avatar';
-        const info = lines.slice(1).join('<br>') || 'Không có thông tin';
-
-        studentAvatar.src = avatarUrl;
-        studentInfoText.innerHTML = info;
-
-        // Fetch pics.txt (giả định là JSON array link ảnh đi kèm)
-        let pics = [];
-        try {
-          const picsRes = await fetch(basePath + 'pics.txt');
-          if (picsRes.ok) {
-            const picsText = await picsRes.text();
-            pics = JSON.parse(picsText.trim());
-          }
-        } catch {}
-
-        if (Array.isArray(pics) && pics.length > 0) {
-          pics.forEach(url => {
-            const img = document.createElement('img');
-            img.src = url.trim();
-            img.alt = 'Ảnh đi kèm';
-            img.onclick = () => openImageModal(img.src);
-            studentGallery.appendChild(img);
-          });
-        } else {
-          studentGallery.innerHTML = '<p style="text-align:center; color:#8b949e;">Không có ảnh đi kèm</p>';
-        }
-
-        studentLoading.style.display = 'none';
-      } catch (err) {
-        studentLoading.style.display = 'none';
-        studentError.style.display = 'block';
-        studentError.textContent = 'Không tìm thấy học sinh';
-        console.error(err);
-      }
-    }
-
-    // Navigation & load (giữ nguyên)
-    const sections = document.querySelectorAll('section');
-    const navLinks = document.querySelectorAll('nav a');
-
-    function showPage(pageId) {
-      sections.forEach(s => s.classList.remove('active'));
-      document.getElementById(pageId).classList.add('active');
-      navLinks.forEach(l => l.classList.remove('active'));
-      document.querySelector(`[data-page="${pageId}"]`)?.classList.add('active');
-      loadPageContent(pageId);
-    }
-
-    window.addEventListener('hashchange', () => {
-      const pageId = window.location.hash.slice(1) || 'home';
-      showPage(pageId);
-    });
-
-    async function loadLogo() {
-      try {
-        const res = await fetch('logo.txt');
-        if (!res.ok) return;
-        document.getElementById('logo').src = (await res.text()).trim();
-      } catch {}
-    }
-
-    const loadedPages = new Set();
-
-    async function loadPageContent(pageId) {
-      if (loadedPages.has(pageId)) return;
-      loadedPages.add(pageId);
-      if (pageId === 'home') await loadHome();
-      if (pageId === 'memories') await loadMemories();
-      if (pageId === 'info') await loadInfo();
-    }
-
-    // Search header - thêm click để load info
-    let allStudents = [];
-    async function loadStudents() {
-      try {
-        const res = await fetch('stu.txt');
-        if (!res.ok) return;
-        const text = await res.text();
-        allStudents = text.split('\n').map(s => s.trim()).filter(Boolean);
-      } catch {}
-    }
-
-    function renderDropdown(stus) {
-      const dd = document.getElementById('search-dropdown');
-      dd.innerHTML = '';
-      if (stus.length === 0) {
-        dd.innerHTML = '<li style="color:#8b949e; text-align:center; cursor:default;">Không tìm thấy</li>';
-        return;
-      }
-      stus.forEach(s => {
-        const li = document.createElement('li');
-        li.textContent = s;
-        li.onclick = () => loadStudentInfo(s);
-        dd.appendChild(li);
+    function showPage(id) {
+      document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+      const target = document.getElementById(id) || document.getElementById('home');
+      target.classList.add('active');
+      document.querySelectorAll('nav a').forEach(a => {
+        a.classList.remove('active');
+        if(a.getAttribute('href') === '#'+id) a.classList.add('active');
       });
+      if(id === 'home') loadHome();
+      if(id === 'memories') loadMemories();
+      if(id === 'info') loadInfo();
     }
 
-    const input = document.getElementById('search-input');
-    const dropdown = document.getElementById('search-dropdown');
+    window.onhashchange = () => showPage(location.hash.slice(1));
 
-    input.addEventListener('input', () => {
-      const q = input.value.toLowerCase().trim();
-      if (q === '') return dropdown.classList.remove('show');
-      const filtered = allStudents.filter(s => s.toLowerCase().includes(q));
-      renderDropdown(filtered);
-      dropdown.classList.add('show');
-    });
+    // --- XỬ LÝ THÔNG TIN HỌC SINH ---
+    async function openStudent(name) {
+      const modal = document.getElementById('st-modal');
+      const avt = document.getElementById('st-avt');
+      const info = document.getElementById('st-info');
+      const gal = document.getElementById('st-gallery');
+      const folder = encodeURIComponent(name).replace(/%20/g, '+');
+      const path = `stu/${folder}/`;
 
-    document.addEventListener('click', e => {
-      if (!input.contains(e.target) && !dropdown.contains(e.target)) dropdown.classList.remove('show');
-    });
-
-    // Load Home
-    async function loadHome() {
-      const loading = document.getElementById('home-loading');
-      const errorDiv = document.getElementById('home-error');
-      const list = document.getElementById('home-list');
+      document.getElementById('st-name').innerText = name;
+      info.innerHTML = '<div class="loading">Đang tải...</div>';
+      gal.innerHTML = '';
+      avt.src = "https://via.placeholder.com/120?text=No+Avt";
+      modal.style.display = 'block';
 
       try {
-        const listRes = await fetch('home/list.txt');
-        if (!listRes.ok) throw new Error('Không đọc được home/list.txt');
-        const fileNames = JSON.parse(await listRes.text());
+        const r = await fetch(path + 'inf.txt');
+        if(r.ok) info.innerText = await r.text();
+        else info.innerHTML = '<div class="error-msg">⚠️ Chưa có giới thiệu.</div>';
+      } catch(e) { info.innerHTML = 'Lỗi kết nối inf.txt'; }
 
-        if (!Array.isArray(fileNames) || fileNames.length === 0) throw new Error('Không có file');
+      try {
+        const r = await fetch(path + 'pics.txt');
+        if(r.ok) {
+          const lines = (await r.text()).split('\n').map(l => l.trim()).filter(l => l !== "");
+          if(lines.length > 0) {
+            avt.src = lines[0]; 
+            lines.slice(1).forEach(link => {
+              const img = document.createElement('img');
+              img.src = link;
+              img.onclick = () => viewImg(link);
+              gal.appendChild(img);
+            });
+          }
+        }
+      } catch(e) {}
+    }
 
-        for (const fn of fileNames) {
-          const res = await fetch(`home/${fn}`);
-          if (!res.ok) continue;
-          const text = await res.text();
-          const lines = text.split('\n').map(l => l.trim());
-          const imgUrl = lines[0];
-          const note = lines.slice(1).join('<br>');
+    // --- TẢI BẢN TIN TRANG CHỦ ---
+    async function loadHome() {
+      const box = document.getElementById('home-list');
+      box.innerHTML = '<div class="loading">Đang tải bản tin...</div>';
+      try {
+        const r = await fetch('home/list.txt');
+        const files = await r.json();
+        box.innerHTML = '';
+        for(let f of files) {
+          const fr = await fetch(`home/${f}`);
+          const txt = await fr.text();
+          const lines = txt.split('\n');
+          const d = document.createElement('div');
+          d.className = 'home-item';
+          // Lines[0] là ảnh, phần còn lại là chữ
+          d.innerHTML = `
+            <div class="note">${lines.slice(1).join('<br>')}</div>
+            <img src="${lines[0]}" onclick="viewImg(this.src)">
+          `;
+          box.appendChild(d);
+        }
+      } catch(e) { box.innerHTML = '<p style="text-align:center">Chưa có bản tin nào.</p>'; }
+    }
+
+    // --- TẢI KỈ NIỆM VỚI TÊN ẢNH ---
+    async function loadMemories() {
+      const g = document.getElementById('main-gallery');
+      g.innerHTML = '<div class="loading">Đang tải ảnh...</div>';
+      try {
+        const r = await fetch('pic.txt');
+        let text = (await r.text()).trim();
+        let urls = JSON.parse(text.replace(/```json|```/g, '').trim());
+        g.innerHTML = '';
+        urls.forEach((u, i) => {
+          let name = "Ảnh kỉ niệm " + (i + 1);
+          try {
+              let fileName = u.split('/').pop().split('?')[0];
+              let decoded = decodeURIComponent(fileName);
+              if (decoded.includes('.') && decoded.length < 30) name = decoded.split('.')[0];
+          } catch(e){}
 
           const item = document.createElement('div');
-          item.className = 'home-item';
-          item.innerHTML = `<div class="note">${note}</div><img src="${imgUrl}" alt="Ảnh bài viết">`;
-          list.appendChild(item);
-
-          const img = item.querySelector('img');
-          img.onclick = () => openImageModal(img.src);
-        }
-
-        loading.style.display = 'none';
-        if (list.children.length === 0) list.innerHTML = '<p style="text-align:center">Không có nội dung</p>';
-      } catch (err) {
-        loading.style.display = 'none';
-        errorDiv.style.display = 'block';
-        errorDiv.textContent = 'Lỗi: ' + err.message;
-      }
-    }
-
-    // Load Memories
-    async function loadMemories() {
-      const loading = document.getElementById('memories-loading');
-      const errorDiv = document.getElementById('memories-error');
-      const gallery = document.getElementById('gallery');
-      const stats = document.getElementById('stats');
-
-      try {
-        const res = await fetch("pic.txt");
-        if (!res.ok) throw new Error("Không đọc được pic.txt");
-        let text = (await res.text()).trim();
-        if (text.startsWith("```")) text = text.split("```")[1]?.trim() || text;
-
-        let urls;
-        try { urls = JSON.parse(text); } catch {
-          if (text.includes("https://") && !text.startsWith("[")) {
-            urls = text.split('\n').map(l => l.trim().replace(/,$/, '')).filter(Boolean);
-          } else throw new Error("Dữ liệu pic.txt không hợp lệ");
-        }
-
-        if (!Array.isArray(urls)) throw new Error("Không phải mảng");
-
-        loading.style.display = "none";
-        if (urls.length === 0) {
-          stats.textContent = "Không có ảnh";
-          gallery.innerHTML = "<p style='text-align:center'>pic.txt rỗng</p>";
-          return;
-        }
-
-        let loaded = 0, failed = 0;
-
-        urls.forEach(url => {
-          const trimmed = url.trim();
-          let name = "Ảnh không tên";
-          try {
-            const u = new URL(trimmed);
-            const fn = u.pathname.split('/').pop();
-            if (fn) name = decodeURIComponent(fn.split('.')[0]);
-          } catch {}
-
-          const item = document.createElement("div");
-          item.className = "gallery-item";
-          const img = document.createElement("img");
-          img.src = trimmed;
-          img.alt = name;
-          img.loading = "lazy";
-
-          img.onload = () => { loaded++; updateStats(); };
-          img.onerror = () => { failed++; img.src = "https://via.placeholder.com/300x200/161b22/8b949e?text=Link+hỏng"; updateStats(); };
-
-          const cap = document.createElement("div");
-          cap.className = "caption";
-          cap.textContent = name;
-
-          item.appendChild(img);
-          item.appendChild(cap);
-          gallery.appendChild(item);
-
-          img.onclick = () => openImageModal(img.src);
+          item.className = 'gallery-item';
+          item.innerHTML = `
+            <img src="${u}" onclick="viewImg(this.src)">
+            <div class="caption">${name}</div>
+          `;
+          g.appendChild(item);
         });
-
-        stats.innerHTML = `Tổng số link: <strong>${urls.length}</strong> ảnh`;
-
-        function updateStats() {
-          stats.innerHTML = failed > 0 
-            ? `Đã tải: <strong>${loaded}/${urls.length}</strong> (lỗi: ${failed})`
-            : `Tổng số ảnh: <strong>${loaded}/${urls.length}</strong>`;
-        }
-      } catch (err) {
-        loading.style.display = "none";
-        errorDiv.style.display = "block";
-        errorDiv.textContent = "Lỗi: " + err.message;
-      }
+      } catch(e) { g.innerHTML = 'Lỗi tải ảnh.'; }
     }
 
     async function loadInfo() {
-      const loading = document.getElementById('info-loading');
-      const errorDiv = document.getElementById('info-error');
-      const content = document.getElementById('info-content');
-
       try {
-        const res = await fetch('info.txt');
-        if (!res.ok) throw new Error();
-        content.innerHTML = (await res.text()).replace(/\n/g, '<br>');
-        loading.style.display = 'none';
-      } catch (err) {
-        loading.style.display = 'none';
-        errorDiv.style.display = 'block';
-        errorDiv.textContent = 'Lỗi: ' + err.message;
-      }
+        const r = await fetch('info.txt');
+        document.getElementById('info-content').innerHTML = (await r.text()).replace(/\n/g, '<br>');
+      } catch(e){}
     }
 
-    // Khởi động
-    loadLogo();
-    loadStudents();
-    showPage(window.location.hash.slice(1) || 'home');
-  </script>
+    // SEARCH
+    const si = document.getElementById('search-input');
+    const sd = document.getElementById('search-dropdown');
+    si.oninput = () => {
+      const v = si.value.toLowerCase().trim();
+      if(!v) { sd.classList.remove('show'); return; }
+      const m = students.filter(s => s.toLowerCase().includes(v));
+      sd.innerHTML = m.map(s => `<li>${s}</li>`).join('');
+      sd.classList.toggle('show', m.length > 0);
+      sd.querySelectorAll('li').forEach(li => li.onclick = () => { openStudent(li.innerText); sd.classList.remove('show'); si.value=''; });
+    };
 
+    (async () => {
+      try {
+        const r = await fetch('stu.txt');
+        students = (await r.text()).split('\n').map(s => s.trim()).filter(s => s);
+      } catch(e){}
+      const logoR = await fetch('logo.txt');
+      if(logoR.ok) document.getElementById('logo').src = (await logoR.text()).trim();
+      showPage(location.hash.slice(1) || 'home');
+    })();
+  </script>
 </body>
 </html>
