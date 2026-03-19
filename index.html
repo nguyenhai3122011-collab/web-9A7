@@ -301,22 +301,45 @@
     }
 
     async function loadMemories() {
-      const g = document.getElementById('main-gallery'); g.innerHTML = 'Đang tải...';
+      const g = document.getElementById('main-gallery'); 
+      g.innerHTML = 'Đang tải album...';
       try {
         const r = await fetch('pic.txt');
-        let urls = JSON.parse((await r.text()).replace(/```json|```/g, '').trim());
+        let text = await r.text();
+        // Xử lý bỏ các ký tự thừa nếu có
+        let urls = JSON.parse(text.replace(/```json|```/g, '').trim());
         g.innerHTML = '';
-        urls.forEach((u) => {
-          // Lấy tên file bỏ đuôi và gạch ngang
-          const fileName = u.split('/').pop().split('.').slice(0, -1).join('.');
-          const cleanName = fileName.replace(/[-_]/g, ' ');
+        
+        urls.forEach((u, i) => {
+          // Lấy phần cuối cùng của URL sau dấu /
+          let parts = u.split('/');
+          let lastPart = parts[parts.length - 1];
           
-          const item = document.createElement('div'); item.className = 'gallery-item';
-          item.innerHTML = `<img src="${u}" onclick="viewImg(this.src)"><div class="caption">${cleanName || 'Kỉ niệm'}</div>`;
+          // Tách lấy tên trước dấu chấm cuối cùng (bỏ đuôi .jpg, .png...)
+          let fileName = lastPart.includes('.') ? lastPart.split('.').slice(0, -1).join('.') : lastPart;
+          
+          // Làm sạch tên: Đổi gạch ngang, gạch dưới thành khoảng trắng
+          let cleanName = fileName.replace(/[-_]/g, ' ').trim();
+          
+          // Nếu sau khi làm sạch mà tên vẫn quá ngắn hoặc là mã ID (như link Drive)
+          // thì mình sẽ hiện "Kỉ niệm" kèm số thứ tự cho đẹp
+          if (cleanName.length < 3 || cleanName.length > 30) {
+            cleanName = `Kỉ niệm ${i + 1}`;
+          }
+
+          const item = document.createElement('div'); 
+          item.className = 'gallery-item';
+          item.innerHTML = `
+            <img src="${u}" onclick="viewImg(this.src)">
+            <div class="caption">${cleanName}</div>
+          `;
           g.appendChild(item);
         });
-      } catch(e) { g.innerHTML = 'Lỗi album.'; }
-    }
+      } catch(e) { 
+        console.error(e);
+        g.innerHTML = 'Lỗi album hoặc file pic.txt không đúng định dạng JSON.'; 
+      }
+    }}
 
     async function loadInfo() {
       try {
