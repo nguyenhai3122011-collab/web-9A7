@@ -5,21 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Lớp 9A7 - THCS Đông La</title>
   <style>
-    /* HỆ THỐNG MÀU SẮC BIẾN CSS */
+    /* HỆ THỐNG BIẾN MÀU */
     :root {
-      /* Giao diện Sáng (Default) */
       --bg-color: #ffffff;
       --card-bg: #f6f8fa;
       --text-color: #1f2328;
       --accent-color: #0969da;
       --border-color: #d0d7de;
       --hover-bg: #eaeef2;
-      --modal-overlay: rgba(0,0,0,0.8);
-      transition: background 0.3s, color 0.3s;
+      --modal-overlay: rgba(0,0,0,0.7);
     }
 
     body.dark-mode {
-      /* Giao diện Tối (GitHub Dark Style) */
       --bg-color: #0d1117;
       --card-bg: #161b22;
       --text-color: #c9d1d9;
@@ -29,18 +26,22 @@
       --modal-overlay: rgba(0,0,0,0.9);
     }
 
+    /* HIỆU ỨNG CHUYỂN MÀU MƯỢT MÀ CHO TOÀN BỘ WEB */
+    * {
+      transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+    }
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-      background: var(--bg-color);
+      background-color: var(--bg-color);
       color: var(--text-color);
       margin: 0; padding: 0;
       min-height: 100vh;
-      transition: background 0.3s ease;
     }
 
-    /* Header & Nav */
+    /* HEADER */
     header {
-      background: var(--card-bg);
+      background-color: var(--card-bg);
       padding: 10px 20px;
       display: flex;
       align-items: center;
@@ -48,9 +49,19 @@
       position: fixed;
       top: 0; left: 0; right: 0;
       z-index: 1000;
+      gap: 20px;
     }
-    #logo { width: 42px; height: 42px; object-fit: cover; border-radius: 8px; margin-right: 15px; border: 1px solid var(--border-color); }
-    nav { display: flex; gap: 5px; }
+
+    .header-main-nav {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      flex: 1;
+    }
+
+    #logo { width: 42px; height: 42px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-color); flex-shrink: 0; }
+    
+    nav { display: flex; gap: 5px; align-items: center; flex: 1; }
     nav a { 
       color: var(--text-color); 
       text-decoration: none; 
@@ -58,143 +69,130 @@
       padding: 8px 12px; 
       border-radius: 6px; 
       opacity: 0.8;
+      font-size: 14px;
+      white-space: nowrap;
     }
-    nav a:hover { background: var(--hover-bg); opacity: 1; }
-    nav a.active { background: var(--hover-bg); color: var(--accent-color); opacity: 1; }
+    nav a:hover, nav a.active { background-color: var(--hover-bg); color: var(--accent-color); opacity: 1; }
 
-    /* Search & Theme Toggle */
-    .search-container { position: relative; flex: 1; max-width: 250px; margin-left: auto; }
-    #search-input { 
-      width: 100%; padding: 8px 15px; border-radius: 20px; 
-      border: 1px solid var(--border-color); 
-      background: var(--bg-color); 
-      color: var(--text-color); 
-      outline: none; 
+    /* THANH TÌM KIẾM CẠNH MỤC THÔNG TIN */
+    .search-container { 
+      position: relative; 
+      max-width: 250px; 
+      width: 100%;
+      margin-left: 15px;
     }
-    
+    #search-input { 
+      width: 100%; 
+      padding: 7px 15px; 
+      border-radius: 20px; 
+      border: 1px solid var(--border-color); 
+      background-color: var(--bg-color); 
+      color: var(--text-color); 
+      outline: none;
+      font-size: 14px;
+    }
+
     .theme-switch {
-      background: var(--bg-color);
+      background-color: var(--bg-color);
       border: 1px solid var(--border-color);
       border-radius: 50%;
-      width: 35px; height: 35px;
-      margin-left: 15px;
+      width: 36px; height: 36px;
       cursor: pointer;
       display: flex; align-items: center; justify-content: center;
-      font-size: 1.1em;
-      transition: 0.2s;
+      flex-shrink: 0;
+      font-size: 18px;
     }
-    .theme-switch:hover { transform: scale(1.1); background: var(--hover-bg); }
+    .theme-switch:hover { transform: rotate(15deg); }
 
     #search-dropdown {
       position: absolute; top: 110%; left: 0; right: 0;
-      background: var(--card-bg); border: 1px solid var(--border-color);
+      background-color: var(--card-bg); border: 1px solid var(--border-color);
       border-radius: 8px; display: none; list-style: none; padding: 5px 0;
       max-height: 250px; overflow-y: auto; z-index: 1001;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
     #search-dropdown.show { display: block; }
     #search-dropdown li { padding: 10px 15px; cursor: pointer; border-bottom: 1px solid var(--border-color); }
-    #search-dropdown li:hover { background: var(--hover-bg); color: var(--accent-color); }
+    #search-dropdown li:hover { background-color: var(--hover-bg); color: var(--accent-color); }
 
-    /* Layout chính */
+    /* LAYOUT CHÍNH */
     main { margin-top: 80px; padding: 20px; max-width: 1000px; margin-left: auto; margin-right: auto; }
     section { display: none; }
     section.active { display: block; }
     h1 { color: var(--accent-color); text-align: center; margin-bottom: 30px; }
 
-    /* Trang Chủ */
-    .home-item { 
-      display: flex; background: var(--card-bg); padding: 25px; 
-      border-radius: 12px; margin-bottom: 25px; gap: 30px; 
-      border: 1px solid var(--border-color); align-items: flex-start; 
-    }
-    .home-item .note { flex: 1; line-height: 1.8; white-space: pre-wrap; font-size: 1.05em; }
-    .home-item img { 
-      width: 350px; max-width: 45%; border-radius: 10px; 
-      cursor: pointer; object-fit: cover; box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
-    }
+    .home-item { display: flex; background-color: var(--card-bg); padding: 25px; border-radius: 12px; margin-bottom: 25px; gap: 30px; border: 1px solid var(--border-color); }
+    .home-item .note { flex: 1; line-height: 1.8; white-space: pre-wrap; }
+    .home-item img { width: 350px; max-width: 45%; border-radius: 10px; cursor: pointer; object-fit: cover; }
 
-    /* Kỉ Niệm */
     .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
-    .gallery-item { background: var(--card-bg); border-radius: 10px; overflow: hidden; border: 1px solid var(--border-color); }
-    .gallery-item img { width: 100%; height: 200px; object-fit: cover; cursor: pointer; display: block; }
-    .gallery-item .caption { 
-      padding: 12px; font-size: 0.9em; text-align: center; 
-      color: var(--text-color); font-weight: 500; border-top: 1px solid var(--border-color);
-    }
+    .gallery-item { background-color: var(--card-bg); border-radius: 10px; overflow: hidden; border: 1px solid var(--border-color); }
+    .gallery-item img { width: 100%; height: 200px; object-fit: cover; cursor: pointer; }
+    .gallery-item .caption { padding: 12px; text-align: center; font-weight: 500; }
 
-    /* Modal */
-    .modal { display: none; position: fixed; z-index: 2000; top: 0; left: 0; width: 100%; height: 100%; background: var(--modal-overlay); overflow-y: auto; }
-    .close { position: absolute; top: 15px; right: 25px; color: white; font-size: 35px; cursor: pointer; z-index: 2001; }
-    
-    #student-content {
-      background: var(--card-bg); width: 90%; max-width: 650px;
-      margin: 50px auto; padding: 25px; border-radius: 15px;
-      border: 1px solid var(--border-color); position: relative;
-    }
-    #st-avt { width: 120px; height: 120px; border-radius: 50%; display: block; margin: 0 auto 15px; object-fit: cover; border: 3px solid var(--accent-color); background: var(--bg-color); }
-    #st-info { line-height: 1.8; white-space: pre-wrap; background: var(--bg-color); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 20px; }
-    #st-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
-    #st-gallery img { width: 100%; height: 100px; object-fit: cover; border-radius: 5px; cursor: pointer; }
+    /* MODAL */
+    .modal { display: none; position: fixed; z-index: 2000; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--modal-overlay); align-items: center; justify-content: center; }
+    .close { position: absolute; top: 15px; right: 25px; color: white; font-size: 35px; cursor: pointer; }
+    #student-content { background-color: var(--card-bg); width: 90%; max-width: 600px; padding: 25px; border-radius: 15px; border: 1px solid var(--border-color); }
+    #st-avt { width: 110px; height: 110px; border-radius: 50%; display: block; margin: 0 auto 15px; border: 3px solid var(--accent-color); background-color: var(--bg-color); object-fit: cover; }
+    #st-info { background-color: var(--bg-color); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 20px; }
+    #st-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
+    #st-gallery img { width: 100%; height: 90px; object-fit: cover; border-radius: 5px; cursor: pointer; }
 
-    .loading { text-align: center; color: var(--accent-color); padding: 20px; }
-
-    @media (max-width: 768px) { 
-        .home-item { flex-direction: column; } 
-        .home-item img { width: 100%; max-width: 100%; } 
+    @media (max-width: 850px) {
+      header { flex-wrap: wrap; gap: 10px; }
+      .header-main-nav { flex-basis: 100%; }
+      .search-container { max-width: 100%; margin: 5px 0; }
     }
   </style>
 </head>
 <body>
 
   <header>
-    <img id="logo" src="https://via.placeholder.com/42" alt="Logo">
-    <nav>
-      <a href="#home" class="active">Trang Chủ</a>
-      <a href="#memories">Kỉ Niệm</a>
-      <a href="#info">Thông Tin</a>
-    </nav>
-    <div class="search-container">
-      <input type="text" id="search-input" placeholder="Tìm tên...">
-      <ul id="search-dropdown"></ul>
+    <div class="header-main-nav">
+      <img id="logo" src="https://via.placeholder.com/42" alt="Logo">
+      <nav>
+        <a href="#home" class="active">Trang Chủ</a>
+        <a href="#memories">Kỉ Niệm</a>
+        <a href="#info">Thông Tin</a>
+        <div class="search-container">
+          <input type="text" id="search-input" placeholder="Tìm tên...">
+          <ul id="search-dropdown"></ul>
+        </div>
+      </nav>
     </div>
-    <button class="theme-switch" id="theme-btn" title="Chuyển chế độ">🌙</button>
+    <button class="theme-switch" id="theme-btn">🌙</button>
   </header>
 
   <main>
     <section id="home" class="active"><h1>Bản Tin 9A7</h1><div id="home-list"></div></section>
     <section id="memories"><h1>Kho Ảnh Kỉ Niệm</h1><div class="gallery" id="main-gallery"></div></section>
-    <section id="info"><h1>Thông Tin Lớp</h1><div id="info-content" style="background:var(--card-bg); padding:20px; border-radius:10px; border: 1px solid var(--border-color);"></div></section>
+    <section id="info"><h1>Thông Tin Lớp</h1><div id="info-content" style="background-color:var(--card-bg); padding:20px; border-radius:10px; border: 1px solid var(--border-color);"></div></section>
   </main>
 
   <div id="st-modal" class="modal">
     <span class="close" onclick="closeModal()">&times;</span>
     <div id="student-content">
       <img id="st-avt" src="">
-      <h2 id="st-name" style="text-align:center; color:var(--accent-color); margin-bottom:15px;"></h2>
+      <h2 id="st-name" style="text-align:center; color:var(--accent-color); margin-bottom:10px;"></h2>
       <div id="st-info"></div>
-      <h4 style="border-bottom: 1px solid var(--border-color); padding-bottom:5px;">Ảnh kỉ niệm cá nhân</h4>
+      <h4 style="border-bottom: 1px solid var(--border-color); padding-bottom:5px;">Ảnh cá nhân</h4>
       <div id="st-gallery"></div>
     </div>
   </div>
 
-  <div id="img-modal" class="modal" style="display:none; align-items:center; justify-content:center;">
+  <div id="img-modal" class="modal" style="display:none;">
     <span class="close" onclick="this.parentElement.style.display='none'">&times;</span>
-    <img id="img-full" style="max-width:90%; max-height:90%; border-radius:5px; box-shadow: 0 0 20px rgba(0,0,0,0.5);">
+    <img id="img-full" style="max-width:90%; max-height:90%; border-radius:5px;">
   </div>
 
   <script>
     let students = [];
-
-    // --- DARK MODE LOGIC ---
     const themeBtn = document.getElementById('theme-btn');
     const body = document.body;
 
-    // Kiểm tra bộ nhớ trình duyệt
-    if (localStorage.getItem('theme') === 'dark') {
-        body.classList.add('dark-mode');
-        themeBtn.innerText = '☀️';
-    }
-
+    // --- DARK MODE ---
+    if (localStorage.getItem('theme') === 'dark') { body.classList.add('dark-mode'); themeBtn.innerText = '☀️'; }
     themeBtn.onclick = () => {
         body.classList.toggle('dark-mode');
         const isDark = body.classList.contains('dark-mode');
@@ -202,15 +200,7 @@
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
     };
 
-    // --- CORE FUNCTIONS ---
-    function viewImg(src) {
-      const m = document.getElementById('img-modal');
-      document.getElementById('img-full').src = src;
-      m.style.display = 'flex';
-    }
-
-    function closeModal() { document.getElementById('st-modal').style.display = 'none'; }
-
+    // --- NAV ---
     function showPage(id) {
       document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
       const target = document.getElementById(id) || document.getElementById('home');
@@ -223,98 +213,80 @@
       if(id === 'memories') loadMemories();
       if(id === 'info') loadInfo();
     }
-
     window.onhashchange = () => showPage(location.hash.slice(1));
 
+    function viewImg(src) {
+      const m = document.getElementById('img-modal');
+      document.getElementById('img-full').src = src;
+      m.style.display = 'flex';
+    }
+    function closeModal() { document.getElementById('st-modal').style.display = 'none'; }
+
+    // --- LOAD DATA ---
     async function openStudent(name) {
       const modal = document.getElementById('st-modal');
       const avt = document.getElementById('st-avt');
       const info = document.getElementById('st-info');
       const gal = document.getElementById('st-gallery');
       const folder = encodeURIComponent(name).replace(/%20/g, '+');
-      const path = `stu/${folder}/`;
-
       document.getElementById('st-name').innerText = name;
-      info.innerHTML = '<div class="loading">Đang tải dữ liệu...</div>';
-      gal.innerHTML = '';
-      avt.src = "https://via.placeholder.com/120?text=No+Avt";
-      modal.style.display = 'block';
-
+      info.innerHTML = 'Đang tải...'; gal.innerHTML = '';
+      modal.style.display = 'flex';
       try {
-        const r = await fetch(path + 'inf.txt');
-        info.innerText = r.ok ? await r.text() : '⚠️ Chưa có giới thiệu.';
-      } catch(e) { info.innerText = 'Lỗi kết nối tệp giới thiệu.'; }
-
-      try {
-        const r = await fetch(path + 'pics.txt');
-        if(r.ok) {
-          const lines = (await r.text()).split('\n').map(l => l.trim()).filter(l => l);
+        const r = await fetch(`stu/${folder}/inf.txt`);
+        info.innerText = r.ok ? await r.text() : 'Chưa có giới thiệu.';
+        const pr = await fetch(`stu/${folder}/pics.txt`);
+        if(pr.ok) {
+          const lines = (await pr.text()).split('\n').map(l => l.trim()).filter(l => l);
           if(lines.length > 0) {
-            avt.src = lines[0]; 
+            avt.src = lines[0];
             lines.slice(1).forEach(link => {
               const img = document.createElement('img');
-              img.src = link;
-              img.onclick = () => viewImg(link);
+              img.src = link; img.onclick = () => viewImg(link);
               gal.appendChild(img);
             });
           }
         }
-      } catch(e) {}
+      } catch(e) { info.innerText = 'Lỗi kết nối.'; }
     }
 
     async function loadHome() {
-      const box = document.getElementById('home-list');
-      box.innerHTML = '<div class="loading">Đang cập nhật bản tin...</div>';
+      const box = document.getElementById('home-list'); box.innerHTML = 'Đang tải...';
       try {
         const r = await fetch('home/list.txt');
-        const files = await r.json();
-        box.innerHTML = '';
+        const files = await r.json(); box.innerHTML = '';
         for(let f of files) {
           const fr = await fetch(`home/${f}`);
-          const txt = await fr.text();
-          const lines = txt.split('\n');
-          const d = document.createElement('div');
-          d.className = 'home-item';
-          d.innerHTML = `
-            <div class="note">${lines.slice(1).join('<br>')}</div>
-            <img src="${lines[0]}" onclick="viewImg(this.src)">
-          `;
+          const txt = await fr.text(); const lines = txt.split('\n');
+          const d = document.createElement('div'); d.className = 'home-item';
+          d.innerHTML = `<div class="note">${lines.slice(1).join('<br>')}</div><img src="${lines[0]}" onclick="viewImg(this.src)">`;
           box.appendChild(d);
         }
-      } catch(e) { box.innerHTML = '<p style="text-align:center; opacity:0.6;">Chưa có bản tin mới nào.</p>'; }
+      } catch(e) { box.innerHTML = 'Chưa có bản tin.'; }
     }
 
     async function loadMemories() {
-      const g = document.getElementById('main-gallery');
-      g.innerHTML = '<div class="loading">Đang mở album...</div>';
+      const g = document.getElementById('main-gallery'); g.innerHTML = 'Đang tải...';
       try {
         const r = await fetch('pic.txt');
-        let text = (await r.text()).trim();
-        let urls = JSON.parse(text.replace(/```json|```/g, '').trim());
+        let urls = JSON.parse((await r.text()).replace(/```json|```/g, '').trim());
         g.innerHTML = '';
         urls.forEach((u, i) => {
-          let name = "Kỉ niệm " + (i + 1);
-          try {
-              let fileName = u.split('/').pop().split('?')[0];
-              let decoded = decodeURIComponent(fileName);
-              if (decoded.includes('.') && decoded.length < 30) name = decoded.split('.')[0];
-          } catch(e){}
-          const item = document.createElement('div');
-          item.className = 'gallery-item';
-          item.innerHTML = `<img src="${u}" onclick="viewImg(this.src)"><div class="caption">${name}</div>`;
+          const item = document.createElement('div'); item.className = 'gallery-item';
+          item.innerHTML = `<img src="${u}" onclick="viewImg(this.src)"><div class="caption">Kỉ niệm ${i+1}</div>`;
           g.appendChild(item);
         });
-      } catch(e) { g.innerHTML = '<p style="text-align:center">Lỗi tải album ảnh.</p>'; }
+      } catch(e) { g.innerHTML = 'Lỗi album.'; }
     }
 
     async function loadInfo() {
       try {
         const r = await fetch('info.txt');
-        document.getElementById('info-content').innerHTML = (await r.text()).replace(/\n/g, '<br>');
+        if(r.ok) document.getElementById('info-content').innerHTML = (await r.text()).replace(/\n/g, '<br>');
       } catch(e){}
     }
 
-    // SEARCH LOGIC
+    // --- SEARCH ---
     const si = document.getElementById('search-input');
     const sd = document.getElementById('search-dropdown');
     si.oninput = () => {
@@ -326,16 +298,13 @@
       sd.querySelectorAll('li').forEach(li => li.onclick = () => { openStudent(li.innerText); sd.classList.remove('show'); si.value=''; });
     };
 
-    // INITIALIZE
     (async () => {
       try {
         const r = await fetch('stu.txt');
         students = (await r.text()).split('\n').map(s => s.trim()).filter(s => s);
+        const logoR = await fetch('logo.txt');
+        if(logoR.ok) document.getElementById('logo').src = (await logoR.text()).trim();
       } catch(e){}
-      
-      const logoR = await fetch('logo.txt');
-      if(logoR.ok) document.getElementById('logo').src = (await logoR.text()).trim();
-      
       showPage(location.hash.slice(1) || 'home');
     })();
   </script>
