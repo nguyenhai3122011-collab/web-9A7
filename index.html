@@ -102,34 +102,56 @@
     #search-dropdown li { padding: 10px 15px; cursor: pointer; border-bottom: 1px solid var(--border-color); }
     #search-dropdown li:hover { background-color: var(--hover-bg); color: var(--accent-color); }
 
-    main { margin-top: 80px; padding: 20px; max-width: 1000px; margin-left: auto; margin-right: auto; }
+    /* LAYOUT CHÍNH - Cho phép rộng vô hạn */
+    main { margin-top: 80px; padding: 0; width: 100%; }
     section { display: none; opacity: 0; transform: translateY(20px); transition: all 0.5s ease; }
     section.active { display: block; opacity: 1; transform: translateY(0); }
-    h1 { color: var(--accent-color); text-align: center; margin-bottom: 30px; }
+    
+    /* Căn giữa h1 nhưng vẫn giữ section rộng */
+    h1 { color: var(--accent-color); text-align: center; margin: 30px 0; }
 
-    /* TRANG CHỦ - MASK */
+    /* TRANG CHỦ - HIỆU ỨNG LIỀN MẠCH, DÀI VÔ HẠN */
     .home-item { 
       display: flex; 
       background-color: var(--card-bg); 
-      border-radius: 12px; 
-      margin-bottom: 25px; 
-      border: 1px solid var(--border-color); 
+      margin-bottom: 4px; /* Khoảng cách rất nhỏ giữa các mục */
+      border-top: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
       overflow: hidden;
       align-items: stretch;
+      width: 100%; /* Chiều dài vô hạn */
     }
-    .home-item .note { flex: 1; padding: 25px; line-height: 1.8; white-space: pre-wrap; display: flex; align-items: center; }
+    .home-item .note { 
+      flex: 1; 
+      padding: 30px 50px; 
+      line-height: 1.8; 
+      white-space: pre-wrap; 
+      display: flex; 
+      align-items: center; 
+      font-size: 16px;
+    }
     .home-img-wrapper { flex: 1; position: relative; overflow: hidden; }
     .home-item img { 
       width: 100%; height: 100%; object-fit: cover; cursor: pointer; display: block;
-      -webkit-mask-image: linear-gradient(to right, transparent 0%, black 25%);
-      mask-image: linear-gradient(to right, transparent 0%, black 25%);
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, black 20%);
+      mask-image: linear-gradient(to right, transparent 0%, black 20%);
     }
 
-    /* KỈ NIỆM */
-    .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
+    /* KỈ NIỆM - Giữ lại giới hạn chiều rộng để ảnh không bị quá to trên màn PC */
+    #main-gallery { 
+      display: grid; 
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); 
+      gap: 20px; 
+      max-width: 1200px; 
+      margin: 0 auto; 
+      padding: 20px;
+    }
     .gallery-item { background-color: var(--card-bg); border-radius: 10px; overflow: hidden; border: 1px solid var(--border-color); }
     .gallery-item img { width: 100%; height: 200px; object-fit: cover; cursor: pointer; }
     .gallery-item .caption { padding: 12px; text-align: center; font-weight: 500; text-transform: capitalize; font-size: 13px; color: var(--text-color); }
+
+    /* THÔNG TIN - Căn giữa nội dung */
+    #info-content { max-width: 800px; margin: 0 auto 40px; background-color:var(--card-bg); padding:20px; border-radius:10px; border: 1px solid var(--border-color); }
 
     /* MODAL */
     .modal { display: none; position: fixed; z-index: 2000; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--modal-overlay); align-items: center; justify-content: center; backdrop-filter: blur(4px); }
@@ -145,6 +167,7 @@
       .header-main-nav { flex-basis: 100%; }
       .search-container { max-width: 100%; margin: 5px 0; }
       .home-item { flex-direction: column-reverse; }
+      .home-item .note { padding: 20px; }
       .home-item img { 
         height: 250px; 
         -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 30%);
@@ -176,7 +199,7 @@
   <main>
     <section id="home"><h1>Bản Tin 9A7</h1><div id="home-list"></div></section>
     <section id="memories"><h1>Kho Ảnh Kỉ Niệm</h1><div class="gallery" id="main-gallery"></div></section>
-    <section id="info"><h1>Thông Tin Lớp</h1><div id="info-content" style="background-color:var(--card-bg); padding:20px; border-radius:10px; border: 1px solid var(--border-color);"></div></section>
+    <section id="info"><h1>Thông Tin Lớp</h1><div id="info-content"></div></section>
   </main>
 
   <div id="st-modal" class="modal">
@@ -202,7 +225,7 @@
     const navLinks = document.querySelectorAll('nav a');
 
     function moveIndicator(el) {
-      if (!el) return;
+      if (!el || window.innerWidth < 850) return;
       indicator.style.width = `${el.offsetWidth}px`;
       indicator.style.left = `${el.offsetLeft}px`;
       indicator.style.top = `${el.offsetTop}px`;
@@ -300,15 +323,12 @@
         g.innerHTML = '';
         
         urls.forEach((u, i) => {
-          let fileName = u.split('/').pop().split('?')[0]; // Lấy tên file, bỏ tham số URL
+          let fileName = u.split('/').pop().split('?')[0]; 
           if (fileName.includes('.')) {
               fileName = fileName.split('.').slice(0, -1).join('.');
           }
           let cleanName = decodeURIComponent(fileName).replace(/[-_]/g, ' ').trim();
-          
-          if (cleanName.length < 3 || cleanName.length > 35) {
-            cleanName = `Kỉ niệm ${i + 1}`;
-          }
+          if (cleanName.length < 3 || cleanName.length > 35) cleanName = `Kỉ niệm ${i + 1}`;
 
           const item = document.createElement('div'); 
           item.className = 'gallery-item';
@@ -318,9 +338,7 @@
           `;
           g.appendChild(item);
         });
-      } catch(e) { 
-        g.innerHTML = 'Lỗi album hoặc file pic.txt không đúng.'; 
-      }
+      } catch(e) { g.innerHTML = 'Lỗi album hoặc file pic.txt không đúng.'; }
     }
 
     async function loadInfo() {
