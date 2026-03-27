@@ -1,404 +1,464 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Lớp 9A7 - THCS Đông La</title>
-  <style>
-    /* HỆ THỐNG BIẾN MÀU */
-    :root {
-      --bg-color: #f8f9fa;
-      --card-bg: rgba(255, 255, 255, 0.85);
-      --text-color: #1f2328;
-      --accent-color: #0969da;
-      --border-color: #d0d7de;
-      --hover-bg: #f0f3f6;
-      --modal-overlay: rgba(0,0,0,0.7);
-      --indicator-color: rgba(9, 105, 218, 0.15);
-      --shadow: 0 4px 12px rgba(0,0,0,0.08);
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Lớp 9A7 - THCS Đông La</title>
 
-    body.dark-mode {
-      --bg-color: #0d1117;
-      --card-bg: rgba(22, 27, 34, 0.85);
-      --text-color: #c9d1d9;
-      --accent-color: #58a6ff;
-      --border-color: #30363d;
-      --hover-bg: #21262d;
-      --modal-overlay: rgba(0,0,0,0.9);
-      --indicator-color: rgba(88, 166, 255, 0.2);
-      --shadow: 0 8px 24px rgba(0,0,0,0.3);
-    }
+<style>
 
-    * { box-sizing: border-box; transition: background-color 0.3s, color 0.3s, border-color 0.3s, transform 0.3s; }
+/* ===== MÀU ===== */
+:root {
+  --bg-color: #f8f9fa;
+  --card-bg: rgba(255,255,255,0.85);
+  --text-color: #1f2328;
+  --accent-color: #0969da;
+  --border-color: #d0d7de;
+  --hover-bg: #f0f3f6;
+  --modal-overlay: rgba(0,0,0,0.7);
+  --shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      margin: 0; padding: 0;
-      min-height: 100vh;
-    }
+body.dark-mode {
+  --bg-color:#0d1117;
+  --card-bg:rgba(22,27,34,0.85);
+  --text-color:#c9d1d9;
+  --accent-color:#58a6ff;
+  --border-color:#30363d;
+}
 
-    /* HEADER - CỐ ĐỊNH VÀ CHIA ĐỀU */
-    header {
-      background-color: var(--card-bg);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      height: 65px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 20px;
-      border-bottom: 1px solid var(--border-color);
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 1000;
-      box-shadow: var(--shadow);
-    }
+/* ===== BASE ===== */
 
-    .header-left { display: flex; align-items: center; gap: 15px; }
-    #logo { width: 42px; height: 42px; object-fit: cover; border-radius: 10px; border: 1px solid var(--border-color); }
-    
-    nav { display: flex; gap: 5px; position: relative; }
-    nav a { 
-      color: var(--text-color); 
-      text-decoration: none; 
-      font-weight: 600; 
-      padding: 8px 16px; 
-      border-radius: 8px; 
-      font-size: 14px;
-      z-index: 2;
-    }
-    nav a.active { color: var(--accent-color); }
+* {
+  box-sizing:border-box;
+  transition:0.3s;
+}
 
-    #nav-indicator {
-      position: absolute;
-      background-color: var(--indicator-color);
-      border-radius: 8px;
-      z-index: 1;
-      transition: all 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.1); 
-    }
+body {
+  font-family:system-ui;
+  margin:0;
+  background:var(--bg-color);
+  color:var(--text-color);
+}
 
-    .header-right { display: flex; align-items: center; gap: 15px; }
+/* ===== HEADER ===== */
 
-    /* Ô TÌM KIẾM */
-    .search-container { position: relative; width: 180px; }
-    #search-input { 
-      width: 100%; padding: 8px 15px; border-radius: 20px; border: 1px solid var(--border-color); 
-      background-color: var(--bg-color); color: var(--text-color); outline: none; font-size: 13px;
-    }
-    #search-input:focus { width: 220px; border-color: var(--accent-color); box-shadow: 0 0 0 3px var(--indicator-color); }
+header {
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  height:65px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 20px;
+  background:var(--card-bg);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border-color);
+  z-index:999;
+}
 
-    #search-dropdown {
-      position: absolute; top: 110%; left: 0; right: 0;
-      background-color: var(--card-bg); border: 1px solid var(--border-color);
-      border-radius: 10px; display: none; list-style: none; padding: 5px 0;
-      max-height: 250px; overflow-y: auto; z-index: 1001; box-shadow: var(--shadow);
-    }
-    #search-dropdown.show { display: block; }
-    #search-dropdown li { padding: 10px 15px; cursor: pointer; border-bottom: 1px solid var(--border-color); font-size: 14px; }
-    #search-dropdown li:hover { background-color: var(--hover-bg); color: var(--accent-color); }
+nav a {
+  padding:8px 16px;
+  border-radius:8px;
+  text-decoration:none;
+  color:var(--text-color);
+  font-weight:600;
+}
 
-    .theme-switch {
-      background-color: var(--bg-color); border: 1px solid var(--border-color);
-      border-radius: 50%; width: 36px; height: 36px; cursor: pointer;
-      display: flex; align-items: center; justify-content: center; font-size: 18px;
-    }
+nav a:hover {
+  background:var(--hover-bg);
+}
 
-    /* NỘI DUNG CHÍNH */
-    main { margin-top: 65px; width: 100%; }
-    section { display: none; opacity: 0; transform: translateY(20px); transition: all 0.6s ease; padding-bottom: 50px; }
-    section.active { display: block; opacity: 1; transform: translateY(0); }
-    h1 { color: var(--accent-color); text-align: center; margin: 40px 0; font-size: 2rem; }
+/* ===== SECTION ===== */
 
-    /* TRANG CHỦ - ITEM HIỆU ỨNG ĐẸP */
-    .home-item { 
-      display: flex; background-color: var(--card-bg); margin-bottom: 20px;
-      border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);
-      overflow: hidden; align-items: stretch; width: 100%; min-height: 400px;
-    }
-    .home-item .note { 
-      flex: 1; padding: 50px; line-height: 1.8; white-space: pre-wrap; 
-      display: flex; align-items: center; font-size: 17px;
-    }
-    .home-img-wrapper { flex: 1; overflow: hidden; position: relative; }
-    .home-item img { 
-      width: 100%; height: 100%; object-fit: cover; cursor: pointer;
-      -webkit-mask-image: linear-gradient(to right, transparent 0%, black 20%);
-    }
-    .home-item:hover img { transform: scale(1.03); }
+main { margin-top:65px; }
 
-    /* KỈ NIỆM - GRID */
-    #main-gallery { 
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
-      gap: 25px; max-width: 1200px; margin: 0 auto; padding: 20px;
-    }
-    .gallery-item { 
-      background-color: var(--card-bg); border-radius: 12px; overflow: hidden; 
-      border: 1px solid var(--border-color); box-shadow: var(--shadow);
-    }
-    .gallery-item:hover { transform: translateY(-5px); }
-    .gallery-item img { width: 100%; height: 220px; object-fit: cover; cursor: pointer; }
-    .gallery-item .caption { padding: 15px; text-align: center; font-weight: 600; font-size: 14px; }
+section {
+  display:none;
+  opacity:0;
+  transform:translateY(20px);
+}
 
-    /* THÔNG TIN */
-    #info-content { max-width: 800px; margin: 0 auto; background-color:var(--card-bg); padding:30px; border-radius:15px; border: 1px solid var(--border-color); line-height: 1.8; box-shadow: var(--shadow); }
+section.active {
+  display:block;
+  opacity:1;
+  transform:translateY(0);
+}
 
-    /* MODAL CHUNG */
-    .modal { 
-        display: none; position: fixed; z-index: 2000; top: 0; left: 0; 
-        width: 100%; height: 100%; background-color: var(--modal-overlay); 
-        align-items: center; justify-content: center; backdrop-filter: blur(6px); 
-    }
-    .modal-content { 
-        background-color: var(--card-bg); width: 90%; max-width: 600px; 
-        padding: 30px; border-radius: 20px; border: 1px solid var(--border-color); position: relative;
-        animation: slideUp 0.4s ease;
-    }
-    @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-    
-    .close { position: absolute; top: 15px; right: 20px; color: var(--text-color); font-size: 30px; cursor: pointer; }
+/* ===== HOME ITEM ===== */
 
-    #st-avt { width: 120px; height: 120px; border-radius: 50%; display: block; margin: 0 auto 15px; border: 4px solid var(--accent-color); object-fit: cover; }
-    #st-info { background-color: var(--bg-color); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 20px; }
-    #st-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
-    #st-gallery img { width: 100%; height: 90px; object-fit: cover; border-radius: 8px; cursor: pointer; }
+.home-item {
+  display:flex;
+  background:var(--card-bg);
+  margin-bottom:20px;
+  overflow:hidden;
+  min-height:400px;
+  transition:0.4s;
+}
 
-    /* RESPONSIVE */
-    @media (max-width: 850px) {
-      header { height: auto; padding: 10px; flex-wrap: wrap; justify-content: center; gap: 10px; }
-      .header-right { width: 100%; justify-content: center; }
-      .search-container { width: 70%; }
-      .home-item { flex-direction: column-reverse; min-height: auto; }
-      .home-item .note { padding: 30px; }
-      .home-item img { 
-        height: 280px; 
-        -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 20%);
-      }
-      #nav-indicator { display: none; }
-    }
-  </style>
+.home-item:hover {
+  transform:translateY(-6px);
+  box-shadow:0 15px 35px rgba(0,0,0,0.2);
+}
+
+.home-item img {
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  cursor:pointer;
+  transition:0.4s;
+}
+
+.home-item img:hover {
+  transform:scale(1.05);
+  box-shadow:0 10px 30px rgba(0,0,0,0.3);
+}
+
+.note {
+  flex:1;
+  padding:50px;
+}
+
+/* ===== GALLERY ===== */
+
+#main-gallery {
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:25px;
+  padding:20px;
+}
+
+.gallery-item {
+  border-radius:12px;
+  overflow:hidden;
+  background:var(--card-bg);
+  transition:0.4s;
+}
+
+.gallery-item:hover {
+  transform:translateY(-6px);
+}
+
+.gallery-item img {
+  width:100%;
+  height:220px;
+  object-fit:cover;
+  cursor:pointer;
+  transition:0.4s;
+}
+
+.gallery-item img:hover {
+  transform:scale(1.05);
+  box-shadow:0 10px 30px rgba(0,0,0,0.3);
+}
+
+.caption {
+  padding:15px;
+  text-align:center;
+  font-weight:600;
+}
+
+/* ===== MODAL ===== */
+
+.modal {
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.8);
+  justify-content:center;
+  align-items:center;
+}
+
+#img-full {
+  max-width:90%;
+  max-height:85%;
+  border-radius:10px;
+  animation:zoomImg .35s ease;
+}
+
+@keyframes zoomImg {
+  from {
+    transform:scale(.7);
+    opacity:0;
+  }
+  to {
+    transform:scale(1);
+    opacity:1;
+  }
+}
+
+/* ===== SCROLL REVEAL ===== */
+
+.reveal {
+  opacity:0;
+  transform:translateY(40px);
+}
+
+.reveal.active {
+  opacity:1;
+  transform:translateY(0);
+}
+
+/* ===== RIPPLE ===== */
+
+.ripple {
+  position:relative;
+  overflow:hidden;
+}
+
+.ripple span {
+  position:absolute;
+  border-radius:50%;
+  transform:scale(0);
+  animation:rippleAnim .6s linear;
+  background:rgba(255,255,255,.5);
+}
+
+@keyframes rippleAnim {
+  to {
+    transform:scale(4);
+    opacity:0;
+  }
+}
+
+</style>
 </head>
+
 <body>
 
-  <header>
-    <div class="header-left">
-      <img id="logo" src="https://via.placeholder.com/42" alt="Logo">
-      <nav id="nav-menu">
-        <div id="nav-indicator"></div>
-        <a href="#home">Trang Chủ</a>
-        <a href="#memories">Kỉ Niệm</a>
-        <a href="#info">Thông Tin</a>
-      </nav>
-    </div>
-    <div class="header-right">
-        <div class="search-container">
-            <input type="text" id="search-input" placeholder="Tìm tên học sinh...">
-            <ul id="search-dropdown"></ul>
-        </div>
-        <button class="theme-switch" id="theme-btn">🌙</button>
-    </div>
-  </header>
+<header>
+<nav>
+<a href="#home">Trang Chủ</a>
+<a href="#memories">Kỉ Niệm</a>
+<a href="#info">Thông Tin</a>
+</nav>
 
-  <main>
-    <section id="home"><h1>Bản Tin 9A7</h1><div id="home-list"></div></section>
-    <section id="memories"><h1>Kho Ảnh Kỉ Niệm</h1><div class="gallery" id="main-gallery"></div></section>
-    <section id="info"><h1>Thông Tin Lớp</h1><div id="info-content"></div></section>
-  </main>
+<button id="theme-btn">🌙</button>
+</header>
 
-  <!-- Modal thông tin học sinh -->
-  <div id="st-modal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeModal()">&times;</span>
-        <img id="st-avt" src="">
-        <h2 id="st-name" style="text-align:center; color:var(--accent-color); margin-bottom:15px;"></h2>
-        <div id="st-info"></div>
-        <h4 style="margin-bottom:10px; border-bottom:1px solid var(--border-color); padding-bottom:5px;">Ảnh cá nhân</h4>
-        <div id="st-gallery"></div>
-    </div>
-  </div>
+<main>
 
-  <!-- Modal xem ảnh phóng to -->
-  <div id="img-modal" class="modal" onclick="this.style.display='none'">
-    <span class="close" style="color: white; top: 20px; right: 30px;">&times;</span>
-    <img id="img-full" style="max-width:90%; max-height:85%; border-radius:10px; box-shadow: 0 0 30px rgba(0,0,0,0.5);">
-  </div>
+<section id="home">
+<h1 style="text-align:center;">Bản Tin</h1>
+<div id="home-list"></div>
+</section>
 
-  <script>
-    let students = [];
-    const themeBtn = document.getElementById('theme-btn');
-    const indicator = document.getElementById('nav-indicator');
-    const navLinks = document.querySelectorAll('nav a');
+<section id="memories">
+<h1 style="text-align:center;">Kho Ảnh</h1>
+<div id="main-gallery"></div>
+</section>
 
-    // Điều hướng indicator mượt mà
-    function moveIndicator(el) {
-      if (!el || window.innerWidth < 850) return;
-      indicator.style.width = `${el.offsetWidth}px`;
-      indicator.style.left = `${el.offsetLeft}px`;
-      indicator.style.top = `${el.offsetTop}px`;
-      indicator.style.height = `${el.offsetHeight}px`;
+<section id="info">
+<h1 style="text-align:center;">Thông Tin</h1>
+<div id="info-content"></div>
+</section>
+
+</main>
+
+<div id="img-modal" class="modal" onclick="this.style.display='none'">
+<img id="img-full">
+</div>
+
+<script>
+
+/* ===== VIEW IMG ===== */
+
+function viewImg(src){
+  document.getElementById('img-full').src=src;
+  document.getElementById('img-modal').style.display='flex';
+}
+
+/* ===== SCROLL REVEAL ===== */
+
+function revealOnScroll(){
+  const reveals=document.querySelectorAll('.reveal');
+  const h=window.innerHeight;
+
+  reveals.forEach(el=>{
+    const top=el.getBoundingClientRect().top;
+    if(top<h-80){
+      el.classList.add('active');
     }
+  });
+}
 
-    // Xử lý Dark Mode
-    if (localStorage.getItem('theme') === 'dark') { 
-        document.body.classList.add('dark-mode'); 
-        themeBtn.innerText = '☀️'; 
-    }
-    themeBtn.onclick = () => {
-        document.body.classList.toggle('dark-mode');
-        const isDark = document.body.classList.contains('dark-mode');
-        themeBtn.innerText = isDark ? '☀️' : '🌙';
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        setTimeout(() => moveIndicator(document.querySelector('nav a.active')), 50);
-    };
+window.addEventListener('scroll',revealOnScroll);
 
-    // Chuyển trang (SPA)
-    function showPage(id) {
-      const targetId = id || 'home';
-      document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
-      const target = document.getElementById(targetId);
-      if(target) target.classList.add('active');
-      
-      navLinks.forEach(a => {
-        a.classList.remove('active');
-        if(a.getAttribute('href') === '#'+targetId) {
-          a.classList.add('active');
-          setTimeout(() => moveIndicator(a), 100);
-        }
-      });
-      
-      if(targetId === 'home') loadHome();
-      if(targetId === 'memories') loadMemories();
-      if(targetId === 'info') loadInfo();
-    }
-    window.onhashchange = () => showPage(location.hash.slice(1));
+/* ===== RIPPLE ===== */
 
-    function viewImg(src) {
-      const m = document.getElementById('img-modal');
-      document.getElementById('img-full').src = src;
-      m.style.display = 'flex';
-    }
-    function closeModal() { document.getElementById('st-modal').style.display = 'none'; }
+document.querySelectorAll('button,nav a').forEach(el=>{
+el.classList.add('ripple');
 
-    // Tải thông tin học sinh
-    async function openStudent(name) {
-      const modal = document.getElementById('st-modal');
-      const avt = document.getElementById('st-avt');
-      const info = document.getElementById('st-info');
-      const gal = document.getElementById('st-gallery');
-      const folder = encodeURIComponent(name).replace(/%20/g, '+');
-      
-      document.getElementById('st-name').innerText = name;
-      info.innerHTML = 'Đang tải thông tin...'; gal.innerHTML = '';
-      modal.style.display = 'flex';
+el.addEventListener('click',function(e){
 
-      try {
-        const r = await fetch(`stu/${folder}/inf.txt`);
-        info.innerText = r.ok ? await r.text() : 'Người bạn này chưa có giới thiệu.';
-        
-        const pr = await fetch(`stu/${folder}/pics.txt`);
-        if(pr.ok) {
-          const lines = (await pr.text()).split('\n').map(l => l.trim()).filter(l => l);
-          if(lines.length > 0) {
-            avt.src = lines[0];
-            lines.slice(1).forEach(link => {
-              const img = document.createElement('img');
-              img.src = link; img.onclick = (e) => { e.stopPropagation(); viewImg(link); };
-              gal.appendChild(img);
-            });
-          }
-        }
-      } catch(e) { info.innerText = 'Lỗi kết nối dữ liệu.'; }
-    }
+const circle=document.createElement("span");
 
-    // Tải Bản tin trang chủ
-    async function loadHome() {
-      const box = document.getElementById('home-list');
-      box.innerHTML = '<p style="text-align:center;">Đang tải các bản tin...</p>';
-      try {
-        const r = await fetch('home/list.txt');
-        const files = await r.json(); box.innerHTML = '';
-        for(let f of files) {
-          const fr = await fetch(`home/${f}`);
-          const txt = await fr.text(); const lines = txt.split('\n');
-          const d = document.createElement('div'); d.className = 'home-item';
-          d.innerHTML = `
-            <div class="note">${lines.slice(1).join('<br>')}</div>
-            <div class="home-img-wrapper"><img src="${lines[0]}" onclick="viewImg(this.src)"></div>`;
-          box.appendChild(d);
-        }
-      } catch(e) { box.innerHTML = '<p style="text-align:center;">Chưa có bản tin nào được đăng.</p>'; }
-    }
+const d=Math.max(this.clientWidth,this.clientHeight);
 
-    // Tải Album kỉ niệm
-    async function loadMemories() {
-      const g = document.getElementById('main-gallery'); 
-      g.innerHTML = 'Đang mở kho ảnh...';
-      try {
-        const r = await fetch('pic.txt');
-        let text = await r.text();
-        let urls = JSON.parse(text.replace(/```json|```/g, '').trim());
-        g.innerHTML = '';
-        
-        urls.forEach((u, i) => {
-          let fileName = u.split('/').pop().split('?')[0]; 
-          let cleanName = decodeURIComponent(fileName).split('.')[0].replace(/[-_]/g, ' ');
-          if (cleanName.length < 3 || cleanName.length > 30) cleanName = `Kỉ niệm ${i + 1}`;
+circle.style.width=circle.style.height=d+"px";
 
-          const item = document.createElement('div'); 
-          item.className = 'gallery-item';
-          item.innerHTML = `<img src="${u}" onclick="viewImg(this.src)"><div class="caption">${cleanName}</div>`;
-          g.appendChild(item);
-        });
-      } catch(e) { g.innerHTML = 'Lỗi album hoặc file pic.txt không đúng định dạng.'; }
-    }
+const rect=this.getBoundingClientRect();
 
-    // Tải Thông tin lớp
-    async function loadInfo() {
-      try {
-        const r = await fetch('info.txt');
-        if(r.ok) document.getElementById('info-content').innerHTML = (await r.text()).replace(/\n/g, '<br>');
-      } catch(e){}
-    }
+circle.style.left=e.clientX-rect.left-d/2+"px";
+circle.style.top=e.clientY-rect.top-d/2+"px";
 
-    // Xử lý tìm kiếm
-    const si = document.getElementById('search-input');
-    const sd = document.getElementById('search-dropdown');
-    si.oninput = () => {
-      const v = si.value.toLowerCase().trim();
-      if(!v) { sd.classList.remove('show'); return; }
-      const m = students.filter(s => s.toLowerCase().includes(v));
-      sd.innerHTML = m.map(s => `<li>${s}</li>`).join('');
-      sd.classList.toggle('show', m.length > 0);
-      sd.querySelectorAll('li').forEach(li => li.onclick = () => { 
-          openStudent(li.innerText); 
-          sd.classList.remove('show'); 
-          si.value=''; 
-      });
-    };
+this.appendChild(circle);
 
-    // Khởi tạo trang web
-    (async () => {
-      try {
-        // Tải danh sách học sinh
-        const r = await fetch('stu.txt');
-        students = (await r.text()).split('\n').map(s => s.trim()).filter(s => s);
-        
-        // Tải logo
-        const logoR = await fetch('logo.txt');
-        if(logoR.ok) document.getElementById('logo').src = (await logoR.text()).trim();
-      } catch(e){}
+setTimeout(()=>circle.remove(),600);
 
-      // Hiển thị trang dựa trên URL hoặc mặc định là Home
-      showPage(location.hash.slice(1) || 'home');
-      
-      // Cập nhật indicator sau một khoảng thời gian ngắn để đảm bảo font đã render
-      setTimeout(() => moveIndicator(document.querySelector('nav a.active')), 500);
-    })();
-    
-    // Cập nhật lại indicator khi thay đổi kích thước màn hình
-    window.onresize = () => moveIndicator(document.querySelector('nav a.active'));
-  </script>
+});
+});
+
+/* ===== NAVIGATION ===== */
+
+function showPage(id){
+
+document.querySelectorAll('section')
+.forEach(s=>s.classList.remove('active'));
+
+const t=document.getElementById(id||'home');
+
+if(t) t.classList.add('active');
+
+}
+
+window.onhashchange=()=>showPage(location.hash.slice(1));
+
+showPage(location.hash.slice(1)||'home');
+
+/* ===== LOAD HOME ===== */
+
+async function loadHome(){
+
+const box=document.getElementById('home-list');
+
+try{
+
+const r=await fetch('home/list.txt');
+
+const files=await r.json();
+
+box.innerHTML='';
+
+for(let f of files){
+
+const fr=await fetch(`home/${f}`);
+
+const txt=await fr.text();
+
+const lines=txt.split('\n');
+
+const d=document.createElement('div');
+
+d.className='home-item reveal';
+
+d.innerHTML=`
+
+<div class="note">
+
+${lines.slice(1).join('<br>')}
+
+</div>
+
+<img src="${lines[0]}"
+onclick="viewImg(this.src)">
+
+`;
+
+box.appendChild(d);
+
+}
+
+setTimeout(revealOnScroll,200);
+
+}catch{
+
+box.innerHTML='Chưa có bản tin';
+
+}
+
+}
+
+/* ===== LOAD MEMORIES ===== */
+
+async function loadMemories(){
+
+const g=document.getElementById('main-gallery');
+
+try{
+
+const r=await fetch('pic.txt');
+
+let text=await r.text();
+
+let urls=JSON.parse(text);
+
+g.innerHTML='';
+
+urls.forEach((u,i)=>{
+
+const item=document.createElement('div');
+
+item.className='gallery-item reveal';
+
+item.innerHTML=`
+
+<img src="${u}"
+onclick="viewImg(this.src)">
+
+<div class="caption">
+
+Kỉ niệm ${i+1}
+
+</div>
+
+`;
+
+g.appendChild(item);
+
+});
+
+setTimeout(revealOnScroll,200);
+
+}catch{
+
+g.innerHTML='Lỗi album';
+
+}
+
+}
+
+/* ===== LOAD INFO ===== */
+
+async function loadInfo(){
+
+try{
+
+const r=await fetch('info.txt');
+
+if(r.ok){
+
+document.getElementById('info-content')
+
+.innerHTML=(await r.text())
+
+.replace(/\n/g,'<br>');
+
+}
+
+}catch{}
+
+}
+
+/* ===== AUTO LOAD ===== */
+
+loadHome();
+loadMemories();
+loadInfo();
+
+</script>
+
 </body>
 </html>
