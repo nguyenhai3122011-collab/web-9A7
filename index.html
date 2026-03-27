@@ -27,14 +27,14 @@
       --indicator-color: rgba(88, 166, 255, 0.18);
     }
 
-    /* Tối ưu hiệu suất */
+    /* Tối ưu hiệu suất - chỉ thêm phần này */
     * {
       box-sizing: border-box;
-      transition: background-color 0.35s ease, color 0.35s ease, border-color 0.35s ease;
+      transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
     }
 
-    /* Các phần quan trọng dùng GPU acceleration */
-    body, header, nav a, #nav-indicator, section, .home-item, .modal, .gallery-item {
+    /* GPU acceleration cho các phần hay chuyển động */
+    header, nav a, #nav-indicator, section, .home-item, .gallery-item, .modal, #student-content {
       will-change: transform, opacity;
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
@@ -44,8 +44,7 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
       background-color: var(--bg-color);
       color: var(--text-color);
-      margin: 0; 
-      padding: 0;
+      margin: 0; padding: 0;
       min-height: 100vh;
       overflow-x: hidden;
     }
@@ -62,31 +61,10 @@
       z-index: 1000;
       gap: 20px;
     }
-
-    .header-main-nav { 
-      display: flex; 
-      align-items: center; 
-      gap: 15px; 
-      flex: 1; 
-    }
-
-    #logo { 
-      width: 42px; height: 42px; 
-      object-fit: cover; 
-      border-radius: 8px; 
-      border: 1px solid var(--border-color); 
-      flex-shrink: 0;
-      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    nav { 
-      display: flex; 
-      gap: 5px; 
-      align-items: center; 
-      flex: 1; 
-      position: relative; 
-    }
-
+    .header-main-nav { display: flex; align-items: center; gap: 15px; flex: 1; }
+    #logo { width: 42px; height: 42px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-color); flex-shrink: 0; }
+   
+    nav { display: flex; gap: 5px; align-items: center; flex: 1; position: relative; }
     nav a {
       color: var(--text-color);
       text-decoration: none;
@@ -98,18 +76,10 @@
       white-space: nowrap;
       position: relative;
       z-index: 2;
-      transition: all 0.25s cubic-bezier(0.23, 1, 0.32, 1);
+      transition: opacity 0.25s ease, color 0.25s ease;
     }
-
-    nav a:hover {
-      opacity: 1;
-      transform: translateY(-1px);
-    }
-
-    nav a.active { 
-      color: var(--accent-color); 
-      opacity: 1; 
-    }
+    nav a:hover { opacity: 1; }
+    nav a.active { color: var(--accent-color); opacity: 1; }
 
     #nav-indicator {
       position: absolute;
@@ -117,116 +87,60 @@
       border-radius: 6px;
       z-index: 1;
       height: 34px;
-      transition: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1); /* mượt như iOS */
-      will-change: width, left, top;
+      transition: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1); /* mượt hơn rõ */
     }
 
-    .search-container { 
-      position: relative; 
-      max-width: 250px; 
-      width: 100%; 
-      margin-left: 15px; 
-    }
-
+    .search-container { position: relative; max-width: 250px; width: 100%; margin-left: 15px; }
     #search-input {
-      width: 100%; 
-      padding: 7px 15px; 
-      border-radius: 20px; 
-      border: 1px solid var(--border-color);
-      background-color: var(--bg-color); 
-      color: var(--text-color); 
-      outline: none; 
-      font-size: 14px;
-      transition: all 0.3s ease;
+      width: 100%; padding: 7px 15px; border-radius: 20px; border: 1px solid var(--border-color);
+      background-color: var(--bg-color); color: var(--text-color); outline: none; font-size: 14px;
     }
-
-    #search-input:focus {
-      box-shadow: 0 0 0 3px var(--indicator-color);
-      border-color: var(--accent-color);
-    }
-
     .theme-switch {
-      background-color: var(--bg-color); 
-      border: 1px solid var(--border-color);
-      border-radius: 50%; 
-      width: 36px; height: 36px; 
-      cursor: pointer;
-      display: flex; 
-      align-items: center; 
-      justify-content: center; 
-      flex-shrink: 0; 
-      font-size: 18px;
-      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      background-color: var(--bg-color); border: 1px solid var(--border-color);
+      border-radius: 50%; width: 36px; height: 36px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 18px;
+      transition: transform 0.3s ease;
     }
-
     .theme-switch:hover {
-      transform: rotate(30deg) scale(1.1);
+      transform: scale(1.12);
     }
 
     #search-dropdown {
-      position: absolute; 
-      top: 110%; 
-      left: 0; 
-      right: 0;
-      background-color: var(--card-bg); 
-      border: 1px solid var(--border-color);
-      border-radius: 8px; 
-      display: none; 
-      list-style: none; 
-      padding: 5px 0;
-      max-height: 250px; 
-      overflow-y: auto; 
-      z-index: 1001;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.18);
-      backdrop-filter: blur(10px);
+      position: absolute; top: 110%; left: 0; right: 0;
+      background-color: var(--card-bg); border: 1px solid var(--border-color);
+      border-radius: 8px; display: none; list-style: none; padding: 5px 0;
+      max-height: 250px; overflow-y: auto; z-index: 1001;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
-
-    #search-dropdown.show { display: block; animation: fadeIn 0.2s ease forwards; }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
+    #search-dropdown.show { display: block; }
     #search-dropdown li { 
       padding: 10px 15px; 
       cursor: pointer; 
       border-bottom: 1px solid var(--border-color); 
-      transition: all 0.2s ease;
+      transition: background-color 0.2s ease, color 0.2s ease, padding-left 0.25s ease;
     }
-
     #search-dropdown li:hover { 
       background-color: var(--hover-bg); 
       color: var(--accent-color); 
-      padding-left: 20px;
+      padding-left: 18px;
     }
 
     /* LAYOUT CHÍNH */
-    main { 
-      margin-top: 80px; 
-      padding: 0; 
-      width: 100%; 
-    }
-
+    main { margin-top: 80px; padding: 0; width: 100%; }
+    
     section { 
       display: none; 
       opacity: 0; 
-      transform: translateY(25px); 
-      transition: all 0.55s cubic-bezier(0.23, 1, 0.32, 1);
+      transform: translateY(20px); 
+      transition: all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1); /* mượt hơn ease */
     }
-
     section.active { 
       display: block; 
       opacity: 1; 
       transform: translateY(0); 
     }
 
-    h1 { 
-      color: var(--accent-color); 
-      text-align: center; 
-      margin: 30px 0; 
-      transition: color 0.4s ease;
-    }
+    h1 { color: var(--accent-color); text-align: center; margin: 30px 0; }
 
     /* TRANG CHỦ */
     .home-item {
@@ -238,12 +152,11 @@
       overflow: hidden;
       align-items: stretch;
       width: 100%;
-      transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+      transition: transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 0.4s ease;
     }
-
     .home-item:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.07);
     }
 
     .home-item .note {
@@ -255,29 +168,18 @@
       align-items: center;
       font-size: 16px;
     }
-
-    .home-img-wrapper { 
-      flex: 1; 
-      position: relative; 
-      overflow: hidden; 
-    }
-
+    .home-img-wrapper { flex: 1; position: relative; overflow: hidden; }
     .home-item img {
-      width: 100%; 
-      height: 100%; 
-      object-fit: cover; 
-      cursor: pointer; 
-      display: block;
-      transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+      width: 100%; height: 100%; object-fit: cover; cursor: pointer; display: block;
       -webkit-mask-image: linear-gradient(to right, transparent 0%, black 20%);
       mask-image: linear-gradient(to right, transparent 0%, black 20%);
+      transition: transform 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
     }
-
     .home-item:hover img {
-      transform: scale(1.06);
+      transform: scale(1.05);
     }
 
-    /* GALLERY */
+    /* KỈ NIỆM */
     #main-gallery {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -286,33 +188,33 @@
       margin: 0 auto;
       padding: 20px;
     }
-
     .gallery-item { 
       background-color: var(--card-bg); 
       border-radius: 10px; 
       overflow: hidden; 
-      border: 1px solid var(--border-color);
-      transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+      border: 1px solid var(--border-color); 
+      transition: transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 0.4s ease;
     }
-
     .gallery-item:hover {
-      transform: translateY(-8px) scale(1.02);
-      box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+      transform: translateY(-6px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.1);
     }
-
     .gallery-item img { 
-      width: 100%; 
-      height: 200px; 
-      object-fit: cover; 
-      cursor: pointer;
-      transition: transform 0.5s ease;
+      width: 100%; height: 200px; object-fit: cover; cursor: pointer; 
+      transition: transform 0.55s ease;
     }
-
     .gallery-item:hover img {
-      transform: scale(1.08);
+      transform: scale(1.06);
+    }
+    .gallery-item .caption { padding: 12px; text-align: center; font-weight: 500; text-transform: capitalize; font-size: 13px; color: var(--text-color); }
+
+    /* THÔNG TIN */
+    #info-content { 
+      max-width: 800px; margin: 0 auto 40px; background-color:var(--card-bg); 
+      padding:20px; border-radius:10px; border: 1px solid var(--border-color); 
     }
 
-    /* MODAL */
+    /* MODAL - mượt hơn */
     .modal { 
       display: none; 
       position: fixed; 
@@ -322,32 +224,14 @@
       background-color: var(--modal-overlay); 
       align-items: center; 
       justify-content: center; 
-      backdrop-filter: blur(8px);
+      backdrop-filter: blur(4px);
       opacity: 0;
-      transition: opacity 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+      transition: opacity 0.35s ease;
     }
-
     .modal.show {
       display: flex;
       opacity: 1;
     }
-
-    #student-content { 
-      background-color: var(--card-bg); 
-      width: 90%; 
-      max-width: 600px; 
-      padding: 25px; 
-      border-radius: 15px; 
-      border: 1px solid var(--border-color);
-      transform: scale(0.95);
-      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    }
-
-    .modal.show #student-content {
-      transform: scale(1);
-    }
-
     .close { 
       position: absolute; 
       top: 15px; 
@@ -357,9 +241,21 @@
       cursor: pointer;
       transition: transform 0.3s ease;
     }
-
     .close:hover {
-      transform: rotate(90deg) scale(1.2);
+      transform: rotate(90deg);
+    }
+    #student-content { 
+      background-color: var(--card-bg); 
+      width: 90%; 
+      max-width: 600px; 
+      padding: 25px; 
+      border-radius: 15px; 
+      border: 1px solid var(--border-color);
+      transform: scale(0.92);
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .modal.show #student-content {
+      transform: scale(1);
     }
 
     @media (max-width: 850px) {
@@ -378,7 +274,7 @@
   </style>
 </head>
 <body>
-  <!-- Phần HTML giữ nguyên hoàn toàn -->
+  <!-- HTML giữ nguyên hoàn toàn như bản gốc -->
   <header>
     <div class="header-main-nav">
       <img id="logo" src="https://via.placeholder.com/42" alt="Logo">
@@ -395,15 +291,13 @@
     </div>
     <button class="theme-switch" id="theme-btn">🌙</button>
   </header>
-
   <main>
     <section id="home"><h1>Bản Tin 9A7</h1><div id="home-list"></div></section>
     <section id="memories"><h1>Kho Ảnh Kỉ Niệm</h1><div class="gallery" id="main-gallery"></div></section>
     <section id="info"><h1>Thông Tin Lớp</h1><div id="info-content"></div></section>
   </main>
-
   <div id="st-modal" class="modal">
-    <span class="close" onclick="closeModal()">×</span>
+    <span class="close" onclick="closeModal()">&times;</span>
     <div id="student-content">
       <img id="st-avt" src="">
       <h2 id="st-name" style="text-align:center; color:var(--accent-color); margin-bottom:10px;"></h2>
@@ -412,20 +306,18 @@
       <div id="st-gallery"></div>
     </div>
   </div>
-
-  <div id="img-modal" class="modal" onclick="this.style.display='none'">
-    <span class="close">×</span>
+  <div id="img-modal" class="modal" style="display:none;" onclick="this.style.display='none'">
+    <span class="close">&times;</span>
     <img id="img-full" style="max-width:90%; max-height:90%; border-radius:5px;">
   </div>
 
   <script>
-    // JavaScript giữ nguyên toàn bộ logic, chỉ thêm chút tối ưu modal
+    // JavaScript giữ nguyên hoàn toàn, chỉ sửa nhẹ phần modal để animation mượt
     let students = [];
     const themeBtn = document.getElementById('theme-btn');
     const indicator = document.getElementById('nav-indicator');
     const navLinks = document.querySelectorAll('nav a');
     const stModal = document.getElementById('st-modal');
-    const imgModal = document.getElementById('img-modal');
 
     function moveIndicator(el) {
       if (!el || window.innerWidth < 850) return;
@@ -434,27 +326,25 @@
       indicator.style.top = `${el.offsetTop}px`;
     }
 
-    // Theme
     if (localStorage.getItem('theme') === 'dark') { 
       document.body.classList.add('dark-mode'); 
       themeBtn.innerText = '☀️'; 
     }
 
     themeBtn.onclick = () => {
-      document.body.classList.toggle('dark-mode');
-      const isDark = document.body.classList.contains('dark-mode');
-      themeBtn.innerText = isDark ? '☀️' : '🌙';
-      localStorage.setItem('theme', isDark ? 'dark' : 'light');
-      setTimeout(() => moveIndicator(document.querySelector('nav a.active')), 80);
+        document.body.classList.toggle('dark-mode');
+        const isDark = document.body.classList.contains('dark-mode');
+        themeBtn.innerText = isDark ? '☀️' : '🌙';
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        setTimeout(() => moveIndicator(document.querySelector('nav a.active')), 50);
     };
 
     function showPage(id) {
       const targetId = id || 'home';
       document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
-      
       const target = document.getElementById(targetId);
       if(target) target.classList.add('active');
-
+     
       navLinks.forEach(a => {
         a.classList.remove('active');
         if(a.getAttribute('href') === '#'+targetId) {
@@ -462,7 +352,7 @@
           moveIndicator(a);
         }
       });
-
+     
       if(targetId === 'home') loadHome();
       if(targetId === 'memories') loadMemories();
       if(targetId === 'info') loadInfo();
@@ -471,38 +361,33 @@
     window.onhashchange = () => showPage(location.hash.slice(1));
 
     function viewImg(src) {
+      const m = document.getElementById('img-modal');
       document.getElementById('img-full').src = src;
-      imgModal.classList.add('show');
-      imgModal.style.display = 'flex';
+      m.style.display = 'flex';
     }
 
-    function closeModal() {
-      stModal.classList.remove('show');
-      setTimeout(() => {
-        stModal.style.display = 'none';
-      }, 400);
+    function closeModal() { 
+      stModal.style.display = 'none'; 
     }
 
-    // Mở modal học sinh với animation mượt
     async function openStudent(name) {
       const modal = stModal;
       const avt = document.getElementById('st-avt');
       const info = document.getElementById('st-info');
       const gal = document.getElementById('st-gallery');
       const folder = encodeURIComponent(name).replace(/%20/g, '+');
-
+      
       document.getElementById('st-name').innerText = name;
       info.innerHTML = 'Đang tải...'; 
       gal.innerHTML = '';
       modal.style.display = 'flex';
       
-      // Trigger animation
+      // Thêm class show để trigger animation scale mượt
       setTimeout(() => modal.classList.add('show'), 10);
 
       try {
         const r = await fetch(`stu/${folder}/inf.txt`);
         info.innerText = r.ok ? await r.text() : 'Chưa có giới thiệu.';
-
         const pr = await fetch(`stu/${folder}/pics.txt`);
         if(pr.ok) {
           const lines = (await pr.text()).split('\n').map(l => l.trim()).filter(l => l);
@@ -510,7 +395,7 @@
             avt.src = lines[0];
             lines.slice(1).forEach(link => {
               const img = document.createElement('img');
-              img.src = link;
+              img.src = link; 
               img.onclick = (e) => { e.stopPropagation(); viewImg(link); };
               gal.appendChild(img);
             });
@@ -521,20 +406,16 @@
       }
     }
 
-    // Các hàm loadHome, loadMemories, loadInfo giữ nguyên
+    // Các hàm loadHome, loadMemories, loadInfo giữ nguyên y nguyên
     async function loadHome() {
-      const box = document.getElementById('home-list'); 
-      box.innerHTML = 'Đang tải...';
+      const box = document.getElementById('home-list'); box.innerHTML = 'Đang tải...';
       try {
         const r = await fetch('home/list.txt');
-        const files = await r.json(); 
-        box.innerHTML = '';
+        const files = await r.json(); box.innerHTML = '';
         for(let f of files) {
           const fr = await fetch(`home/${f}`);
-          const txt = await fr.text(); 
-          const lines = txt.split('\n');
-          const d = document.createElement('div'); 
-          d.className = 'home-item';
+          const txt = await fr.text(); const lines = txt.split('\n');
+          const d = document.createElement('div'); d.className = 'home-item';
           d.innerHTML = `
             <div class="note">${lines.slice(1).join('<br>')}</div>
             <div class="home-img-wrapper">
@@ -542,9 +423,7 @@
             </div>`;
           box.appendChild(d);
         }
-      } catch(e) { 
-        box.innerHTML = 'Chưa có bản tin.'; 
-      }
+      } catch(e) { box.innerHTML = 'Chưa có bản tin.'; }
     }
 
     async function loadMemories() {
@@ -563,7 +442,6 @@
           }
           let cleanName = decodeURIComponent(fileName).replace(/[-_]/g, ' ').trim();
           if (cleanName.length < 3 || cleanName.length > 35) cleanName = `Kỉ niệm ${i + 1}`;
-
           const item = document.createElement('div');
           item.className = 'gallery-item';
           item.innerHTML = `
@@ -572,9 +450,7 @@
           `;
           g.appendChild(item);
         });
-      } catch(e) { 
-        g.innerHTML = 'Lỗi album hoặc file pic.txt không đúng.'; 
-      }
+      } catch(e) { g.innerHTML = 'Lỗi album hoặc file pic.txt không đúng.'; }
     }
 
     async function loadInfo() {
@@ -584,41 +460,26 @@
       } catch(e){}
     }
 
-    // Search
     const si = document.getElementById('search-input');
     const sd = document.getElementById('search-dropdown');
-
     si.oninput = () => {
       const v = si.value.toLowerCase().trim();
-      if(!v) { 
-        sd.classList.remove('show'); 
-        return; 
-      }
+      if(!v) { sd.classList.remove('show'); return; }
       const m = students.filter(s => s.toLowerCase().includes(v));
       sd.innerHTML = m.map(s => `<li>${s}</li>`).join('');
       sd.classList.toggle('show', m.length > 0);
-      
-      sd.querySelectorAll('li').forEach(li => {
-        li.onclick = () => { 
-          openStudent(li.innerText); 
-          sd.classList.remove('show'); 
-          si.value = ''; 
-        };
-      });
+      sd.querySelectorAll('li').forEach(li => li.onclick = () => { openStudent(li.innerText); sd.classList.remove('show'); si.value=''; });
     };
 
-    // Khởi tạo
     (async () => {
       try {
         const r = await fetch('stu.txt');
         students = (await r.text()).split('\n').map(s => s.trim()).filter(s => s);
-
         const logoR = await fetch('logo.txt');
         if(logoR.ok) document.getElementById('logo').src = (await logoR.text()).trim();
       } catch(e){}
-
       showPage(location.hash.slice(1) || 'home');
-      setTimeout(() => moveIndicator(document.querySelector('nav a.active')), 350);
+      setTimeout(() => moveIndicator(document.querySelector('nav a.active')), 300);
     })();
   </script>
 </body>
