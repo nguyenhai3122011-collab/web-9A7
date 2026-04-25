@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lớp 9A7 - THCS Đông La</title>
+    <title>9A7 - Memories & Sidebar Blur</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
     <style>
         :root {
             --primary: #2563eb;
             --bg: #ffffff;
-            --surface: rgba(248, 250, 252, 0.8); /* Nền Sidebar có độ trong suốt */
+            --surface: rgba(248, 250, 252, 0.85);
             --text: #0f172a;
             --text-light: #64748b;
-            --border: rgba(226, 232, 240, 0.5);
+            --border: rgba(226, 232, 240, 0.8);
             --radius: 16px;
             --header-h: 70px;
             --sidebar-w: 280px;
@@ -21,10 +21,10 @@
         .dark-mode {
             --primary: #60a5fa;
             --bg: #0f172a;
-            --surface: rgba(30, 41, 59, 0.7); /* Nền tối trong suốt */
+            --surface: rgba(30, 41, 59, 0.8);
             --text: #f1f5f9;
             --text-light: #94a3b8;
-            --border: rgba(51, 65, 85, 0.5);
+            --border: rgba(51, 65, 85, 0.8);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -39,7 +39,7 @@
         /* --- HEADER --- */
         header {
             position: fixed; top: 0; width: 100%; height: var(--header-h); z-index: 1000;
-            background: rgba(var(--bg), 0.7); backdrop-filter: blur(15px);
+            background: rgba(var(--bg), 0.7); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
             border-bottom: 1px solid var(--border);
             display: flex; align-items: center; padding: 0 1.5rem; justify-content: space-between;
         }
@@ -47,87 +47,100 @@
         .menu-btn {
             background: none; border: none; color: var(--text);
             font-size: 1.5rem; cursor: pointer; padding: 5px;
-            display: flex; align-items: center; justify-content: center;
         }
 
-        /* --- SIDEBAR MỜ (GLASSMORPHISM) --- */
+        /* --- SIDEBAR MỜ --- */
         #sidebar {
             position: fixed; top: 0; left: calc(-1 * var(--sidebar-w));
             width: var(--sidebar-w); height: 100%;
-            background: var(--surface); 
-            backdrop-filter: blur(20px); /* Hiệu ứng mờ nền phía sau Sidebar */
-            -webkit-backdrop-filter: blur(20px);
-            z-index: 2001;
-            transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-            border-right: 1px solid var(--border);
-            padding: 1.5rem;
-            box-shadow: 10px 0 30px rgba(0,0,0,0.05);
+            background: var(--surface); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            z-index: 2001; transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            border-right: 1px solid var(--border); padding: 1.5rem;
         }
         #sidebar.open { left: 0; }
 
-        /* Lớp phủ mờ toàn màn hình */
         .overlay {
-            position: fixed; inset: 0; 
-            background: rgba(0, 0, 0, 0.2); 
-            backdrop-filter: blur(4px); /* Làm mờ trang web khi mở menu */
-            -webkit-backdrop-filter: blur(4px);
-            z-index: 2000;
-            display: none;
-            opacity: 0;
-            transition: opacity 0.4s ease;
+            position: fixed; inset: 0; background: rgba(0, 0, 0, 0.2); 
+            backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+            z-index: 2000; display: none; opacity: 0; transition: 0.4s ease;
         }
         .overlay.show { display: block; opacity: 1; }
 
         .sidebar-nav { display: flex; flex-direction: column; gap: 8px; margin-top: 2rem; }
         .sidebar-nav a {
-            padding: 12px 16px; border-radius: 12px;
-            text-decoration: none; color: var(--text);
-            font-weight: 500; transition: 0.3s;
+            padding: 12px 16px; border-radius: 12px; text-decoration: none;
+            color: var(--text); font-weight: 500; transition: 0.3s;
             display: flex; align-items: center; gap: 12px;
         }
         .sidebar-nav a:hover { background: rgba(37, 99, 235, 0.1); color: var(--primary); transform: translateX(5px); }
-        .sidebar-nav a.active { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
+        .sidebar-nav a.active { background: var(--primary); color: white; }
 
-        /* --- CÁC PHẦN CÒN LẠI (GIỮ NGUYÊN) --- */
+        /* --- SEARCH --- */
+        .search-box { position: relative; }
+        #search-input {
+            padding: 0.6rem 1rem; border-radius: 20px; border: 1px solid var(--border);
+            background: rgba(255,255,255,0.1); color: var(--text); outline: none; width: 180px; transition: 0.4s;
+        }
+        #search-input:focus { width: 240px; border-color: var(--primary); background: var(--bg); }
+        
+        #search-results {
+            position: absolute; top: 120%; left: 0; right: 0;
+            background: var(--bg); border: 1px solid var(--border);
+            border-radius: 12px; overflow: hidden; display: none;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1); z-index: 101;
+        }
+        #search-results.show { display: block; }
+        .result-item { padding: 0.8rem 1rem; cursor: pointer; border-bottom: 1px solid var(--border); }
+        .result-item:hover { background: var(--surface); color: var(--primary); }
+
+        /* --- MAIN CONTENT --- */
         main { margin-top: var(--header-h); padding: 2rem 1.5rem; max-width: 1100px; margin-inline: auto; }
         section { display: none; animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
         section.active { display: block; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
         .post-card {
-            background: var(--surface); border-radius: var(--radius);
-            border: 1px solid var(--border); margin-bottom: 2rem;
-            display: grid; grid-template-columns: 1.2fr 1fr; overflow: hidden;
-            backdrop-filter: blur(5px);
+            background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border);
+            margin-bottom: 2rem; display: grid; grid-template-columns: 1.2fr 1fr; overflow: hidden;
         }
-        .post-img { width: 100%; height: 400px; object-fit: cover; }
-        .post-content { padding: 2.5rem; }
+        .post-img { width: 100%; height: 400px; object-fit: cover; cursor: zoom-in; }
+        .post-content { padding: 2rem; display: flex; align-items: center; }
 
-        #search-input {
-            padding: 0.6rem 1rem; border-radius: 20px;
-            border: 1px solid var(--border); background: rgba(255,255,255,0.1);
-            color: var(--text); outline: none; width: 180px; transition: 0.4s;
-        }
-        #search-input:focus { width: 240px; border-color: var(--primary); background: var(--bg); }
+        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; }
+        .gallery-item { aspect-ratio: 4/3; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); cursor: pointer; }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: 0.3s; }
+        .gallery-item:hover img { transform: scale(1.05); }
 
-        @media (max-width: 850px) {
-            .post-card { grid-template-columns: 1fr; }
-            .post-img { height: 250px; }
+        /* --- MODAL --- */
+        .modal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.8);
+            display: none; align-items: center; justify-content: center;
+            z-index: 3000; padding: 20px; backdrop-filter: blur(8px);
         }
+        .modal-content {
+            background: var(--bg); width: 100%; max-width: 600px;
+            border-radius: 24px; padding: 2rem; position: relative;
+            max-height: 90vh; overflow-y: auto; text-align: center;
+        }
+
+        @media (max-width: 850px) { .post-card { grid-template-columns: 1fr; } .post-img { height: 250px; } }
     </style>
 </head>
-<body class="">
+<body>
 
     <header>
         <div style="display:flex; align-items:center; gap:15px;">
             <button class="menu-btn" onclick="UI.toggleSidebar(true)">☰</button>
             <div style="display:flex; align-items:center; gap:8px; font-weight:700;">
-                <img id="logo" src="" style="width:32px; height:32px; border-radius:6px;">
+                <img id="logo" src="" style="width:32px; height:32px; border-radius:6px; object-fit: cover;">
                 <span>9A7</span>
             </div>
         </div>
         <div style="display:flex; align-items:center; gap:15px;">
-            <input type="text" id="search-input" placeholder="Tìm bạn...">
+            <div class="search-box">
+                <input type="text" id="search-input" placeholder="Tìm bạn...">
+                <div id="search-results"></div>
+            </div>
             <button id="theme-toggle" style="background:none; border:none; cursor:pointer; font-size:1.2rem;">🌙</button>
         </div>
     </header>
@@ -136,13 +149,13 @@
 
     <aside id="sidebar">
         <div style="display:flex; justify-content:space-between; align-items:center;">
-            <h2 style="font-size:1.2rem; font-weight:700;">Menu </h2>
+            <h2 style="font-size:1.2rem; font-weight:700;">Menu Lớp</h2>
             <button onclick="UI.toggleSidebar(false)" style="background:none; border:none; font-size:1.8rem; cursor:pointer; color:var(--text-light);">&times;</button>
         </div>
         <nav class="sidebar-nav">
             <a href="#home" class="active" onclick="UI.toggleSidebar(false)">🏠 Bản tin 9A7</a>
-            <a href="#gallery" onclick="UI.toggleSidebar(false)"> Kho kỉ niệm</a>
-            <a href="#info" onclick="UI.toggleSidebar(false)"> Thông tin lớp</a>
+            <a href="#gallery" onclick="UI.toggleSidebar(false)">🖼️ Kho kỉ niệm</a>
+            <a href="#info" onclick="UI.toggleSidebar(false)">ℹ️ Thông tin lớp</a>
             <a href="https://nguyenhai3122011-collab.github.io/9A7_forums/" target="_blank">💬 Diễn đàn</a>
         </nav>
     </aside>
@@ -153,19 +166,35 @@
             <div id="feed-container"></div>
         </section>
         <section id="gallery">
-            <h2 style="margin-bottom:1.5rem;">Ảnh kỉ niệm</h2>
-            <div id="gallery-container" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(250px, 1fr)); gap:15px;"></div>
+            <h2 style="margin-bottom:1.5rem;">Kho ảnh kỉ niệm</h2>
+            <div id="gallery-container" class="gallery-grid"></div>
         </section>
         <section id="info">
-            <div id="info-render" style="padding:2rem; background:var(--surface); border-radius:20px; backdrop-filter:blur(10px);"></div>
+            <h2 style="margin-bottom:1.5rem;">Thông tin lớp</h2>
+            <div id="info-render" style="padding:2rem; background:var(--surface); border-radius:20px; backdrop-filter:blur(10px); border:1px solid var(--border);"></div>
         </section>
     </main>
+
+    <div id="modal-student" class="modal">
+        <div class="modal-content">
+            <button onclick="UI.closeModal()" style="position:absolute; right:20px; top:20px; border:none; background:none; font-size:1.5rem; cursor:pointer;">&times;</button>
+            <img id="st-avatar" style="width:120px; height:120px; border-radius:50%; object-fit:cover; border:4px solid var(--primary); margin-bottom:1rem;">
+            <h2 id="st-name"></h2>
+            <p id="st-desc" style="color:var(--text-light); margin:10px 0 20px;"></p>
+            <div id="st-pics" style="display:grid; grid-template-columns:repeat(3, 1fr); gap:10px;"></div>
+        </div>
+    </div>
+
+    <div id="modal-img" class="modal" onclick="this.style.display='none'">
+        <img id="img-preview" style="max-width:95%; max-height:95%; object-fit:contain; border-radius:12px;">
+    </div>
 
     <script>
         const UI = {
             async init() {
                 this.setupTheme();
                 this.setupNav();
+                this.setupSearch();
                 await this.loadBase();
             },
             setupTheme() {
@@ -181,42 +210,79 @@
             setupNav() {
                 window.onhashchange = () => {
                     const h = location.hash || '#home';
-                    document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.toggle('active', a.getAttribute('href') === h));
-                    document.querySelectorAll('section').forEach(s => s.classList.toggle('active', `#${s.id}` === h));
+                    document.querySelectorAll('.sidebar-nav a').forEach(a => {
+                        a.classList.toggle('active', a.getAttribute('href') === h);
+                    });
+                    document.querySelectorAll('section').forEach(s => {
+                        s.classList.toggle('active', `#${s.id}` === h);
+                    });
                     if(h === '#home') this.loadHome();
-                    // Thêm loadGallery, loadInfo tương tự bản trước
+                    if(h === '#gallery') this.loadGallery();
+                    if(h === '#info') this.loadInfo();
                 };
                 window.onhashchange();
             },
             toggleSidebar(open) {
-                const side = document.getElementById('sidebar');
-                const over = document.getElementById('sidebar-overlay');
-                if(open) {
-                    side.classList.add('open');
-                    over.classList.add('show');
-                    document.body.style.overflow = 'hidden';
-                } else {
-                    side.classList.remove('open');
-                    over.classList.remove('show');
-                    document.body.style.overflow = 'auto';
-                }
+                document.getElementById('sidebar').classList.toggle('open', open);
+                document.getElementById('sidebar-overlay').classList.toggle('show', open);
+                document.body.style.overflow = open ? 'hidden' : 'auto';
             },
             async loadBase() {
-                const r = await fetch('logo.txt').catch(()=>({text:()=>''}));
-                const logo = await r.text();
+                const logo = await fetch('logo.txt').then(r => r.text()).catch(() => '');
                 if(logo) document.getElementById('logo').src = logo.trim();
+                const stu = await fetch('stu.txt').then(r => r.text()).catch(() => '');
+                this.students = stu.split('\n').map(s => s.trim()).filter(s => s);
+            },
+            setupSearch() {
+                const input = document.getElementById('search-input');
+                const res = document.getElementById('search-results');
+                input.oninput = () => {
+                    const v = input.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                    if(!v) return res.classList.remove('show');
+                    const matches = this.students.filter(s => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(v));
+                    res.innerHTML = matches.map(m => `<div class="result-item">${m}</div>`).join('');
+                    res.classList.toggle('show', matches.length > 0);
+                    res.querySelectorAll('.result-item').forEach(i => {
+                        i.onclick = () => { this.showStudent(i.innerText); res.classList.remove('show'); input.value = ''; };
+                    });
+                };
             },
             async loadHome() {
                 const con = document.getElementById('feed-container');
-                con.innerHTML = 'Đang tải...';
-                const r = await fetch('home/list.txt').catch(()=>({json:()=>[]}));
-                const files = await r.json();
+                con.innerHTML = 'Đang tải bản tin...';
+                const files = await fetch('home/list.txt').then(r => r.json()).catch(() => []);
                 const posts = await Promise.all(files.map(f => fetch(`home/${f}`).then(res => res.text())));
                 con.innerHTML = posts.map(p => {
                     const [img, ...txt] = p.split('\n');
-                    return `<div class="post-card"><img src="${img.trim()}" class="post-img"><div class="post-content"><p>${txt.join('<br>')}</p></div></div>`;
+                    return `<div class="post-card"><img src="${img.trim()}" class="post-img" onclick="UI.preview('${img.trim()}')"><div class="post-content"><p>${txt.join('<br>')}</p></div></div>`;
                 }).join('');
-            }
+            },
+            async loadGallery() {
+                const con = document.getElementById('gallery-container');
+                con.innerHTML = 'Đang tải ảnh...';
+                const raw = await fetch('pic.txt').then(r => r.text()).catch(() => '[]');
+                const urls = JSON.parse(raw.replace(/```json|```/g, ''));
+                con.innerHTML = urls.map(u => `<div class="gallery-item" onclick="UI.preview('${u}')"><img src="${u}" loading="lazy"></div>`).join('');
+            },
+            async loadInfo() {
+                const t = await fetch('info.txt').then(r => r.text()).catch(() => '');
+                document.getElementById('info-render').innerHTML = t.replace(/\n/g, '<br>');
+            },
+            async showStudent(name) {
+                const folder = encodeURIComponent(name).replace(/%20/g, '+');
+                const [inf, picsR] = await Promise.all([
+                    fetch(`stu/${folder}/inf.txt`).then(r => r.text()).catch(() => ''),
+                    fetch(`stu/${folder}/pics.txt`).then(r => r.text()).catch(() => '')
+                ]);
+                const pics = picsR.split('\n').filter(p => p.trim());
+                document.getElementById('st-name').innerText = name;
+                document.getElementById('st-desc').innerText = inf || 'Một thành viên tuyệt vời của 9A7';
+                document.getElementById('st-avatar').src = pics[0] || '';
+                document.getElementById('st-pics').innerHTML = pics.slice(1).map(p => `<img src="${p}" onclick="UI.preview('${p}')" style="width:100%; height:100px; object-fit:cover; border-radius:12px; cursor:zoom-in;">`).join('');
+                document.getElementById('modal-student').style.display = 'flex';
+            },
+            preview(src) { document.getElementById('img-preview').src = src; document.getElementById('modal-img').style.display = 'flex'; },
+            closeModal() { document.getElementById('modal-student').style.display = 'none'; }
         };
         UI.init();
     </script>
