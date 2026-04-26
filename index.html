@@ -8,25 +8,27 @@
     <style>
         :root {
             --primary: #2563eb;
-            --primary-hover: #1d4ed8;
+            --primary-soft: rgba(37, 99, 235, 0.1);
             --bg: #ffffff;
-            --surface: rgba(248, 250, 252, 0.8);
+            --surface: rgba(255, 255, 255, 0.8);
             --text: #1f2328;
             --text-light: #64748b;
-            --border: rgba(208, 215, 222, 0.5);
+            --border: rgba(208, 215, 222, 0.6);
             --radius: 16px;
             --header-h: 70px;
             --sidebar-w: 280px;
-            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow: 0 4px 20px rgba(0,0,0,0.08);
         }
 
         .dark-mode {
-            --primary: #3b82f6;
+            --primary: #58a6ff;
+            --primary-soft: rgba(88, 166, 255, 0.15);
             --bg: #0d1117;
-            --surface: rgba(22, 27, 34, 0.8);
+            --surface: rgba(22, 27, 34, 0.85);
             --text: #c9d1d9;
             --text-light: #8b949e;
             --border: rgba(48, 54, 61, 0.8);
+            --shadow: 0 4px 20px rgba(0,0,0,0.3);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -37,104 +39,97 @@
             color: var(--text);
             transition: background 0.3s, color 0.3s;
             overflow-x: hidden;
-            line-height: 1.6;
+            line-height: 1.5;
         }
 
-        /* --- Header Tối Ưu --- */
+        /* --- Header --- */
         header {
-            position: fixed;
-            top: 0; width: 100%; height: var(--header-h);
+            position: fixed; top: 0; width: 100%; height: var(--header-h);
             z-index: 1000;
             background: var(--surface);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
             border-bottom: 1px solid var(--border);
-            display: flex; align-items: center; padding: 0 1.5rem;
-            justify-content: space-between;
+            display: flex; align-items: center; padding: 0 1.5rem; justify-content: space-between;
         }
 
-        .logo-link { display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit; transition: opacity 0.2s; }
-        .logo-link:hover { opacity: 0.8; }
-        #logo { width: 40px; height: 40px; border-radius: 10px; object-fit: cover; border: 1px solid var(--border); }
+        .logo-link { display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit; }
+        #logo { width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--border); object-fit: cover; }
 
-        /* --- Search Bar --- */
-        .search-box { position: relative; flex-grow: 0; }
+        /* --- Search Box --- */
+        .search-box { position: relative; }
         #search-input {
-            padding: 0.6rem 1.2rem;
-            border-radius: 99px;
-            border: 1px solid var(--border);
-            background: var(--bg);
-            color: var(--text);
-            outline: none;
-            width: 180px;
-            transition: all 0.3s;
+            padding: 0.6rem 1.2rem; border-radius: 20px;
+            border: 1px solid var(--border); background: var(--bg);
+            color: var(--text); outline: none; width: 150px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        #search-input:focus { width: 220px; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+        #search-input:focus { width: 200px; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
 
-        /* --- Floating Action Button --- */
+        /* --- FAB & Sidebar --- */
         .fab-menu {
             position: fixed; bottom: 30px; left: 25px;
-            width: 56px; height: 56px;
-            background: var(--primary); color: white;
-            border: none; border-radius: 50%;
-            font-size: 1.5rem; cursor: pointer;
-            z-index: 1001;
-            box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.4);
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            width: 56px; height: 56px; background: var(--primary);
+            color: white; border: none; border-radius: 50%;
+            font-size: 1.5rem; cursor: pointer; z-index: 1001;
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
+            transition: transform 0.2s;
         }
-        .fab-menu:hover { transform: scale(1.1); background: var(--primary-hover); }
+        .fab-menu:active { transform: scale(0.9); }
+
+        #sidebar {
+            position: fixed; top: 0; left: calc(-1 * var(--sidebar-w));
+            width: var(--sidebar-w); height: 100%;
+            background: var(--bg); z-index: 2001;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            border-right: 1px solid var(--border); padding: 1.5rem;
+        }
+        #sidebar.open { transform: translateX(var(--sidebar-w)); }
+
+        .overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(4px); z-index: 2000;
+            opacity: 0; visibility: hidden; transition: 0.3s;
+        }
+        .overlay.show { opacity: 1; visibility: visible; }
 
         /* --- Content Layout --- */
-        main { margin-top: var(--header-h); padding: 2rem 1.5rem; max-width: 1000px; margin-inline: auto; }
-        section { display: none; animation: fadeIn 0.4s ease-out; }
+        main { margin-top: var(--header-h); padding: 2rem 1rem; max-width: 900px; margin-inline: auto; }
+        section { display: none; animation: slideUp 0.5s ease-out; }
         section.active { display: block; }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         .post-card {
-            background: var(--surface);
-            border-radius: var(--radius);
-            border: 1px solid var(--border);
-            margin-bottom: 2rem;
-            overflow: hidden;
+            background: var(--surface); border-radius: var(--radius);
+            border: 1px solid var(--border); margin-bottom: 2rem;
+            display: grid; grid-template-columns: 1.2fr 1fr; overflow: hidden;
             box-shadow: var(--shadow);
-            transition: transform 0.3s;
         }
-        .post-card:hover { transform: translateY(-4px); }
-        .post-img { width: 100%; height: 400px; object-fit: cover; }
-        .post-content { padding: 1.5rem; }
 
-        /* --- Gallery --- */
+        .post-img { width: 100%; height: 350px; object-fit: cover; cursor: pointer; transition: 0.3s; }
+        .post-img:hover { filter: brightness(0.9); }
+
         .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 12px;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px;
         }
         .gallery-item {
-            aspect-ratio: 1;
-            border-radius: 12px;
-            overflow: hidden;
-            cursor: zoom-in;
-            border: 1px solid var(--border);
+            aspect-ratio: 1; border-radius: 12px; overflow: hidden;
+            border: 1px solid var(--border); cursor: pointer;
         }
-        .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
-        .gallery-item:hover img { transform: scale(1.1); }
 
-        /* --- Sidebar --- */
-        #sidebar {
-            position: fixed; top: 0; left: -300px; width: var(--sidebar-w); height: 100%;
-            background: var(--bg); z-index: 2001; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            padding: 2rem; border-right: 1px solid var(--border);
+        /* --- Modals --- */
+        .modal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.95);
+            display: none; align-items: center; justify-content: center;
+            z-index: 3000; backdrop-filter: blur(10px);
         }
-        #sidebar.open { left: 0; }
-        
-        /* Mobile Responsive */
+
         @media (max-width: 768px) {
-            #search-input { width: 120px; }
-            #search-input:focus { width: 150px; }
+            .post-card { grid-template-columns: 1fr; }
+            #search-input:focus { width: 160px; }
             .post-img { height: 250px; }
         }
     </style>
@@ -144,109 +139,150 @@
         <div class="header-left">
             <a href="#" class="logo-link">
                 <img id="logo" src="https://github.com/nguyenhai3122011-collab/web-9A7/blob/main/allpic/tiktok_video_vAh2J.jpeg?raw=true" alt="Logo">
-                <span style="font-weight:700; font-size: 1.2rem;">9A7</span>
+                <span style="font-weight:700; font-size: 1.1rem;">Lớp 9A7</span>
             </a>
         </div>
-        <div style="display:flex; align-items:center; gap:15px;">
+        <div style="display:flex; align-items:center; gap:12px;">
             <div class="search-box">
-                <input type="text" id="search-input" placeholder="Tìm bạn bè...">
-                <div id="search-results"></div>
+                <input type="text" id="search-input" placeholder="Tìm tên...">
+                <div id="search-results" style="position:absolute; top:110%; width:100%; background:var(--bg); border-radius:10px; border:1px solid var(--border); display:none; max-height:200px; overflow-y:auto; z-index:100;"></div>
             </div>
-            <button id="theme-toggle" style="background:none; border:none; cursor:pointer; font-size:1.4rem;">🌙</button>
+            <button id="theme-toggle" style="background:none; border:none; cursor:pointer; font-size:1.3rem;">🌙</button>
         </div>
     </header>
 
-    <button class="fab-menu" onclick="App.toggleSidebar(true)">☰</button>
-    <div id="overlay" class="overlay" style="position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:2000; display:none; backdrop-filter:blur(4px);" onclick="App.toggleSidebar(false)"></div>
+    <button class="fab-menu" onclick="UI.side(true)">☰</button>
+    <div id="overlay" class="overlay" onclick="UI.side(false)"></div>
 
     <aside id="sidebar">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 2rem;">
-            <h2 style="font-weight:700;">Menu</h2>
-            <button onclick="App.toggleSidebar(false)" style="background:none; border:none; font-size:2rem; cursor:pointer;">&times;</button>
+            <h2 style="font-size:1.4rem;">Menu</h2>
+            <button onclick="UI.side(false)" style="background:none; border:none; font-size:2rem; cursor:pointer;">&times;</button>
         </div>
-        <nav class="sidebar-nav" style="display:flex; flex-direction:column; gap:10px;">
-            <a href="#home" style="padding:12px; text-decoration:none; color:var(--text); border-radius:10px;">🏠 Trang chủ</a>
-            <a href="#gallery" style="padding:12px; text-decoration:none; color:var(--text); border-radius:10px;">🖼️ Kho kỉ niệm</a>
-            <a href="#info" style="padding:12px; text-decoration:none; color:var(--text); border-radius:10px;">ℹ️ Thông tin lớp</a>
+        <nav style="display:flex; flex-direction:column; gap:10px;">
+            <a href="#home" style="padding:12px 16px; text-decoration:none; color:var(--text); border-radius:12px; font-weight:500;">🏠 Trang chủ</a>
+            <a href="#gallery" style="padding:12px 16px; text-decoration:none; color:var(--text); border-radius:12px; font-weight:500;">🖼️ Kho kỉ niệm</a>
+            <a href="#info" style="padding:12px 16px; text-decoration:none; color:var(--text); border-radius:12px; font-weight:500;">ℹ️ Thông tin lớp</a>
+            <hr style="border:0; border-top:1px solid var(--border); margin:10px 0;">
+            <a href="https://nguyenhai3122011-collab.github.io/9A7_forums/" target="_blank" style="padding:12px 16px; text-decoration:none; color:var(--primary); font-weight:600;">💬 Diễn đàn lớp</a>
         </nav>
     </aside>
 
     <main>
-        <section id="home" class="active"><h2>Bản tin 9A7</h2><div id="feed-container"></div></section>
-        <section id="gallery"><h2>Kho ảnh kỉ niệm</h2><div id="gallery-container" class="gallery-grid"></div></section>
-        <section id="info"><h2>Giới thiệu lớp</h2><div id="info-render" style="padding:2rem; background:var(--surface); border-radius:20px;"></div></section>
+        <section id="home" class="active"><h2>Bản tin lớp</h2><div id="feed-container"></div></section>
+        <section id="gallery"><h2>Kho kỉ niệm</h2><div id="gallery-container" class="gallery-grid"></div></section>
+        <section id="info"><h2>Giới thiệu lớp</h2><div id="info-render" style="padding:2rem; background:var(--surface); border-radius:20px; border:1px solid var(--border);"></div></section>
     </main>
 
-    <div id="modal-img" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:9999; align-items:center; justify-content:center; cursor: zoom-out;" onclick="this.style.display='none'">
-        <img id="img-full" src="" style="max-width:95%; max-height:95%; object-fit:contain; border-radius:8px;">
+    <div id="modal-img" class="modal" onclick="UI.closeImg()">
+        <img id="img-full" src="" style="max-width:98%; max-height:98%; object-fit:contain; transition: transform 0.2s cubic-bezier(0.1, 0.7, 0.3, 1);">
     </div>
 
     <script>
-        const App = {
+        const UI = {
+            state: { scale: 1, x: 0, y: 0 },
+            
             async init() {
-                this.bindEvents();
-                this.loadTheme();
-                this.handleRouting();
-                await this.fetchBaseData();
+                this.setupTheme();
+                this.setupNav();
+                this.setupSearch();
+                await this.loadBaseData();
+                window.onhashchange();
             },
 
-            bindEvents() {
-                document.getElementById('theme-toggle').onclick = () => this.toggleTheme();
-                window.onhashchange = () => this.handleRouting();
+            setupTheme() {
+                const btn = document.getElementById('theme-toggle');
+                const setTheme = (isDark) => {
+                    document.body.classList.toggle('dark-mode', isDark);
+                    btn.innerText = isDark ? '☀️' : '🌙';
+                    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                };
+                setTheme(localStorage.getItem('theme') === 'dark');
+                btn.onclick = () => setTheme(!document.body.classList.contains('dark-mode'));
             },
 
-            toggleSidebar(show) {
-                document.getElementById('sidebar').classList.toggle('open', show);
-                document.getElementById('overlay').style.display = show ? 'block' : 'none';
+            setupNav() {
+                window.onhashchange = () => {
+                    const hash = location.hash || '#home';
+                    document.querySelectorAll('section').forEach(s => s.classList.toggle('active', `#${s.id}` === hash));
+                    this.side(false);
+                    if(hash === '#home') this.loadHome();
+                    if(hash === '#gallery') this.loadGallery();
+                    if(hash === '#info') this.loadInfo();
+                };
             },
 
-            toggleTheme() {
-                const isDark = document.body.classList.toggle('dark-mode');
-                localStorage.setItem('theme', isDark ? 'dark' : 'light');
-                document.getElementById('theme-toggle').innerText = isDark ? '☀️' : '🌙';
+            side(open) {
+                document.getElementById('sidebar').classList.toggle('open', open);
+                document.getElementById('overlay').classList.toggle('show', open);
             },
 
-            loadTheme() {
-                if (localStorage.getItem('theme') === 'dark') {
-                    document.body.classList.add('dark-mode');
-                    document.getElementById('theme-toggle').innerText = '☀️';
-                }
-            },
-
-            handleRouting() {
-                const hash = location.hash || '#home';
-                document.querySelectorAll('section').forEach(s => {
-                    s.classList.toggle('active', `#${s.id}` === hash);
-                });
-                this.toggleSidebar(false);
-                
-                if(hash === '#home') this.renderHome();
-                if(hash === '#gallery') this.renderGallery();
-            },
-
-            async fetchBaseData() {
-                // Tận dụng mã cũ của bạn để load dữ liệu
+            async loadBaseData() {
                 try {
                     const res = await fetch('stu.txt');
-                    this.students = (await res.text()).split('\n').filter(s => s.trim());
-                } catch(e) { console.error("Lỗi tải dữ liệu học sinh"); }
+                    const text = await res.text();
+                    this.students = text.split('\n').map(s => s.trim()).filter(s => s);
+                } catch (e) { this.students = []; }
             },
 
-            async renderHome() {
-                const container = document.getElementById('feed-container');
-                container.innerHTML = '<p>Đang tải bản tin...</p>';
-                // Logic fetch bản tin giữ nguyên từ code cũ của bạn
+            setupSearch() {
+                const input = document.getElementById('search-input');
+                const resDiv = document.getElementById('search-results');
+                input.oninput = () => {
+                    const val = input.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                    if(!val) { resDiv.style.display = 'none'; return; }
+                    const matches = this.students.filter(s => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(val));
+                    resDiv.innerHTML = matches.map(m => `<div onclick="alert('Tính năng xem chi tiết học sinh đang phát triển');" style="padding:10px; cursor:pointer; border-bottom:1px solid var(--border)">${m}</div>`).join('');
+                    resDiv.style.display = matches.length ? 'block' : 'none';
+                };
             },
 
-            viewImage(src) {
+            view(src) {
                 const modal = document.getElementById('modal-img');
                 const img = document.getElementById('img-full');
                 img.src = src;
                 modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            },
+
+            closeImg() {
+                document.getElementById('modal-img').style.display = 'none';
+                document.body.style.overflow = 'auto';
+            },
+
+            async loadHome() {
+                const con = document.getElementById('feed-container');
+                con.innerHTML = '<p style="text-align:center; padding:2rem;">Đang tải bản tin...</p>';
+                try {
+                    const files = await fetch('home/list.txt').then(r => r.json());
+                    const posts = await Promise.all(files.map(f => fetch(`home/${f}`).then(r => r.text())));
+                    con.innerHTML = posts.map(p => {
+                        const [img, ...txt] = p.split('\n');
+                        return `<div class="post-card">
+                            <img src="${img.trim()}" class="post-img" onclick="UI.view('${img.trim()}')" loading="lazy">
+                            <div style="padding:1.5rem;"><p>${txt.join('<br>')}</p></div>
+                        </div>`;
+                    }).join('');
+                } catch(e) { con.innerHTML = '<p>Không thể tải bản tin.</p>'; }
+            },
+
+            async loadGallery() {
+                const con = document.getElementById('gallery-container');
+                con.innerHTML = '<p>Đang tải ảnh...</p>';
+                try {
+                    const raw = await fetch('pic.txt').then(r => r.text());
+                    const urls = JSON.parse(raw.replace(/```json|```/g, ''));
+                    con.innerHTML = urls.map(u => `<div class="gallery-item" onclick="UI.view('${u}')"><img src="${u}" style="width:100%; height:100%; object-fit:cover;" loading="lazy"></div>`).join('');
+                } catch(e) { con.innerHTML = '<p>Lỗi tải kho ảnh.</p>'; }
+            },
+
+            async loadInfo() {
+                const t = await fetch('info.txt').then(r => r.text()).catch(() => 'Chưa có thông tin.');
+                document.getElementById('info-render').innerHTML = t.replace(/\n/g, '<br>');
             }
         };
 
-        App.init();
+        UI.init();
     </script>
 </body>
 </html>
