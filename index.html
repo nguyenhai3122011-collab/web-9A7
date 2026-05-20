@@ -303,7 +303,7 @@
                 ]);
                 const pics = picsR.split('\n').filter(p => p.trim());
                 document.getElementById('st-name').innerText = name;
-                document.getElementById('st-desc').innerHTML = inf || '<i>Thành viên 9A7.</i>';
+                document.getElementById('st-desc').innerHTML = inf || '<i>Chưa có lời nhắn nào!</i>';
                 document.getElementById('st-avt').src = pics[0] || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=2563eb&color=fff`;
                 document.getElementById('st-pics').innerHTML = pics.slice(1).map(p => `<img src="${p}" onclick="UI.view('${p}')" style="width:100%; height:80px; object-fit:cover; border-radius:8px; cursor:pointer;">`).join('');
                 document.getElementById('modal-st').style.display = 'flex';
